@@ -6,11 +6,14 @@ class CalendarBuilder {
 
     final firstWeekday = _calcFirstWeekday(date);
     final lastDate = _calcLastDate(date);
+    final previousLastDate = _calcPreviousMonthLastDate(date);
 
     final firstWeek = List.generate(7, (index) {
       final i = index + 1; // index は 0 はじまりのため、1 はじまりの曜日と合わせる
       final offset = i - firstWeekday; // その月の 1 日の曜日との差
-      return i < firstWeekday ? null : 1 + offset;
+      // return i < firstWeekday ? null : 1 + offset;
+      return i < firstWeekday ? previousLastDate - firstWeekday + i + 1 : 1 + offset;
+
     });
 
     calendar.add(firstWeek);
@@ -21,18 +24,20 @@ class CalendarBuilder {
       // 1 週間分のデータを生成
       final week = List.generate(7, (index) {
         final date = firstDateOfWeek + index; // 追加する日付
-        return date <= lastDate ? date : null; // 最終日以前なら採用、それ以降は null
+        if (date <= lastDate) {
+          return date; // 最終日以前なら採用
+        } else {
+          return ((firstDateOfWeek + index - lastDate - 1) % 7) + 1; // それ以降は1から再開
+        }
       });
 
       calendar.add(week); // 週のリストを月のリストに追加
 
-      // すでに最終日まで追加し終わっていたら終了
-      final lastDateOfWeek = week.last;
-      if (lastDateOfWeek == null || lastDateOfWeek >= lastDate) {
+      // 月の最終日を含む週が追加されたら終了
+      if (week.contains(lastDate)) {
         break;
       }
     }
-
     return calendar;
   }
 
@@ -45,5 +50,10 @@ class CalendarBuilder {
   /// [date] が所属する月の最後の日を計算します。
   int _calcLastDate(DateTime date) {
     return DateTime(date.year, date.month + 1, 0).day;
+  }
+
+  /// [date] が所属する月の前月の最後の日を計算します。
+  int _calcPreviousMonthLastDate(DateTime date) {
+    return DateTime(date.year, date.month, 0).day;
   }
 }

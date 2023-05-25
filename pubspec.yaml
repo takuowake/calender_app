@@ -38,6 +38,7 @@ dependencies:
   drift: ^2.8.0
   flutter_riverpod: ^2.3.6
   table_calendar: ^3.0.9
+  flutter_localization: ^0.1.11
 
 dev_dependencies:
   flutter_test:
