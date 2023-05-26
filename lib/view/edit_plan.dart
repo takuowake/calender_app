@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class EditPlanPage extends StatefulWidget {
@@ -13,14 +14,66 @@ class _EditPlanPageState extends State<EditPlanPage> {
 
   void _changeSwitch(bool e) => setState(() => _active = e);
 
+  void _showEditCanselConfirmation() {
+    showCupertinoModalPopup(
+      context: context,
+      builder: (BuildContext context) => CupertinoActionSheet(
+        actions: <Widget>[
+          CupertinoActionSheetAction(
+            child: const Text('編集を破棄', style: TextStyle(color: Colors.blue)),
+            onPressed: () {
+              Navigator.pop(context, 'Delete');
+              // ここに破棄のロジックを書く
+            },
+            isDestructiveAction: true,
+          ),
+        ],
+        cancelButton: CupertinoActionSheetAction(
+          child: const Text('キャンセル'),
+          onPressed: () {
+            Navigator.pop(context, 'Cancel');
+          },
+        ),
+      ),
+    );
+  }
+
+  Future<void> _showDeleteConfirmation() async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return CupertinoAlertDialog(
+          title: Text('予定の削除'),
+          content: Text('本当にこの日の予定を削除しますか？'),
+          actions: <Widget>[
+            CupertinoDialogAction(
+              child: Text('キャンセル'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            CupertinoDialogAction(
+              child: Text('削除', style: TextStyle(color: Colors.blue)),
+              isDestructiveAction: true,
+              onPressed: () {
+                Navigator.of(context).pop();
+                // ここで予定を削除する処理を追加する
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('予定の追加'),
+        title: const Text('予定の編集'),
         leading: IconButton(
           icon: Icon(Icons.clear),
-          onPressed: () {},
+          onPressed: _showEditCanselConfirmation,
         ),
         actions: [
           Padding(
@@ -137,6 +190,22 @@ class _EditPlanPageState extends State<EditPlanPage> {
                     ),
                   ),
                 ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 30),
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+              ),
+              onPressed: _showDeleteConfirmation,
+              child: Container(
+                width: double.infinity,
+                height: 50,
+                child: Center(child: Text('この予定を削除', style: TextStyle(color: Colors.red))),
+
               ),
             ),
           ),
