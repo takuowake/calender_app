@@ -54,9 +54,7 @@ class MyApp extends StatelessWidget {
 // }
 // final dialogProvider = StateProvider<int>((ref) => 0);
 //
-// final planDatabaseProvider = Provider<PlanDatabaseNotifier>((ref) {
-//   return PlanDatabaseNotifier();
-// });
+
 //
 // final dateRangeProvider = StateNotifierProvider<DateRangeNotifier, List<DateTime>>((ref) => DateRangeNotifier());
 //
