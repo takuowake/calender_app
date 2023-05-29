@@ -36,22 +36,7 @@ class MyApp extends StatelessWidget {
 
 
 
-// final currentDateProvider = StateProvider<DateTime>((ref) => DateTime.now());
-// class DateRangeNotifier extends StateNotifier<List<DateTime>> {
-//   DateRangeNotifier() : super([
-//     DateTime.now().subtract(Duration(days: 1)),
-//     DateTime.now(),
-//     DateTime.now().add(Duration(days: 1)),
-//   ]);
-//
-//   void setDate(DateTime date) {
-//     state = [
-//       date.subtract(Duration(days: 1)),
-//       date,
-//       date.add(Duration(days: 1)),
-//     ];
-//   }
-// }
+
 // final dialogProvider = StateProvider<int>((ref) => 0);
 //
 
