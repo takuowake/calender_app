@@ -1,15 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class EditPlanPage extends StatefulWidget {
-  const EditPlanPage({Key? key}) : super(key: key);
+class EditPlanScreen extends StatefulWidget {
+  const EditPlanScreen({Key? key}) : super(key: key);
 
   @override
-  _EditPlanPageState createState() =>
-      _EditPlanPageState();
+  _EditPlanScreenState createState() =>
+      _EditPlanScreenState();
 }
 
-class _EditPlanPageState extends State<EditPlanPage> {
+class _EditPlanScreenState extends State<EditPlanScreen> {
   bool _active = false;
 
   void _changeSwitch(bool e) => setState(() => _active = e);

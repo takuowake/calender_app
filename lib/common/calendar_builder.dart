@@ -1,8 +1,8 @@
 /// 1ヶ月分のカレンダーデータを生成するクラス
 class CalendarBuilder {
   /// [date]が表す日が所属する月のカレンダーを生成
-  List<List<int?>> build(DateTime date) {
-    final calendar = <List<int?>>[];
+  List<List<DateTime?>> build(DateTime date) {
+    final calendar = <List<DateTime?>>[];
 
     final firstWeekday = _calcFirstWeekday(date);
     final lastDate = _calcLastDate(date);
@@ -11,30 +11,37 @@ class CalendarBuilder {
     final firstWeek = List.generate(7, (index) {
       final i = index + 1; // index は 0 はじまりのため、1 はじまりの曜日と合わせる
       final offset = i - firstWeekday; // その月の 1 日の曜日との差
-      // return i < firstWeekday ? null : 1 + offset;
-      return i < firstWeekday ? previousLastDate - firstWeekday + i + 1 : 1 + offset;
-
+      return i < firstWeekday
+          ? DateTime(date.year, date.month - 1, previousLastDate - firstWeekday + i + 1)
+          : DateTime(date.year, date.month, 1 + offset);
     });
 
     calendar.add(firstWeek);
 
     while (true) {
-      final firstDateOfWeek = calendar.last.last! + 1; // 前の週の最終日の次の日がスタート
+      final firstDateOfWeek = calendar.last.last!.day + 1; // 前の週の最終日の次の日がスタート
+      int month = calendar.last.last!.month;
+      int year = calendar.last.last!.year;
+      int lastDateOfCurrentMonth = _calcLastDate(DateTime(year, month));
 
+      if (firstDateOfWeek > lastDate) {
+        month += 1;
+        if (month > 12) {
+          month = 1;
+          year += 1;
+        }
+        lastDateOfCurrentMonth = _calcLastDate(DateTime(year, month));
+      }
       // 1 週間分のデータを生成
       final week = List.generate(7, (index) {
-        final date = firstDateOfWeek + index; // 追加する日付
-        if (date <= lastDate) {
-          return date; // 最終日以前なら採用
-        } else {
-          return ((firstDateOfWeek + index - lastDate - 1) % 7) + 1; // それ以降は1から再開
-        }
+        final day = firstDateOfWeek + index;
+        return DateTime(year, month, day);
       });
 
       calendar.add(week); // 週のリストを月のリストに追加
 
       // 月の最終日を含む週が追加されたら終了
-      if (week.contains(lastDate)) {
+      if (week.any((dateTime) => dateTime.day == lastDateOfCurrentMonth && dateTime.month == month)) {
         break;
       }
     }
