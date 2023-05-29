@@ -60,14 +60,5 @@ class MyApp extends StatelessWidget {
 //
 // final dateRangeProvider = StateNotifierProvider<DateRangeNotifier, List<DateTime>>((ref) => DateRangeNotifier());
 //
-// // 新たに状態管理用のStateNotifierを定義
-// class DatePickerNotifier extends StateNotifier<DateTime> {
-//   DatePickerNotifier() : super(DateTime.now());
+
 //
-//   void setDate(DateTime date) {
-//     state = date;
-//   }
-// }
-//
-// // DatePickerNotifier用のProviderを定義
-// final datePickerProvider = StateNotifierProvider<DatePickerNotifier, DateTime>((ref) => DatePickerNotifier());
