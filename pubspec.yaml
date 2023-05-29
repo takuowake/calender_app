@@ -43,6 +43,9 @@ dependencies:
   path: ^1.8.3
   build_runner: ^2.4.4
   drift_dev: ^2.8.2
+  sqlite3_flutter_libs: ^0.5.15
+  freezed_annotation: ^2.2.0
+  freezed: ^2.3.4
 
 dev_dependencies:
   flutter_test:
