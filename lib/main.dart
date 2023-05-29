@@ -1,35 +1,15 @@
-import 'package:calender_app/view/calender_screen.dart';
-import 'package:calender_app/view/add_plan.dart';
-import 'package:calender_app/view/edit_plan.dart';
-import 'package:calender_app/view/event_list_screen.dart';
+import 'package:calender_app/routing/router.dart' as Router;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const ProviderScope(child: MyApp()));
 }
-//
-// class MyApp extends StatelessWidget {
-//   const MyApp({Key? key}) : super(key: key);
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       title: 'Your App',
-//       theme: ThemeData(
-//         // 背景色を灰色に設定
-//         scaffoldBackgroundColor: Colors.white70,
-//       ),
-//       home: const EditPlanPage(),
-//     );
-//   }
-// }
-
-
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}): super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -38,137 +18,56 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const CalendarPage(),
+      initialRoute: '/',
+      onGenerateRoute: Router.Router.generateRoute,
+      locale: Locale('ja', 'JP'),
       localizationsDelegates: [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: [
-        const Locale("en"),
+        const Locale('ja', 'JP'),
       ],
     );
   }
 }
 
-class CalendarPage extends StatefulWidget {
-  const CalendarPage({Key? key}) : super(key: key);
 
-  @override
-  State<CalendarPage> createState() => _CalendarPageState();
-}
 
-class _CalendarPageState extends State<CalendarPage> {
-  var _currentDate = DateTime.now();
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('カレンダー')),
-      body: SizedBox.expand(
-        child: Column(
-          children: [
-            _CalendarController(
-              currentMonth: '${_currentDate.year}年 ${_currentDate.month}月',
-              date: _currentDate,
-              onDateChanged: (date) {
-                setState(() {
-                  _currentDate = date;
-                });
-              },
-            ),
-            SizedBox(height: 16),
-
-            Calendar(date: _currentDate),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _CalendarController extends StatelessWidget {
-  const _CalendarController({
-    required this.currentMonth,
-    required this.date,
-    required this.onDateChanged,
-  });
-
-  final String currentMonth;
-  final DateTime date;
-  final ValueChanged<DateTime> onDateChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        OutlinedButton(
-          style: OutlinedButton.styleFrom(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),//角の丸み
-            ),
-          ),
-          onPressed: () {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) => DialogPageView(),
-            );
-          },
-          child: Text(
-            '今日',
-            style: TextStyle(color: Colors.black),
-          ),
-        ),
-        Expanded(
-          child: Center(
-            child: Text(currentMonth),
-          ),
-        ),
-        DatePicker(
-          date: date,
-          onDateChanged: onDateChanged,
-        ),
-      ],
-    );
-  }
-}
-
-class DatePicker extends StatefulWidget {
-  final DateTime date;
-  final ValueChanged<DateTime> onDateChanged;
-
-  DatePicker({required this.date, required this.onDateChanged});
-
-  @override
-  _DatePickerState createState() => _DatePickerState();
-}
-
-class _DatePickerState extends State<DatePicker> {
-  DateTime _date = DateTime.now();
-
-  void onPressedElevatedButton() async {
-    final DateTime? picked = await showDatePicker(
-      locale: const Locale("ja"),
-      context: context,
-      initialDate: _date,
-      firstDate: new DateTime(2010, 1, 1),
-      lastDate: new DateTime(2030, 12, 31),
-    );
-
-    if (picked != null) {
-      setState(() => _date = picked);
-      widget.onDateChanged(picked);
-    }
-  }
-
-  Widget build(BuildContext context) {
-    return Container(
-        padding: const EdgeInsets.all(70.0),
-        child: Column(
-          children: <Widget>[
-            IconButton(onPressed: onPressedElevatedButton, icon: Icon(Icons.arrow_drop_down)),
-          ],
-        )
-    );
-  }
-}
-
+// final currentDateProvider = StateProvider<DateTime>((ref) => DateTime.now());
+// class DateRangeNotifier extends StateNotifier<List<DateTime>> {
+//   DateRangeNotifier() : super([
+//     DateTime.now().subtract(Duration(days: 1)),
+//     DateTime.now(),
+//     DateTime.now().add(Duration(days: 1)),
+//   ]);
+//
+//   void setDate(DateTime date) {
+//     state = [
+//       date.subtract(Duration(days: 1)),
+//       date,
+//       date.add(Duration(days: 1)),
+//     ];
+//   }
+// }
+// final dialogProvider = StateProvider<int>((ref) => 0);
+//
+// final planDatabaseProvider = Provider<PlanDatabaseNotifier>((ref) {
+//   return PlanDatabaseNotifier();
+// });
+//
+// final dateRangeProvider = StateNotifierProvider<DateRangeNotifier, List<DateTime>>((ref) => DateRangeNotifier());
+//
+// // 新たに状態管理用のStateNotifierを定義
+// class DatePickerNotifier extends StateNotifier<DateTime> {
+//   DatePickerNotifier() : super(DateTime.now());
+//
+//   void setDate(DateTime date) {
+//     state = date;
+//   }
+// }
+//
+// // DatePickerNotifier用のProviderを定義
+// final datePickerProvider = StateNotifierProvider<DatePickerNotifier, DateTime>((ref) => DatePickerNotifier());
