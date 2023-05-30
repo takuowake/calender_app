@@ -12,16 +12,18 @@ class PlanDatabaseNotifier extends StateNotifier<PlanStateData> {
   //ここからはデータベースに関する処理をこのクラスで行えるように記述します。
   PlanDatabaseNotifier() : super(PlanStateData());
   final _db = MyDatabase();
-  //書き込み処理部分
+  // 予定追加処理
   writeData(TempPlanItemData data) async {
-    if (data.title.isEmpty) {
-      return;
-    }
+    // titleが空なら処理を行わない
+    // if (data.title.isEmpty) {
+    //   return;
+    // }
+
     PlanItemCompanion entry = PlanItemCompanion(
       title: Value(data.title),
       comment: Value(data.comment),
       startDate: Value(data.start ?? DateTime.now()),
-      endDate: Value(data.end ?? DateTime.now()),
+      endDate: Value(data.end ?? DateTime.now().add(Duration(hours: 1))),
       isAllDay: Value(data.isAllDay),
     );
     state = state.copyWith(isLoading: true);
@@ -74,3 +76,15 @@ final planDatabaseProvider = StateNotifierProvider((_) {
   //初期化処理
   return notify;
 });
+
+final selectedDateProvider = Provider<DateTime>((ref) => DateTime.now());
+final selectDateProvider = StateProvider<DateTime>((ref) => DateTime.now());
+
+class SwitchProvider extends StateNotifier<bool> {
+  SwitchProvider() : super(false); // 初期状態をfalseに設定
+
+  void updateSwitch(bool value) {
+    state = value;
+  }
+}
+
