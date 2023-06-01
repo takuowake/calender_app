@@ -31,8 +31,6 @@ class AddPlanScreen extends HookConsumerWidget {
   DateTime startDateTime = roundToNearestFifteen(DateTime.now());
   DateTime endDateTime = roundToNearestFifteen(DateTime.now());
   DateTime selectDate = roundToNearestFifteen(DateTime.now());
-  String _title = '';
-  String _comment = '';
 
   final switchProvider = StateNotifierProvider<SwitchProvider, bool>((ref) {
     return SwitchProvider();
