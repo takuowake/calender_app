@@ -39,7 +39,7 @@ class MyDatabase extends _$MyDatabase {
   MyDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   //全てのデータ取得
   Future<List<PlanItemData>> readAllPlanData() => select(planItem).get();

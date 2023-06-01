@@ -77,8 +77,8 @@ final planDatabaseProvider = StateNotifierProvider((_) {
   return notify;
 });
 
-final selectedDateProvider = Provider<DateTime>((ref) => DateTime.now());
 final selectDateProvider = StateProvider<DateTime>((ref) => DateTime.now());
+final tempStateProvider = StateProvider<TempPlanItemData>((ref) => TempPlanItemData());
 
 class SwitchProvider extends StateNotifier<bool> {
   SwitchProvider() : super(false); // 初期状態をfalseに設定
