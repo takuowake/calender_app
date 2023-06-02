@@ -20,8 +20,8 @@ class PlanItem extends Table {
   BoolColumn get isAllDay => boolean().withDefault(const Constant(false))();
 
   // 開始時間と終了時間
-  DateTimeColumn get startDate => dateTime()();
-  DateTimeColumn get endDate => dateTime()();
+  DateTimeColumn get startDate => dateTime().nullable()();
+  DateTimeColumn get endDate => dateTime().nullable()();
 }
 
 // データベース接続
@@ -39,7 +39,7 @@ class MyDatabase extends _$MyDatabase {
   MyDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 1;
 
   //全てのデータ取得
   Future<List<PlanItemData>> readAllPlanData() => select(planItem).get();
@@ -51,6 +51,5 @@ class MyDatabase extends _$MyDatabase {
   Future updatePlan(PlanItemData data) => update(planItem).replace(data);
 
   //削除
-  Future deletePlan(int id) =>
-      (delete(planItem)..where((it) => it.id.equals(id))).go();
+  Future deletePlan(int id) => (delete(planItem)..where((it) => it.id.equals(id))).go();
 }

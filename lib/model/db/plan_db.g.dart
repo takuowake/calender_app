@@ -53,14 +53,14 @@ class $PlanItemTable extends PlanItem
       const VerificationMeta('startDate');
   @override
   late final GeneratedColumn<DateTime> startDate = GeneratedColumn<DateTime>(
-      'start_date', aliasedName, false,
-      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+      'start_date', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
   static const VerificationMeta _endDateMeta =
       const VerificationMeta('endDate');
   @override
   late final GeneratedColumn<DateTime> endDate = GeneratedColumn<DateTime>(
-      'end_date', aliasedName, false,
-      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+      'end_date', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
   @override
   List<GeneratedColumn> get $columns =>
       [id, title, comment, isAllDay, startDate, endDate];
@@ -91,14 +91,10 @@ class $PlanItemTable extends PlanItem
     if (data.containsKey('start_date')) {
       context.handle(_startDateMeta,
           startDate.isAcceptableOrUnknown(data['start_date']!, _startDateMeta));
-    } else if (isInserting) {
-      context.missing(_startDateMeta);
     }
     if (data.containsKey('end_date')) {
       context.handle(_endDateMeta,
           endDate.isAcceptableOrUnknown(data['end_date']!, _endDateMeta));
-    } else if (isInserting) {
-      context.missing(_endDateMeta);
     }
     return context;
   }
@@ -118,9 +114,9 @@ class $PlanItemTable extends PlanItem
       isAllDay: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}is_all_day'])!,
       startDate: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}start_date'])!,
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}start_date']),
       endDate: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}end_date'])!,
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}end_date']),
     );
   }
 
@@ -135,15 +131,15 @@ class PlanItemData extends DataClass implements Insertable<PlanItemData> {
   final String title;
   final String? comment;
   final bool isAllDay;
-  final DateTime startDate;
-  final DateTime endDate;
+  final DateTime? startDate;
+  final DateTime? endDate;
   const PlanItemData(
       {required this.id,
       required this.title,
       this.comment,
       required this.isAllDay,
-      required this.startDate,
-      required this.endDate});
+      this.startDate,
+      this.endDate});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -153,8 +149,12 @@ class PlanItemData extends DataClass implements Insertable<PlanItemData> {
       map['comment'] = Variable<String>(comment);
     }
     map['is_all_day'] = Variable<bool>(isAllDay);
-    map['start_date'] = Variable<DateTime>(startDate);
-    map['end_date'] = Variable<DateTime>(endDate);
+    if (!nullToAbsent || startDate != null) {
+      map['start_date'] = Variable<DateTime>(startDate);
+    }
+    if (!nullToAbsent || endDate != null) {
+      map['end_date'] = Variable<DateTime>(endDate);
+    }
     return map;
   }
 
@@ -166,8 +166,12 @@ class PlanItemData extends DataClass implements Insertable<PlanItemData> {
           ? const Value.absent()
           : Value(comment),
       isAllDay: Value(isAllDay),
-      startDate: Value(startDate),
-      endDate: Value(endDate),
+      startDate: startDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(startDate),
+      endDate: endDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(endDate),
     );
   }
 
@@ -179,8 +183,8 @@ class PlanItemData extends DataClass implements Insertable<PlanItemData> {
       title: serializer.fromJson<String>(json['title']),
       comment: serializer.fromJson<String?>(json['comment']),
       isAllDay: serializer.fromJson<bool>(json['isAllDay']),
-      startDate: serializer.fromJson<DateTime>(json['startDate']),
-      endDate: serializer.fromJson<DateTime>(json['endDate']),
+      startDate: serializer.fromJson<DateTime?>(json['startDate']),
+      endDate: serializer.fromJson<DateTime?>(json['endDate']),
     );
   }
   @override
@@ -191,8 +195,8 @@ class PlanItemData extends DataClass implements Insertable<PlanItemData> {
       'title': serializer.toJson<String>(title),
       'comment': serializer.toJson<String?>(comment),
       'isAllDay': serializer.toJson<bool>(isAllDay),
-      'startDate': serializer.toJson<DateTime>(startDate),
-      'endDate': serializer.toJson<DateTime>(endDate),
+      'startDate': serializer.toJson<DateTime?>(startDate),
+      'endDate': serializer.toJson<DateTime?>(endDate),
     };
   }
 
@@ -201,15 +205,15 @@ class PlanItemData extends DataClass implements Insertable<PlanItemData> {
           String? title,
           Value<String?> comment = const Value.absent(),
           bool? isAllDay,
-          DateTime? startDate,
-          DateTime? endDate}) =>
+          Value<DateTime?> startDate = const Value.absent(),
+          Value<DateTime?> endDate = const Value.absent()}) =>
       PlanItemData(
         id: id ?? this.id,
         title: title ?? this.title,
         comment: comment.present ? comment.value : this.comment,
         isAllDay: isAllDay ?? this.isAllDay,
-        startDate: startDate ?? this.startDate,
-        endDate: endDate ?? this.endDate,
+        startDate: startDate.present ? startDate.value : this.startDate,
+        endDate: endDate.present ? endDate.value : this.endDate,
       );
   @override
   String toString() {
@@ -244,8 +248,8 @@ class PlanItemCompanion extends UpdateCompanion<PlanItemData> {
   final Value<String> title;
   final Value<String?> comment;
   final Value<bool> isAllDay;
-  final Value<DateTime> startDate;
-  final Value<DateTime> endDate;
+  final Value<DateTime?> startDate;
+  final Value<DateTime?> endDate;
   const PlanItemCompanion({
     this.id = const Value.absent(),
     this.title = const Value.absent(),
@@ -259,10 +263,9 @@ class PlanItemCompanion extends UpdateCompanion<PlanItemData> {
     this.title = const Value.absent(),
     this.comment = const Value.absent(),
     this.isAllDay = const Value.absent(),
-    required DateTime startDate,
-    required DateTime endDate,
-  })  : startDate = Value(startDate),
-        endDate = Value(endDate);
+    this.startDate = const Value.absent(),
+    this.endDate = const Value.absent(),
+  });
   static Insertable<PlanItemData> custom({
     Expression<int>? id,
     Expression<String>? title,
@@ -286,8 +289,8 @@ class PlanItemCompanion extends UpdateCompanion<PlanItemData> {
       Value<String>? title,
       Value<String?>? comment,
       Value<bool>? isAllDay,
-      Value<DateTime>? startDate,
-      Value<DateTime>? endDate}) {
+      Value<DateTime?>? startDate,
+      Value<DateTime?>? endDate}) {
     return PlanItemCompanion(
       id: id ?? this.id,
       title: title ?? this.title,
