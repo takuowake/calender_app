@@ -187,8 +187,8 @@ mixin _$TempPlanItemData {
   String get title => throw _privateConstructorUsedError;
   String get comment => throw _privateConstructorUsedError;
   bool get isAllDay => throw _privateConstructorUsedError;
-  DateTime? get start => throw _privateConstructorUsedError;
-  DateTime? get end => throw _privateConstructorUsedError;
+  DateTime? get startDate => throw _privateConstructorUsedError;
+  DateTime? get endDate => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $TempPlanItemDataCopyWith<TempPlanItemData> get copyWith =>
@@ -205,8 +205,8 @@ abstract class $TempPlanItemDataCopyWith<$Res> {
       {String title,
       String comment,
       bool isAllDay,
-      DateTime? start,
-      DateTime? end});
+      DateTime? startDate,
+      DateTime? endDate});
 }
 
 /// @nodoc
@@ -225,8 +225,8 @@ class _$TempPlanItemDataCopyWithImpl<$Res, $Val extends TempPlanItemData>
     Object? title = null,
     Object? comment = null,
     Object? isAllDay = null,
-    Object? start = freezed,
-    Object? end = freezed,
+    Object? startDate = freezed,
+    Object? endDate = freezed,
   }) {
     return _then(_value.copyWith(
       title: null == title
@@ -241,13 +241,13 @@ class _$TempPlanItemDataCopyWithImpl<$Res, $Val extends TempPlanItemData>
           ? _value.isAllDay
           : isAllDay // ignore: cast_nullable_to_non_nullable
               as bool,
-      start: freezed == start
-          ? _value.start
-          : start // ignore: cast_nullable_to_non_nullable
+      startDate: freezed == startDate
+          ? _value.startDate
+          : startDate // ignore: cast_nullable_to_non_nullable
               as DateTime?,
-      end: freezed == end
-          ? _value.end
-          : end // ignore: cast_nullable_to_non_nullable
+      endDate: freezed == endDate
+          ? _value.endDate
+          : endDate // ignore: cast_nullable_to_non_nullable
               as DateTime?,
     ) as $Val);
   }
@@ -265,8 +265,8 @@ abstract class _$$_TempPlanItemDataCopyWith<$Res>
       {String title,
       String comment,
       bool isAllDay,
-      DateTime? start,
-      DateTime? end});
+      DateTime? startDate,
+      DateTime? endDate});
 }
 
 /// @nodoc
@@ -283,8 +283,8 @@ class __$$_TempPlanItemDataCopyWithImpl<$Res>
     Object? title = null,
     Object? comment = null,
     Object? isAllDay = null,
-    Object? start = freezed,
-    Object? end = freezed,
+    Object? startDate = freezed,
+    Object? endDate = freezed,
   }) {
     return _then(_$_TempPlanItemData(
       title: null == title
@@ -299,13 +299,13 @@ class __$$_TempPlanItemDataCopyWithImpl<$Res>
           ? _value.isAllDay
           : isAllDay // ignore: cast_nullable_to_non_nullable
               as bool,
-      start: freezed == start
-          ? _value.start
-          : start // ignore: cast_nullable_to_non_nullable
+      startDate: freezed == startDate
+          ? _value.startDate
+          : startDate // ignore: cast_nullable_to_non_nullable
               as DateTime?,
-      end: freezed == end
-          ? _value.end
-          : end // ignore: cast_nullable_to_non_nullable
+      endDate: freezed == endDate
+          ? _value.endDate
+          : endDate // ignore: cast_nullable_to_non_nullable
               as DateTime?,
     ));
   }
@@ -318,8 +318,8 @@ class _$_TempPlanItemData implements _TempPlanItemData {
       {this.title = '',
       this.comment = '',
       this.isAllDay = false,
-      this.start = null,
-      this.end = null});
+      this.startDate = null,
+      this.endDate = null});
 
   @override
   @JsonKey()
@@ -332,14 +332,14 @@ class _$_TempPlanItemData implements _TempPlanItemData {
   final bool isAllDay;
   @override
   @JsonKey()
-  final DateTime? start;
+  final DateTime? startDate;
   @override
   @JsonKey()
-  final DateTime? end;
+  final DateTime? endDate;
 
   @override
   String toString() {
-    return 'TempPlanItemData(title: $title, comment: $comment, isAllDay: $isAllDay, start: $start, end: $end)';
+    return 'TempPlanItemData(title: $title, comment: $comment, isAllDay: $isAllDay, startDate: $startDate, endDate: $endDate)';
   }
 
   @override
@@ -351,13 +351,14 @@ class _$_TempPlanItemData implements _TempPlanItemData {
             (identical(other.comment, comment) || other.comment == comment) &&
             (identical(other.isAllDay, isAllDay) ||
                 other.isAllDay == isAllDay) &&
-            (identical(other.start, start) || other.start == start) &&
-            (identical(other.end, end) || other.end == end));
+            (identical(other.startDate, startDate) ||
+                other.startDate == startDate) &&
+            (identical(other.endDate, endDate) || other.endDate == endDate));
   }
 
   @override
   int get hashCode =>
-      Object.hash(runtimeType, title, comment, isAllDay, start, end);
+      Object.hash(runtimeType, title, comment, isAllDay, startDate, endDate);
 
   @JsonKey(ignore: true)
   @override
@@ -371,8 +372,8 @@ abstract class _TempPlanItemData implements TempPlanItemData {
       {final String title,
       final String comment,
       final bool isAllDay,
-      final DateTime? start,
-      final DateTime? end}) = _$_TempPlanItemData;
+      final DateTime? startDate,
+      final DateTime? endDate}) = _$_TempPlanItemData;
 
   @override
   String get title;
@@ -381,9 +382,9 @@ abstract class _TempPlanItemData implements TempPlanItemData {
   @override
   bool get isAllDay;
   @override
-  DateTime? get start;
+  DateTime? get startDate;
   @override
-  DateTime? get end;
+  DateTime? get endDate;
   @override
   @JsonKey(ignore: true)
   _$$_TempPlanItemDataCopyWith<_$_TempPlanItemData> get copyWith =>

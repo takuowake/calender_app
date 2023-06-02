@@ -22,7 +22,7 @@ abstract class TempPlanItemData with _$TempPlanItemData {
     @Default('') String title,
     @Default('') String comment,
     @Default(false) bool isAllDay,
-    @Default(null) DateTime? start,
-    @Default(null) DateTime? end,
+    @Default(null) DateTime? startDate,
+    @Default(null) DateTime? endDate,
   }) = _TempPlanItemData;
 }
