@@ -22,13 +22,12 @@ class PlanDatabaseNotifier extends StateNotifier<PlanStateData> {
     PlanItemCompanion entry = PlanItemCompanion(
       title: Value(data.title),
       comment: Value(data.comment),
-      startDate: Value(data.start ?? DateTime.now()),
-      endDate: Value(data.end ?? DateTime.now().add(Duration(hours: 1))),
+      startDate: Value(data.startDate),
+      endDate: Value(data.endDate),
       isAllDay: Value(data.isAllDay),
     );
     state = state.copyWith(isLoading: true);
     await _db.writePlan(entry);
-    //書き込むたびにデータベースを読み込む
     readData();
   }
 
@@ -62,29 +61,43 @@ class PlanDatabaseNotifier extends StateNotifier<PlanStateData> {
       isReadyData: true,
       planItems: planItems,
     );
-    //stateを更新します
-    //freezedを使っているので、copyWithを使うことができます
-    //これは、stateの中身をすべて更新する必要がありません。例えば
-    //state.copyWith(isLoading: true)のように一つの値だけを更新することもできます。
-    //複数の値を監視したい際、これはとても便利です。
   }
 }
 
-final planDatabaseProvider = StateNotifierProvider((_) {
+final planDatabaseNotifierProvider = StateNotifierProvider((_) {
   PlanDatabaseNotifier notify = PlanDatabaseNotifier();
   notify.readData();
   //初期化処理
   return notify;
 });
 
-final selectDateProvider = StateProvider<DateTime>((ref) => DateTime.now());
-final tempStateProvider = StateProvider<TempPlanItemData>((ref) => TempPlanItemData());
+// final selectDateProvider = StateProvider<DateTime>((ref) => DateTime.now());
+// final titleControllerProvider = StateProvider<StateController<String>>((ref) => StateController(""));
+final titleStateProvider = StateProvider<String>((ref) => "");
+final selectedDateProvider = StateProvider<DateTime?>((ref) => null);
+
 
 class SwitchProvider extends StateNotifier<bool> {
-  SwitchProvider() : super(false); // 初期状態をfalseに設定
+  SwitchProvider() : super(false);
 
   void updateSwitch(bool value) {
     state = value;
+  }
+}
+final tempPlanItemProvider = StateProvider<TempPlanItemData>((ref) => TempPlanItemData());
+final tempProvider = StateNotifierProvider<TempPlanItemDataNotifier, TempPlanItemData>((ref) {
+  return TempPlanItemDataNotifier(TempPlanItemData());
+});
+
+class TempPlanItemDataNotifier extends StateNotifier<TempPlanItemData> {
+  TempPlanItemDataNotifier(TempPlanItemData state) : super(state);
+
+  void setTitle(String title) {
+    state = state.copyWith(title: title);
+  }
+
+  void setComment(String comment) {
+    state = state.copyWith(comment: comment);
   }
 }
 

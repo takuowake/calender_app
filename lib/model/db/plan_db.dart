@@ -18,7 +18,6 @@ class PlanItem extends Table {
 
   // 終日かどうか
   BoolColumn get isAllDay => boolean().withDefault(const Constant(false))();
-
   // 開始時間と終了時間
   DateTimeColumn get startDate => dateTime().nullable()();
   DateTimeColumn get endDate => dateTime().nullable()();

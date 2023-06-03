@@ -40,7 +40,7 @@ class AddPlanScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // final temp = useState<TempPlanItemData>(TempPlanItemData());
-    final temp = ref.watch(tempPlanItemProvider);
+    // final temp = ref.watch(tempPlanItemProvider);
     //Providerの状態が変化したさいに再ビルドします
     final planProvider = ref.watch(planDatabaseNotifierProvider.notifier);
     //Providerのメソッドや値を取得します
@@ -49,6 +49,8 @@ class AddPlanScreen extends HookConsumerWidget {
 
     final start = useState<DateTime?>(null);
     final end = useState<DateTime?>(null);
+    final title = useState('');
+    final comment = useState('');
 
 
     return Scaffold(
@@ -109,12 +111,12 @@ class AddPlanScreen extends HookConsumerWidget {
 
               },
               onChanged: (value) {
-                ref.read(tempProvider.notifier).setTitle(value);
-                temp.state = temp.copyWith(title: value);
+                title.value = value;
+                temp = temp.copyWith(title: value);
               },
               onSubmitted: (value) {
-                ref.read(tempProvider.notifier).setTitle(value);
-                temp.state = temp.copyWith(title: value);
+                title.value = value;
+                temp = temp.copyWith(title: value);
               },
             ),
           ),
@@ -208,7 +210,7 @@ class AddPlanScreen extends HookConsumerWidget {
                                               dateTime.minute,
                                             );
                                             // temp変数のlimitプロパティが選択された日付と時間に更新される
-                                            temp.state = temp.copyWith(startDate: start.value);
+                                            temp = temp.copyWith(startDate: start.value);
                                             startDateTime = start.value!;
                                             endDateTime = start.value!.add(Duration(hours: 1));
                                           },
@@ -289,7 +291,7 @@ class AddPlanScreen extends HookConsumerWidget {
                                               dateTime.minute,
                                             );
                                             // temp変数のlimitプロパティが選択された日付と時間に更新される
-                                            temp.state = temp.copyWith(endDate: end.value);
+                                            temp = temp.copyWith(endDate: end.value);
                                             endDateTime = end.value!;
                                           },
                                         ),
@@ -344,10 +346,12 @@ class AddPlanScreen extends HookConsumerWidget {
                   ),
                 ),
                 onChanged: (value) {
-                  temp.state = temp.copyWith(comment: value);
+                  comment.value = value;
+                  temp = temp.copyWith(comment: value);
                 },
                 onSubmitted: (value) {
-                  temp.state = temp.copyWith(comment: value);
+                  comment.value = value;
+                  temp = temp.copyWith(comment: value);
                 },
               ),
             ),
