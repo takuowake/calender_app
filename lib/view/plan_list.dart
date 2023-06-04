@@ -8,8 +8,6 @@ import '../model/db/plan_db.dart';
 import '../model/freezed/plan_model.dart';
 
 
-final planListProvider = StateProvider<int>((ref) => 0);
-
 // 新たに状態管理用のStateNotifierを定義
 class DatePickerNotifier extends StateNotifier<DateTime> {
   DatePickerNotifier() : super(DateTime.now());
@@ -28,17 +26,19 @@ final planDatabaseProvider = Provider<PlanDatabaseNotifier>((ref) {
 
 class PlanList extends ConsumerWidget {
 
-  final TextStyle defaultTextStyle = TextStyle(
+  final TextStyle defaultTextStyle = const TextStyle(
     fontSize: 15,
     fontWeight: FontWeight.normal,
     color: Colors.black,
   );
 
-  PlanList({super.key});
+  const PlanList({super.key});
 
   List<Widget> _buildPlanList(
       // _buildPlanListの引数は、planItemListとdb
-      List<PlanItemData> planItemList, PlanDatabaseNotifier db) {
+      List<PlanItemData> planItemList, PlanDatabaseNotifier db
+      )
+  {
     //追加
     List<Widget> list = [];
     // planItemListの各要素について、for...inループを使用して処理を行う
@@ -93,14 +93,9 @@ class PlanList extends ConsumerWidget {
   }
 
   Widget buildCustomDialog(BuildContext context, DateTime date, WidgetRef ref) {
-    // planDatabaseProviderの状態を監視し、stateに取得
-    final state = ref.watch(planDatabaseProvider);
 
-    // final planItems = state.planItems;
-    //Providerの状態が変化したさいに再ビルドします
     final planProvider = ref.watch(planDatabaseProvider);
-    //Providerのメソッドや値を取得します
-    //bottomsheetが閉じた際に再ビルドするために使用します。
+
     List<PlanItemData> planItems = planProvider.state.planItems;
     List<Widget> tiles = _buildPlanList(planItems, planProvider);
 
@@ -151,7 +146,7 @@ class PlanList extends ConsumerWidget {
                 ),
                 Divider(),
                 // tilesのデータを表示
-                ...tiles,
+                ListView(children: tiles),
 
                 // 予定一覧
                 // Row(
@@ -160,8 +155,9 @@ class PlanList extends ConsumerWidget {
                 //       width: 40,
                 //       child: Column(
                 //         children: [
-                //           Text(matchedPlanItems.start.toString()),
-                //           Text(matchedPlanItems.end.toString()),
+                //           // Text(matchedPlanItems.start.toString()),
+                //           // Text(matchedPlanItems.end.toString()),
+                //           Text('10'),
                 //         ],
                 //       ),
                 //     ),
@@ -176,10 +172,11 @@ class PlanList extends ConsumerWidget {
                 //         context,
                 //         MaterialPageRoute(builder: (context) => EditPlanScreen()),
                 //       );
-                //     }, child: Text(matchedPlanItems.title.length > 14 ? matchedPlanItems.title.substring(0, 11) + '...' : 'title', style: defaultTextStyle)),
+                //     }, child: Text('title')),
+                //     // }, child: Text(matchedPlanItems.title.length > 14 ? matchedPlanItems.title.substring(0, 11) + '...' : 'title', style: defaultTextStyle)),
                 //   ],
                 // ),
-                Divider(),
+                // Divider(),
                 // Row(
                 //   children: [
                 //     Container(
@@ -208,10 +205,6 @@ class PlanList extends ConsumerWidget {
       ),
     );
   }
-  // Widget _buildCustomDialogForDate(BuildContext context, DateTime date, WidgetRef ref, DateTime selectedDate, TempPlanItemData matchedPlanItems) {
-  //   // String dialogDate = '${date.year}年 ${date.month}月 ${date.day}日';
-  //   return buildCustomDialog(context, matchedPlanItems, ref);
-  // }
 
   void ShowDialog(BuildContext context, WidgetRef ref, DateTime selectedDate) {
     // final planItems = ref.watch(planDatabaseProvider).state.planItems;

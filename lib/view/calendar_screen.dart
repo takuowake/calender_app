@@ -39,18 +39,6 @@ class CalendarScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    //Providerの状態が変化した際に再ビルドします
-    // final planState = ref.watch(planDatabaseProvider);
-    //Providerのメソッドや値を取得します
-    //dialogが閉じた際に再ビルドするために使用します。
-    // final planProvider = ref.watch(planDatabaseProvider);
-    //Providerが保持しているplanItemsを取得します。
-    // List<PlanItemData> planItems = planProvider.state.planItems;
-    //追加
-    TempPlanItemData temp = TempPlanItemData();
-
-    // 現在の日付をStateProviderから取得します
-    final currentDate = ref.watch(currentDateProvider.notifier).state;
 
     final selectedDate = ref.watch(datePickerProvider);
 
@@ -66,7 +54,7 @@ class CalendarScreen extends ConsumerWidget {
             Calendar(
               date: selectedDate,
               onDateSelected: (DateTime date) {
-                PlanList().ShowDialog(context, ref, date);
+                const PlanList().ShowDialog(context, ref, date);
               },
             ),
           ],
