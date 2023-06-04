@@ -57,6 +57,8 @@ class AddPlanScreen extends HookConsumerWidget {
               child: const Text('編集を破棄', style: TextStyle(color: Colors.blue)),
               onPressed: () {
                 Navigator.of(context).pop();
+                // CupertinoActionSheetをポップします。
+                Navigator.of(context).pop();
               },
               isDestructiveAction: true,
             ),
