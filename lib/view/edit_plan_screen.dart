@@ -1,215 +1,451 @@
+import 'package:calender_app/view/plan_list.dart';
+import 'package:calender_app/view/view_model/plan_provider.dart';
+import 'package:drift/drift.dart' as Drift;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:intl/intl.dart';
 
-class EditPlanScreen extends StatefulWidget {
-  const EditPlanScreen({Key? key}) : super(key: key);
+import '../model/freezed/plan_model.dart';
 
-  @override
-  _EditPlanScreenState createState() =>
-      _EditPlanScreenState();
+DateTime roundToNearestFifteen(DateTime dateTime) {
+  final int minute = dateTime.minute;
+  final int remainder = minute % 15;
+  if (remainder >= 8) {
+    return dateTime.add(Duration(minutes: 15 - remainder));
+  } else {
+    return dateTime.subtract(Duration(minutes: remainder));
+  }
 }
 
-class _EditPlanScreenState extends State<EditPlanScreen> {
-  bool _active = false;
 
-  void _changeSwitch(bool e) => setState(() => _active = e);
+class EditPlanScreen extends HookConsumerWidget {
 
-  void _showEditCanselConfirmation() {
-    showCupertinoModalPopup(
-      context: context,
-      builder: (BuildContext context) => CupertinoActionSheet(
-        actions: <Widget>[
-          CupertinoActionSheetAction(
-            child: const Text('編集を破棄', style: TextStyle(color: Colors.blue)),
-            onPressed: () {
-              Navigator.pop(context, 'Delete');
-              // ここに破棄のロジックを書く
-            },
-            isDestructiveAction: true,
-          ),
-        ],
-        cancelButton: CupertinoActionSheetAction(
-          child: const Text('キャンセル'),
-          onPressed: () {
-            Navigator.pop(context, 'Cancel');
-          },
-        ),
-      ),
-    );
-  }
+  //Providerが保持しているplanItemsを取得します。
+  TempPlanItemData temp = TempPlanItemData();
 
-  Future<void> _showDeleteConfirmation() async {
-    return showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return CupertinoAlertDialog(
-          title: Text('予定の削除'),
-          content: Text('本当にこの日の予定を削除しますか？'),
-          actions: <Widget>[
-            CupertinoDialogAction(
-              child: Text('キャンセル'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            CupertinoDialogAction(
-              child: Text('削除', style: TextStyle(color: Colors.blue)),
-              isDestructiveAction: true,
-              onPressed: () {
-                Navigator.of(context).pop();
-                // ここで予定を削除する処理を追加する
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
+
+  DateTime startDateTime = roundToNearestFifteen(DateTime.now());
+  DateTime endDateTime = roundToNearestFifteen(DateTime.now()).add(const Duration(hours: 1));
+  DateTime? selectedDate;
+
+  final switchProvider = StateNotifierProvider<SwitchProvider, bool>((ref) {
+    return SwitchProvider();
+  });
+  final titleFocusNode = FocusNode();
+
+  EditPlanScreen({super.key});
+
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('予定の編集'),
-        leading: IconButton(
-          icon: Icon(Icons.clear),
-          onPressed: _showEditCanselConfirmation,
+  Widget build(BuildContext context, WidgetRef ref) {
+    // final temp = useState<TempPlanItemData>(TempPlanItemData());
+    // final temp = ref.watch(tempPlanItemProvider);
+    //Providerの状態が変化したさいに再ビルドします
+    final planProvider = ref.watch(planDatabaseNotifierProvider.notifier);
+    //Providerのメソッドや値を取得します
+    //bottomsheetが閉じた際に再ビルドするために使用します。
+    // List<PlanItemData> planItems = planProvider.state.planItems;
+
+    void showEditCanselConfirmation() {
+      showCupertinoModalPopup(
+        context: context,
+        builder: (BuildContext context) => CupertinoActionSheet(
+          actions: <Widget>[
+            CupertinoActionSheetAction(
+              onPressed: () {
+                // 現在の画面（EditPlanScreen）をポップします。
+                Navigator.of(context).pop();
+                // CupertinoActionSheetをポップします。
+                Navigator.of(context).pop();
+              },
+              isDestructiveAction: true,
+              child: const Text('編集を破棄', style: TextStyle(color: Colors.blue)),
+            ),
+          ],
+          cancelButton: CupertinoActionSheetAction(
+            child: const Text('キャンセル'),
+            onPressed: () {
+              Navigator.pop(context, 'Cancel');
+            },
+          ),
         ),
-        actions: [
-          Padding(
-            padding: EdgeInsets.only(right: 10.0, bottom: 5),
-            child: ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.white70),
-                foregroundColor: MaterialStateProperty.all<Color>(Colors.grey),
+      );
+    }
+    Future<void> showDeleteConfirmation() async {
+      return showDialog<void>(
+        context: context,
+        builder: (BuildContext context) {
+          return CupertinoAlertDialog(
+            title: const Text('予定の削除'),
+            content: const Text('本当にこの日の予定を削除しますか？'),
+            actions: <Widget>[
+              CupertinoDialogAction(
+                child: const Text('キャンセル'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
               ),
-              onPressed: () {},
-              child: Text('保存'),
-            ),
+              CupertinoDialogAction(
+                isDestructiveAction: true,
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  // ここで予定を削除する処理を追加する
+                },
+                child: const Text('削除', style: TextStyle(color: Colors.blue)),
+              ),
+            ],
+          );
+        },
+      );
+    }
+
+    final start = useState<DateTime?>(null);
+    final end = useState<DateTime?>(null);
+    final title = useState('');
+    final comment = useState('');
+
+
+    return GestureDetector(
+      onTap: () {
+        // キーボードが表示されている場合、非表示にする
+        FocusScopeNode currentFocus = FocusScope.of(context);
+        if (!currentFocus.hasPrimaryFocus) {
+          currentFocus.unfocus();
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('予定の編集'),
+          leading: IconButton(
+            icon: const Icon(Icons.clear),
+            onPressed: () {
+              if (temp.title.isNotEmpty || temp.comment.isNotEmpty) {
+                showEditCanselConfirmation();
+              } else {
+                Navigator.of(context).pop();
+              }
+            },
           ),
-        ],
-      ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: TextFormField(
-              style: TextStyle(color: Colors.grey),
-              decoration: InputDecoration(
-                hintText: 'タイトルを入力してください',
-                contentPadding: const EdgeInsets.only(left: 10),
-                fillColor: Colors.white,
-                filled: true,
-                focusedBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(
-                    color: Colors.blue,
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(right: 10.0, bottom: 5),
+              child: ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
+                    if (temp.title.isNotEmpty && temp.comment.isNotEmpty) {
+                      return Colors.white; // 保存ボタンの背景色を変更
+                    } else {
+                      return Colors.white70;
+                    }
+                  }),
+                  // foregroundColor: MaterialStateProperty.all<Color>(Colors.grey),
+                  foregroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
+                    if (temp.title.isNotEmpty && temp.comment.isNotEmpty) {
+                      return Colors.black;
+                    } else {
+                      return Colors.white70;
+                    }
+                  }),
+                ),
+                onPressed: (temp.title.isNotEmpty && temp.comment.isNotEmpty) ? () {
+                  planProvider.writeData(temp);
+                  Navigator.pop(context);
+                } : null,
+                child: const Text('保存'),
+              ),
+            ),
+          ],
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: TextField(
+                  style: const TextStyle(color: Colors.grey),
+                  autofocus: true,
+                  focusNode: titleFocusNode,
+                  decoration: const InputDecoration(
+                    hintText: 'タイトルを入力してください',
+                    contentPadding: EdgeInsets.only(left: 10),
+                    fillColor: Colors.white,
+                    border: InputBorder.none,
+                    filled: true,
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.blue,
+                      ),
+                    ),
+                  ),
+                  onChanged: (value) {
+                    title.value = value;
+                    temp = temp.copyWith(title: value);
+                  },
+                  onSubmitted: (value) {
+                    title.value = value;
+                    temp = temp.copyWith(title: value);
+                  },
+                ),
+              ),
+              const SizedBox(height: 30),
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Container(
+                  color: Colors.white,
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: 50,
+                        child: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text('終日'),
+                              Switch(
+                                value: ref.watch(switchProvider),
+                                activeColor: Colors.blue,
+                                activeTrackColor: Colors.blueAccent,
+                                inactiveThumbColor: Colors.white,
+                                inactiveTrackColor: Colors.grey,
+                                onChanged: (value) {
+                                  ref.read(switchProvider.notifier).updateSwitch(value);
+                                  temp = temp.copyWith(isAllDay: value);
+                                },
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                      const Divider(),
+                      SizedBox(
+                        height: 50,
+                        child: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text('開始'),
+                              // タップを検出するためのウィジェット
+                              GestureDetector(
+                                // タップが検出されると指定されたコールバック関数が実行
+                                onTap: () async {
+                                  // モーダルダイアログを表示。戻り値は選択された日付と時刻を表すselectedDate
+                                  final DateTime? selectedDate = await showCupertinoModalPopup(
+                                    context: context,
+                                    // Containerとその中に配置されたColumnでダイアログのコンテンツを構築
+                                    builder: (_) => Container(
+                                      height: MediaQuery.of(context).size.height / 3 + 16,
+                                      color: CupertinoColors.white,
+                                      child: Column(
+                                        children: [
+                                          SizedBox(
+                                            height: 60,
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                CupertinoButton(
+                                                  // ダイアログが閉じられる
+                                                  child: const Text('キャンセル'),
+                                                  onPressed: () => Navigator.of(context).pop(),
+                                                ),
+                                                CupertinoButton(
+                                                  // selectDateがダイアログpopされる
+                                                  child: const Text('完了'),
+                                                  onPressed: () => {
+                                                    planProvider.writeData(temp),
+                                                    Navigator.of(context).pop(),
+                                                  },
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 220,
+                                            child: CupertinoDatePicker(
+                                              // 初期値を設定
+                                              initialDateTime: startDateTime,
+                                              // DatePickerのモードを指定（場合分け）
+                                              mode: ref.watch(switchProvider) ? CupertinoDatePickerMode.date : CupertinoDatePickerMode.dateAndTime,
+                                              minuteInterval: 15,
+                                              onDateTimeChanged: (dateTime) {
+                                                start.value = DateTime(
+                                                  dateTime.year,
+                                                  dateTime.month,
+                                                  dateTime.day,
+                                                  dateTime.hour,
+                                                  dateTime.minute,
+                                                );
+                                                // temp変数のlimitプロパティが選択された日付と時間に更新される
+                                                temp = temp.copyWith(startDate: start.value);
+                                                startDateTime = start.value!;
+                                                endDateTime = start.value!.add(const Duration(hours: 1));
+                                              },
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: Consumer(
+                                  builder: (context, watch, _) {
+                                    final switchState = ref.watch(switchProvider);
+                                    final format = switchState ? 'yyyy-MM-dd' : 'yyyy-MM-dd HH:mm';
+                                    return Text(
+                                      // DateFormat(format).format(selectedDate!),
+                                      DateFormat(format).format(startDateTime),
+                                      style: const TextStyle(color: Colors.blue),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const Divider(),
+                      SizedBox(
+                        height: 50,
+                        child: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text('終了'),
+                              GestureDetector(
+                                onTap: () async {
+                                  final DateTime? selectedDate = await showCupertinoModalPopup(
+                                    context: context,
+                                    builder: (_) => Container(
+                                      height: MediaQuery.of(context).size.height / 3 + 16,
+                                      color: CupertinoColors.white,
+                                      child: Column(
+                                        children: [
+                                          SizedBox(
+                                            height: 60,
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                CupertinoButton(
+                                                  child: const Text('キャンセル'),
+                                                  onPressed: () => Navigator.of(context).pop(),
+                                                ),
+                                                CupertinoButton(
+                                                  child: const Text('完了'),
+                                                  onPressed: () => {
+                                                    planProvider.writeData(temp),
+                                                    Navigator.of(context).pop(),
+                                                  },
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 220, // CupertinoDatePicker has an intrinsic height of 216.0
+                                            child: CupertinoDatePicker(
+                                              // 初期値を設定
+                                              initialDateTime: endDateTime,
+                                              // DatePickerのモードを指定（場合分け）
+                                              mode: CupertinoDatePickerMode.dateAndTime,
+                                              minuteInterval: 15,
+                                              minimumDate: startDateTime,
+                                              onDateTimeChanged: (dateTime) {
+                                                end.value = DateTime(
+                                                  dateTime.year,
+                                                  dateTime.month,
+                                                  dateTime.day,
+                                                  dateTime.hour,
+                                                  dateTime.minute,
+                                                );
+                                                // temp変数のlimitプロパティが選択された日付と時間に更新される
+                                                temp = temp.copyWith(endDate: end.value);
+                                                endDateTime = end.value!;
+                                              },
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                  // if (selectedDate != null) {
+                                  //   setState(() => _endDateTime = selectedDate);
+                                  // }
+                                },
+                                child: Consumer(
+                                  builder: (context, watch, _) {
+                                    final switchState = ref.watch(switchProvider);
+                                    final format = switchState ? 'yyyy-MM-dd' : 'yyyy-MM-dd HH:mm';
+                                    return Text(
+                                      DateFormat(format).format(endDateTime),
+                                      style: const TextStyle(color: Colors.blue),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
-            ),
-          ),
-          const SizedBox(height: 30),
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Container(
-              color: Colors.white,
-              child: Column(
-                children: [
-                  Container(
-                    height: 50,
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text('終日'),
-                          Switch(
-                            value: _active,
-                            activeColor: Colors.orange,
-                            activeTrackColor: Colors.red,
-                            inactiveThumbColor: Colors.blue,
-                            inactiveTrackColor: Colors.green,
-                            onChanged: _changeSwitch,
-                          )
-                        ],
+              const SizedBox(height: 10),
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: SizedBox(
+                  height: 200,
+                  width: 400,
+                  child: TextField(
+                    maxLines: null,
+                    expands: true,
+                    keyboardType: TextInputType.multiline,
+                    textAlignVertical: TextAlignVertical.top,
+                    decoration: const InputDecoration(
+                      hintText: 'コメントを入力してください',
+                      contentPadding: EdgeInsets.only(left: 10, top: 20, ),
+                      fillColor: Colors.white,
+                      border: InputBorder.none,
+                      filled: true,
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.blue,
+                        ),
                       ),
                     ),
-                  ),
-                  Divider(),
-                  Container(
-                    height: 50,
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text('開始'),
-                          const Text('開始日時を表示'),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Divider(),
-                  Container(
-                    height: 50,
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text('終了'),
-                          const Text('終了日時を表示'),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 10),
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Container(
-              height: 200,
-              width: 400,
-              child: TextFormField(
-                maxLines: null,
-                expands: true,
-                keyboardType: TextInputType.multiline,
-                textAlignVertical: TextAlignVertical.top,
-                decoration: InputDecoration(
-                  hintText: 'コメントを入力してください',
-
-                  contentPadding: const EdgeInsets.only(left: 10, top: 20, ),
-                  fillColor: Colors.white,
-                  filled: true,
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(
-                      color: Colors.blue,
-                    ),
+                    onChanged: (value) {
+                      comment.value = value;
+                      temp = temp.copyWith(comment: value);
+                    },
+                    onSubmitted: (value) {
+                      comment.value = value;
+                      temp = temp.copyWith(comment: value);
+                    },
                   ),
                 ),
               ),
-            ),
-          ),
-          const SizedBox(height: 30),
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
-              ),
-              onPressed: _showDeleteConfirmation,
-              child: Container(
-                width: double.infinity,
-                height: 50,
-                child: Center(child: Text('この予定を削除', style: TextStyle(color: Colors.red))),
+              const SizedBox(height: 30),
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                  ),
+                  onPressed: showDeleteConfirmation,
+                  child: const SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: Center(child: Text('この予定を削除', style: TextStyle(color: Colors.red))),
 
+                  ),
+                ),
               ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

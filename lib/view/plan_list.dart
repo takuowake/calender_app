@@ -34,6 +34,8 @@ class PlanList extends ConsumerWidget {
     color: Colors.black,
   );
 
+  PlanList({super.key});
+
   List<Widget> _buildPlanList(
       // _buildPlanListの引数は、planItemListとdb
       List<PlanItemData> planItemList, PlanDatabaseNotifier db) {
@@ -142,7 +144,7 @@ class PlanList extends ConsumerWidget {
                     IconButton(onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => AddPlanScreen()),
+                        MaterialPageRoute(builder: (context) => EditPlanScreen()),
                       );
                     }, icon: Icon(Icons.add, color: Colors.blue))
                   ],

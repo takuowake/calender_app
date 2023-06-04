@@ -21,7 +21,7 @@ class Calendar extends StatelessWidget {
 
     return Column(
       children: [
-        _WeekRow(['月', '火', '水', '木', '金', '土', '日'], isHeader: true, onDateSelected: (DateTime date) {  },),
+        _WeekRow(const ['月', '火', '水', '木', '金', '土', '日'], isHeader: true, onDateSelected: (DateTime date) {  },),
         ...calendarData.map(
               (week) => _WeekRow(
             week.map((date) => date?.toString() ?? '').toList(),

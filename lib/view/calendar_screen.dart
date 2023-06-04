@@ -11,16 +11,16 @@ import 'calender.dart';
 final currentDateProvider = StateProvider<DateTime>((ref) => DateTime.now());
 class DateRangeNotifier extends StateNotifier<List<DateTime>> {
   DateRangeNotifier() : super([
-    DateTime.now().subtract(Duration(days: 1)),
+    DateTime.now().subtract(const Duration(days: 1)),
     DateTime.now(),
-    DateTime.now().add(Duration(days: 1)),
+    DateTime.now().add(const Duration(days: 1)),
   ]);
 
   void setDate(DateTime date) {
     state = [
-      date.subtract(Duration(days: 1)),
+      date.subtract(const Duration(days: 1)),
       date,
-      date.add(Duration(days: 1)),
+      date.add(const Duration(days: 1)),
     ];
   }
 }
@@ -35,7 +35,7 @@ class DatePickerNotifier extends StateNotifier<DateTime> {
 // DatePickerNotifier用のProviderを定義
 final datePickerProvider = StateNotifierProvider<DatePickerNotifier, DateTime>((ref) => DatePickerNotifier());
 class CalendarScreen extends ConsumerWidget {
-  CalendarScreen({Key? key}) : super(key: key);
+  const CalendarScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -62,7 +62,7 @@ class CalendarScreen extends ConsumerWidget {
             CalendarScreenHeader(
               currentMonth: '${selectedDate.year}年 ${selectedDate.month}月',
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Calendar(
               date: selectedDate,
               onDateSelected: (DateTime date) {
