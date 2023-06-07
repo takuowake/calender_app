@@ -24,7 +24,7 @@ class PlanDatabaseNotifier extends StateNotifier<PlanStateData> {
       comment: Value(data.comment),
       startDate: Value(data.startDate),
       endDate: Value(data.endDate),
-      isAllDay: Value(data.isAllDay),
+      isAll: Value(data.isAll),
     );
     state = state.copyWith(isLoading: true);
     await _db.writePlan(entry);

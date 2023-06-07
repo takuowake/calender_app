@@ -7,6 +7,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../model/db/plan_db.dart';
 import '../model/freezed/plan_model.dart';
 
 DateTime roundToNearestFifteen(DateTime dateTime) {
@@ -22,6 +23,10 @@ DateTime roundToNearestFifteen(DateTime dateTime) {
 
 class EditPlanScreen extends HookConsumerWidget {
 
+  final PlanItemData item; // 追加
+
+  EditPlanScreen({required this.item}); // 追加
+
   //Providerが保持しているplanItemsを取得します。
   TempPlanItemData temp = TempPlanItemData();
 
@@ -34,8 +39,6 @@ class EditPlanScreen extends HookConsumerWidget {
     return SwitchProvider();
   });
   final titleFocusNode = FocusNode();
-
-  EditPlanScreen({super.key});
 
 
   @override
@@ -212,7 +215,7 @@ class EditPlanScreen extends HookConsumerWidget {
                                 inactiveTrackColor: Colors.grey,
                                 onChanged: (value) {
                                   ref.read(switchProvider.notifier).updateSwitch(value);
-                                  temp = temp.copyWith(isAllDay: value);
+                                  temp = temp.copyWith(isAll: value);
                                 },
                               )
                             ],

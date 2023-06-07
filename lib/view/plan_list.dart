@@ -31,52 +31,87 @@ class PlanList extends ConsumerWidget {
     fontWeight: FontWeight.normal,
     color: Colors.black,
   );
+  final TextStyle timeTextStyle = const TextStyle(
+    fontSize: 10,
+    fontWeight: FontWeight.normal,
+    color: Colors.black,
+  );
 
   const PlanList({super.key});
 
-  List<Widget> _buildPlanList(
-      // _buildPlanListの引数は、planItemListとdb
-      List<PlanItemData> planItemList, PlanDatabaseNotifier db
-      )
-  {
-    //追加
+  // _buildPlanListの引数は、planItemListとdb
+  List<Widget> _buildPlanList(List<PlanItemData> planItemList, PlanDatabaseNotifier db, DateTime date, BuildContext context) {
     List<Widget> list = [];
     // planItemListの各要素について、for...inループを使用して処理を行う
     for (PlanItemData item in planItemList) {
-      Widget tile = ListTile(
-        title: Text(item.title),
-        // null出ない場合はその値を表示し、nullの場合はから文字列を表示する
-        subtitle: Text(item.startDate == null ? "" : item.startDate.toString()),
-        // 右端に表示。leading: は左端。
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
+      // ここで日付が一致するアイテムだけをチェック
+      if (item.startDate?.year == date.year &&
+          item.startDate?.month == date.month &&
+          item.startDate?.day == date.day) {
+        String startTime = '${item.startDate?.hour.toString().padLeft(2, '0')}:${item.startDate?.minute.toString().padLeft(2, '0')}';
+        String endTime = '${item.endDate?.hour.toString().padLeft(2, '0')}:${item.endDate?.minute.toString().padLeft(2, '0')}';
+
+        Widget tile = Column(
           children: [
-            IconButton(
-              onPressed: () {
-                db.deleteData(item);
-              },
-              icon: Icon(Icons.delete),
+            Divider(
+              thickness: 1,
             ),
-            // IconButton(
-            //   onPressed: () {
-            //     TodoItemData data = TodoItemData(
-            //       id: item.id,
-            //       title: item.title,
-            //       description: item.description,
-            //       limitDate: item.limitDate,
-            //       isNotify: !item.isNotify,
-            //     );
-            //     db.updateData(data);
-            //   },
-            //   icon: Icon(
-            //     item.isNotify ? Icons.notifications_off : Icons.notifications_active,
-            //   ),
-            // ),
+            ListTile(
+              title: TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => EditPlanScreen(item: item)),
+                  );
+                },
+                child: Text(item.title),
+              ),
+              leading: SizedBox(
+                width: 50,
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: 30,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          if (!item.isAll) // isAllがFalseの場合のみstartTimeとendTimeを表示
+                            Column(
+                              children: [
+                                Text(
+                                  startTime,
+                                  style: timeTextStyle,
+                                ),
+                                Text(
+                                  endTime,
+                                  style: timeTextStyle,
+                                ),
+                              ],
+                            ),
+                          if (item.isAll) // isAllがTrueの場合は「終日」を表示
+                            Text(
+                              '終日',
+                              style: timeTextStyle,
+                            ),
+                        ],
+                      ),
+                    ),
+                    VerticalDivider(
+                      color: Colors.blue,
+                      thickness: 3,
+                      // width: 15,
+                      indent: 0,
+                      endIndent: 0,
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ],
-        ),
-      );
-      list.add(tile);
-      //listにtileを追加
+        );
+        list.add(tile);
+        //listにtileを追加
+      }
     }
     return list;
   }
@@ -88,28 +123,20 @@ class PlanList extends ConsumerWidget {
     var date = selectedDate;
     // ここで、適切な日付を選択するロジックを追加するべきです。
 
-    // return _buildCustomDialogForDate(context, selectedDate, ref, selectedDate);
     return buildCustomDialog(context, date, ref);
   }
 
   Widget buildCustomDialog(BuildContext context, DateTime date, WidgetRef ref) {
 
     final planProvider = ref.watch(planDatabaseProvider);
+    planProvider.readData();
 
     List<PlanItemData> planItems = planProvider.state.planItems;
-    List<Widget> tiles = _buildPlanList(planItems, planProvider);
+    List<Widget> tiles = _buildPlanList(planItems, planProvider, date, context);
 
     // ダイアログの日付を定義
     String dialogDate = '${date.year}年 ${date.month}月 ${date.day}日';
-
-    // selectedDate(選ばれた日付)とplanItemsの中のデータが一致したら、matchedPlanItemsにデータを格納する
-    // for (var planItem in planItems) {
-    //   if (planItem.startDate.day == date.day &&
-    //       planItem.startDate.month == date.month &&
-    //       planItem.startDate.year == date.year) {
-    //     dialogDatePlanItems.add(planItem as TempPlanItemData);
-    //   }
-    // }
+    print(planItems); // planItemsをログに出力
 
     return Padding(
       padding: const EdgeInsets.only(left: 8.0, top: 200.0, right: 8.0, bottom: 10.0),
@@ -139,65 +166,15 @@ class PlanList extends ConsumerWidget {
                     IconButton(onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => EditPlanScreen()),
+                        MaterialPageRoute(builder: (context) => AddPlanScreen(selectedDate: date)),
                       );
                     }, icon: Icon(Icons.add, color: Colors.blue))
                   ],
                 ),
-                Divider(),
                 // tilesのデータを表示
-                ListView(children: tiles),
-
-                // 予定一覧
-                // Row(
-                //   children: [
-                //     Container(
-                //       width: 40,
-                //       child: Column(
-                //         children: [
-                //           // Text(matchedPlanItems.start.toString()),
-                //           // Text(matchedPlanItems.end.toString()),
-                //           Text('10'),
-                //         ],
-                //       ),
-                //     ),
-                //     Container(
-                //       width: 4.0,
-                //       height: 50.0,
-                //       color: Colors.blue, // 縦棒の色
-                //       margin: EdgeInsets.symmetric(horizontal: 10.0), // 縦棒の左右の余白
-                //     ),
-                //     TextButton(onPressed: () {
-                //       Navigator.push(
-                //         context,
-                //         MaterialPageRoute(builder: (context) => EditPlanScreen()),
-                //       );
-                //     }, child: Text('title')),
-                //     // }, child: Text(matchedPlanItems.title.length > 14 ? matchedPlanItems.title.substring(0, 11) + '...' : 'title', style: defaultTextStyle)),
-                //   ],
-                // ),
-                // Divider(),
-                // Row(
-                //   children: [
-                //     Container(
-                //       width: 40,
-                //       child: Text(
-                //         '終日',
-                //         style: defaultTextStyle,
-                //       ),
-                //     ),
-                //     Container(
-                //       width: 4.0,
-                //       height: 50.0,
-                //       color: Colors.blue, // 縦棒の色
-                //       margin: EdgeInsets.symmetric(horizontal: 10.0),
-                //     ),
-                //     // Text(
-                //     //   dialogDate.length > 14 ? dialogDate.substring(0, 11) + '...' : dialogDate,
-                //     //   style: defaultTextStyle,
-                //     // ),
-                //   ],
-                // ),
+                Column(
+                  children: tiles,
+                ),
               ],
             ),
           ),
@@ -207,31 +184,6 @@ class PlanList extends ConsumerWidget {
   }
 
   void ShowDialog(BuildContext context, WidgetRef ref, DateTime selectedDate) {
-    // final planItems = ref.watch(planDatabaseProvider).state.planItems;
-    //
-    // List<TempPlanItemData> matchedPlanItems = [];
-    // TempPlanItemData selectedPlanItem;
-
-    // selectedDate(選ばれた日付)とplanItemsの中のデータが一致したら、matchedPlanItemsにデータを格納する
-    // for (var planItem in planItems) {
-    //   if (planItem.startDate.day == selectedDate.day &&
-    //       planItem.startDate.month == selectedDate.month &&
-    //       planItem.startDate.year == selectedDate.year) {
-    //     matchedPlanItems.add(planItem as TempPlanItemData);
-    //   }
-    // }
-
-    // もしmatchedPlanItemsがnullでなければ、buildCustomDialogをbuildする
-    // if (matchedPlanItems.isNotEmpty) {
-    //   showDialog(
-    //     context: context,
-    //     builder: (BuildContext context) {
-    //       return buildCustomDialog(context, matchedPlanItems, ref);
-    //     },
-    //   );
-    // }
-
-    // PageViewの初期表示ページを設定
     final pageController = PageController(
       initialPage: 100,
       // 隣同士のダイアログの端をどれくらい画面に表示するかの割合
@@ -280,4 +232,3 @@ class PlanList extends ConsumerWidget {
     );
   }
 }
-

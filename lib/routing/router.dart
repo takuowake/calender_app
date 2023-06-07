@@ -4,6 +4,8 @@ import 'package:calender_app/view/edit_plan_screen.dart';
 import 'package:calender_app/view/plan_list.dart';
 import 'package:flutter/material.dart';
 
+import '../model/db/plan_db.dart';
+
 class Router {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -12,9 +14,11 @@ class Router {
       case '/plan-list':
         return MaterialPageRoute(builder: (_) => PlanList()); // 予定一覧画面へのルーティング
       case '/add-plan':
-        return MaterialPageRoute(builder: (_) => AddPlanScreen()); // 予定追加画面へのルーティング
+        var selectedDate = settings.arguments as DateTime;
+        return MaterialPageRoute(builder: (_) => AddPlanScreen(selectedDate: selectedDate)); // 予定追加画面へのルーティング
       case '/edit-plan':
-        return MaterialPageRoute(builder: (_) => EditPlanScreen()); // 予定編集画面へのルーティング
+        var item = settings.arguments as PlanItemData;
+        return MaterialPageRoute(builder: (_) => EditPlanScreen(item: item)); // 予定編集画面へのルーティング
       default:
         return MaterialPageRoute(builder: (_) => CalendarScreen()); // 存在しないルートへのアクセス時のエラーハンドリング
     }

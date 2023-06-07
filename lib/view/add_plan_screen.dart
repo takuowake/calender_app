@@ -26,11 +26,11 @@ class AddPlanScreen extends HookConsumerWidget {
 
   //Providerが保持しているplanItemsを取得します。
   TempPlanItemData temp = TempPlanItemData();
+  final DateTime selectedDate;
+  AddPlanScreen({required this.selectedDate});
 
-
-  DateTime startDateTime = roundToNearestFifteen(DateTime.now());
-  DateTime endDateTime = roundToNearestFifteen(DateTime.now()).add(Duration(hours: 1));
-  DateTime? selectedDate;
+  late DateTime startDateTime = roundToNearestFifteen(selectedDate);
+  late DateTime endDateTime = roundToNearestFifteen(selectedDate).add(Duration(hours: 1));
 
   final switchProvider = StateNotifierProvider<SwitchProvider, bool>((ref) {
     return SwitchProvider();
@@ -122,7 +122,12 @@ class AddPlanScreen extends HookConsumerWidget {
                   }),
                 ),
                 onPressed: (temp.title.isNotEmpty && temp.comment.isNotEmpty) ? () {
+                  temp = temp.copyWith(
+                    startDate: temp.startDate ?? startDateTime,
+                    endDate: temp.endDate ?? endDateTime,
+                  );
                   planProvider.writeData(temp);
+                  planProvider.readData();
                   Navigator.pop(context);
                 } : null,
                 child: Text('保存'),
@@ -184,7 +189,7 @@ class AddPlanScreen extends HookConsumerWidget {
                                 inactiveTrackColor: Colors.grey,
                                 onChanged: (value) {
                                   ref.read(switchProvider.notifier).updateSwitch(value);
-                                  temp = temp.copyWith(isAllDay: value);
+                                  temp = temp.copyWith(isAll: value);
                                 },
                               )
                             ],
