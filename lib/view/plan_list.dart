@@ -127,60 +127,68 @@ class PlanList extends ConsumerWidget {
   }
 
   Widget buildCustomDialog(BuildContext context, DateTime date, WidgetRef ref) {
-
     final planProvider = ref.watch(planDatabaseProvider);
-    planProvider.readData();
 
-    List<PlanItemData> planItems = planProvider.state.planItems;
-    List<Widget> tiles = _buildPlanList(planItems, planProvider, date, context);
+    return FutureBuilder(
+      future: planProvider.readData(), // ここに非同期のデータ読み込み処理を指定します。
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        // データがまだ読み込まれていない場合
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(
+            child: CircularProgressIndicator(), // ローディングインジケータを表示します。
+          );
+        } else {
+          // データが読み込まれた場合
+          List<PlanItemData> planItems = planProvider.state.planItems;
+          List<Widget> tiles = _buildPlanList(planItems, planProvider, date, context);
 
-    // ダイアログの日付を定義
-    String dialogDate = '${date.year}年 ${date.month}月 ${date.day}日';
-    print(planItems); // planItemsをログに出力
+          String dialogDate = '${date.year}年 ${date.month}月 ${date.day}日';
 
-    return Padding(
-      padding: const EdgeInsets.only(left: 8.0, top: 200.0, right: 8.0, bottom: 10.0),
-      // ダイアログの外枠のUI
-      child: Container(
-        width: 100,
-        height: 300,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          // ダイアログの中身のUI
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    // ダイアログのタイトル（日付）
-                    Text(
-                      dialogDate,
-                      style: defaultTextStyle,
-                    ),
-                    // 予定追加画面へのアイコン
-                    IconButton(onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => AddPlanScreen(selectedDate: date)),
-                      );
-                    }, icon: Icon(Icons.add, color: Colors.blue))
-                  ],
+          return Padding(
+            padding: const EdgeInsets.only(left: 8.0, top: 200.0, right: 8.0, bottom: 10.0),
+            child: Container(
+              width: 100,
+              height: 300,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            dialogDate,
+                            style: defaultTextStyle,
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => AddPlanScreen(selectedDate: date),
+                                ),
+                              );
+                            },
+                            icon: Icon(Icons.add, color: Colors.blue),
+                          )
+                        ],
+                      ),
+                      Column(
+                        children: tiles,
+                      ),
+                    ],
+                  ),
                 ),
-
-                // tilesのデータを表示
-                // Column(
-                //   children: tiles,
-                // ),
-              ],
+              ),
             ),
-          ),
-        ),
-      ),
+          );
+        }
+      },
     );
   }
 
