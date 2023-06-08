@@ -51,7 +51,7 @@ class PlanDatabaseNotifier extends StateNotifier<PlanStateData> {
   }
 
   //データ読み込み処理
-  readData() async {
+  Future readData() async {
     state = state.copyWith(isLoading: true);
 
     final planItems = await _db.readAllPlanData();
