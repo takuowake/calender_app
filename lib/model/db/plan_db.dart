@@ -14,10 +14,11 @@ class PlanItem extends Table {
   TextColumn get title =>
       text().withDefault(const Constant('')).withLength(min: 1)();
   // コメントはnullでも許容
-  TextColumn get comment => text().withDefault(const Constant('')).nullable()();
+  TextColumn get comment => text().withDefault(const Constant(''))();
 
   // 終日かどうか
   BoolColumn get isAll => boolean().withDefault(const Constant(false))();
+
   // 開始時間と終了時間
   DateTimeColumn get startDate => dateTime().nullable()();
   DateTimeColumn get endDate => dateTime().nullable()();

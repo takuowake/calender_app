@@ -5,16 +5,6 @@ import '../db/plan_db.dart';
 
 part 'plan_model.freezed.dart';
 
-DateTime roundToNearestFifteen(DateTime dateTime) {
-  final int minute = dateTime.minute;
-  final int remainder = minute % 15;
-  if (remainder >= 8) {
-    return dateTime.add(Duration(minutes: 15 - remainder));
-  } else {
-    return dateTime.subtract(Duration(minutes: remainder));
-  }
-}
-
 @freezed
 //このクラスは、DBの状態を保持するクラスです。
 abstract class PlanStateData with _$PlanStateData {

@@ -171,10 +171,11 @@ class PlanList extends ConsumerWidget {
                     }, icon: Icon(Icons.add, color: Colors.blue))
                   ],
                 ),
+
                 // tilesのデータを表示
-                Column(
-                  children: tiles,
-                ),
+                // Column(
+                //   children: tiles,
+                // ),
               ],
             ),
           ),
