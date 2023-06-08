@@ -14,10 +14,6 @@ class PlanDatabaseNotifier extends StateNotifier<PlanStateData> {
   final _db = MyDatabase();
   // 予定追加処理
   writeData(TempPlanItemData data) async {
-    // titleが空なら処理を行わない
-    // if (data.title.isEmpty) {
-    //   return;
-    // }
 
     PlanItemCompanion entry = PlanItemCompanion(
       title: Value(data.title),
@@ -51,7 +47,7 @@ class PlanDatabaseNotifier extends StateNotifier<PlanStateData> {
   }
 
   //データ読み込み処理
-  Future readData() async {
+  readData() async {
     state = state.copyWith(isLoading: true);
 
     final planItems = await _db.readAllPlanData();
@@ -73,9 +69,9 @@ final planDatabaseNotifierProvider = StateNotifierProvider((_) {
 
 // final selectDateProvider = StateProvider<DateTime>((ref) => DateTime.now());
 // final titleControllerProvider = StateProvider<StateController<String>>((ref) => StateController(""));
-final titleStateProvider = StateProvider<String>((ref) => "");
-final selectedDateProvider = StateProvider<DateTime?>((ref) => null);
-
+// final titleStateProvider = StateProvider<String>((ref) => "");
+// final selectedDateProvider = StateProvider<DateTime?>((ref) => null);
+//
 
 class SwitchProvider extends StateNotifier<bool> {
   SwitchProvider() : super(false);
@@ -84,20 +80,20 @@ class SwitchProvider extends StateNotifier<bool> {
     state = value;
   }
 }
-final tempPlanItemProvider = StateProvider<TempPlanItemData>((ref) => TempPlanItemData());
-final tempProvider = StateNotifierProvider<TempPlanItemDataNotifier, TempPlanItemData>((ref) {
-  return TempPlanItemDataNotifier(TempPlanItemData());
-});
+// final tempPlanItemProvider = StateProvider<TempPlanItemData>((ref) => TempPlanItemData());
+// final tempProvider = StateNotifierProvider<TempPlanItemDataNotifier, TempPlanItemData>((ref) {
+//   return TempPlanItemDataNotifier(TempPlanItemData());
+// });
 
-class TempPlanItemDataNotifier extends StateNotifier<TempPlanItemData> {
-  TempPlanItemDataNotifier(TempPlanItemData state) : super(state);
-
-  void setTitle(String title) {
-    state = state.copyWith(title: title);
-  }
-
-  void setComment(String comment) {
-    state = state.copyWith(comment: comment);
-  }
-}
+// class TempPlanItemDataNotifier extends StateNotifier<TempPlanItemData> {
+//   TempPlanItemDataNotifier(TempPlanItemData state) : super(state);
+//
+//   void setTitle(String title) {
+//     state = state.copyWith(title: title);
+//   }
+//
+//   void setComment(String comment) {
+//     state = state.copyWith(comment: comment);
+//   }
+// }
 
