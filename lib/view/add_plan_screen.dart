@@ -1,3 +1,4 @@
+import 'package:calender_app/view/plan_list.dart';
 import 'package:calender_app/view/view_model/plan_provider.dart';
 import 'package:drift/drift.dart' as Drift;
 import 'package:flutter/cupertino.dart';
@@ -30,7 +31,7 @@ class AddPlanScreen extends HookConsumerWidget {
   AddPlanScreen({required this.selectedDate});
 
   late DateTime startDateTime = roundToNearestFifteen(selectedDate);
-  late DateTime endDateTime = roundToNearestFifteen(selectedDate).add(Duration(hours: 1));
+  late DateTime endDateTime = startDateTime.add(Duration(hours: 1));
 
   final switchProvider = StateNotifierProvider<SwitchProvider, bool>((ref) {
     return SwitchProvider();
@@ -121,14 +122,16 @@ class AddPlanScreen extends HookConsumerWidget {
                     }
                   }),
                 ),
-                onPressed: (temp.title.isNotEmpty && temp.comment.isNotEmpty) ? () {
+                onPressed: (temp.title.isNotEmpty && temp.comment.isNotEmpty) ? () async {
                   temp = temp.copyWith(
                     startDate: temp.startDate ?? startDateTime,
                     endDate: temp.endDate ?? endDateTime,
                   );
-                  planProvider.writeData(temp);
-                  planProvider.readData();
+                  await planProvider.writeData(temp);
+                  // await planProvider.readData();
                   Navigator.pop(context);
+                  Navigator.pop(context);
+                  PlanList().ShowDialog(context, ref, startDateTime);
                 } : null,
                 child: Text('保存'),
               ),
@@ -232,7 +235,6 @@ class AddPlanScreen extends HookConsumerWidget {
                                                   // selectDateがダイアログpopされる
                                                   child: Text('完了'),
                                                   onPressed: () => {
-                                                    planProvider.writeData(temp),
                                                     Navigator.of(context).pop(),
                                                   },
                                                 ),
@@ -313,7 +315,6 @@ class AddPlanScreen extends HookConsumerWidget {
                                                 CupertinoButton(
                                                   child: Text('完了'),
                                                   onPressed: () => {
-                                                    planProvider.writeData(temp),
                                                     Navigator.of(context).pop(),
                                                   },
                                                 ),
