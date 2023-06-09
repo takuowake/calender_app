@@ -129,8 +129,7 @@ class AddPlanScreen extends HookConsumerWidget {
                   );
                   await planProvider.writeData(temp);
                   // await planProvider.readData();
-                  Navigator.pop(context);
-                  Navigator.pop(context);
+                  Navigator.pushNamed(context, '/');
                   PlanList().ShowDialog(context, ref, startDateTime);
                 } : null,
                 child: Text('保存'),

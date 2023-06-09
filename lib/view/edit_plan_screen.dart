@@ -169,8 +169,7 @@ class EditPlanScreen extends HookConsumerWidget {
                   );
                   // await db.updateData(data);
                   ref.read(planDatabaseNotifierProvider.notifier).updateData(data);
-                  Navigator.pop(context);
-                  Navigator.pop(context);
+                  Navigator.pushNamed(context, '/');
                   PlanList().ShowDialog(context, ref, startDateTime!);
                 } : null,
                 child: const Text('保存'),
