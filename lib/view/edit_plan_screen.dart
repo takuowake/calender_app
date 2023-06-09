@@ -40,8 +40,9 @@ class EditPlanScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // final planState = ref.watch(planDatabaseNotifierProvider);
     final planProvider = ref.watch(planDatabaseNotifierProvider.notifier);
-    final PlanDatabaseNotifier db = ref.read(planDatabaseNotifierProvider.notifier);
+    // final PlanDatabaseNotifier db = ref.read(planDatabaseNotifierProvider.notifier);
 
     void showEditCanselConfirmation() {
       showCupertinoModalPopup(
@@ -105,7 +106,7 @@ class EditPlanScreen extends HookConsumerWidget {
 
     DateTime? startDateTime = item.startDate;
     DateTime? endDateTime = item.endDate;
-    DateTime? selectedDate;
+    // DateTime? selectedDate;
 
 
     final title = useState(item.title);
@@ -166,8 +167,11 @@ class EditPlanScreen extends HookConsumerWidget {
                     startDate: item.startDate,
                     endDate: item.endDate,
                   );
-                  db.updateData(data);
+                  // await db.updateData(data);
+                  ref.read(planDatabaseNotifierProvider.notifier).updateData(data);
                   Navigator.pop(context);
+                  Navigator.pop(context);
+                  PlanList().ShowDialog(context, ref, startDateTime!);
                 } : null,
                 child: const Text('保存'),
               ),
