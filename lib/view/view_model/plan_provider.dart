@@ -67,6 +67,14 @@ final planDatabaseNotifierProvider = StateNotifierProvider((_) {
   return notify;
 });
 
+// PlanDatabaseNotifierのインスタンスをアプリ全体で利用できるようにするためのProviderを定義
+// PlanDatabaseNotifierは、状態管理やデータの変更を通知するためのクラス
+// refは、プロバイダーの値を利用するためのProviderContainerオブジェクト
+final planDatabaseProvider = Provider<PlanDatabaseNotifier>((ref) {
+  // PlanDatabaseNotifierクラスの新しいインスタンスを生成して返す
+  return PlanDatabaseNotifier();
+});
+
 // final selectDateProvider = StateProvider<DateTime>((ref) => DateTime.now());
 // final titleControllerProvider = StateProvider<StateController<String>>((ref) => StateController(""));
 // final titleStateProvider = StateProvider<String>((ref) => "");
