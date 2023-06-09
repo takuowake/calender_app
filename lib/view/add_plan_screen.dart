@@ -12,7 +12,16 @@ import 'package:intl/intl.dart';
 import '../model/db/plan_db.dart';
 import '../model/freezed/plan_model.dart';
 
-DateTime roundToNearestFifteen(DateTime dateTime) {
+DateTime roundToNearestFifteen(DateTime selectedDate) {
+  final now = DateTime.now();
+  final dateTime = DateTime(
+      selectedDate.year,
+      selectedDate.month,
+      selectedDate.day,
+      now.hour,
+      now.minute
+  );
+
   final int minute = dateTime.minute;
   final int remainder = minute % 15;
   if (remainder >= 8) {
