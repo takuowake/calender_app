@@ -20,9 +20,6 @@ class DatePickerNotifier extends StateNotifier<DateTime> {
 // DatePickerNotifier用のProviderを定義
 final datePickerProvider = StateNotifierProvider<DatePickerNotifier, DateTime>((ref) => DatePickerNotifier());
 
-final planDatabaseProvider = Provider<PlanDatabaseNotifier>((ref) {
-  return PlanDatabaseNotifier();
-});
 
 class PlanList extends ConsumerWidget {
 
@@ -115,7 +112,6 @@ class PlanList extends ConsumerWidget {
     }
     return list;
   }
-
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
