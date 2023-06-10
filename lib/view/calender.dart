@@ -119,7 +119,6 @@ class _DateBox extends StatelessWidget {
         onTap: () {
           if (date != null) {
             onDateSelected(date!);
-            print('object');
           }
         },
         child: Container(
