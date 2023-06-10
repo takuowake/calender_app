@@ -12,6 +12,7 @@ class PlanDatabaseNotifier extends StateNotifier<PlanStateData> {
   //ここからはデータベースに関する処理をこのクラスで行えるように記述します。
   PlanDatabaseNotifier() : super(PlanStateData());
   final _db = MyDatabase();
+  bool hasChanges = false;
   // 予定追加処理
   writeData(TempPlanItemData data) async {
 
@@ -74,6 +75,10 @@ final planDatabaseProvider = Provider<PlanDatabaseNotifier>((ref) {
   // PlanDatabaseNotifierクラスの新しいインスタンスを生成して返す
   return PlanDatabaseNotifier();
 });
+
+// final planNotifierProvider = StateNotifierProvider<PlanDatabaseNotifier, PlanStateData>((ref) {
+//   return PlanDatabaseNotifier();
+// });
 
 // final selectDateProvider = StateProvider<DateTime>((ref) => DateTime.now());
 // final titleControllerProvider = StateProvider<StateController<String>>((ref) => StateController(""));

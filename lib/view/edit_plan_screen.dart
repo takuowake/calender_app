@@ -44,6 +44,11 @@ class EditPlanScreen extends HookConsumerWidget {
     final planProvider = ref.watch(planDatabaseNotifierProvider.notifier);
     // final PlanDatabaseNotifier db = ref.read(planDatabaseNotifierProvider.notifier);
 
+    final isChanged = useState<bool>(false);
+    void handleInputChange() {
+      isChanged.value = true;
+    }
+
     void showEditCanselConfirmation() {
       showCupertinoModalPopup(
         context: context,
@@ -69,6 +74,25 @@ class EditPlanScreen extends HookConsumerWidget {
         ),
       );
     }
+
+    // final start = useState<DateTime?>(item.startDate);
+    // final end = useState<DateTime?>(item.endDate);
+    final start = useState<DateTime?>(item.startDate);
+    final end = useState<DateTime?>(item.endDate);
+
+    DateTime? startDateTime = item.startDate;
+    DateTime? endDateTime = item.endDate;
+    // DateTime? selectedDate;
+
+
+    final title = useState(item.title);
+    final comment = useState(item.comment);
+
+
+    // useTextEditingControllerに初期値として、item.titleとitem.commentを設定
+    final titleController = useTextEditingController(text: item.title);
+    final commentController = useTextEditingController(text: item.comment);
+
     Future<void> showDeleteConfirmation() async {
       return showDialog<void>(
         context: context,
@@ -88,8 +112,8 @@ class EditPlanScreen extends HookConsumerWidget {
                 onPressed: () {
                   // ここで予定を削除する処理を追加する
                   planProvider.deleteData(item);
-                  Navigator.of(context).pop();
-                  Navigator.of(context).pop();
+                  Navigator.pushNamed(context, '/');
+                  PlanList().ShowDialog(context, ref, startDateTime!);
                 },
                 child: const Text('削除', style: TextStyle(color: Colors.blue)),
               ),
@@ -98,23 +122,6 @@ class EditPlanScreen extends HookConsumerWidget {
         },
       );
     }
-
-    // final start = useState<DateTime?>(item.startDate);
-    // final end = useState<DateTime?>(item.endDate);
-    final start = useState<DateTime?>(item.startDate);
-    final end = useState<DateTime?>(item.endDate);
-
-    DateTime? startDateTime = item.startDate;
-    DateTime? endDateTime = item.endDate;
-    // DateTime? selectedDate;
-
-
-    final title = useState(item.title);
-    final comment = useState(item.comment);
-
-
-    final titleController = useTextEditingController(text: item.title);
-    final commentController = useTextEditingController(text: item.comment);
 
     return GestureDetector(
       onTap: () {
@@ -130,7 +137,7 @@ class EditPlanScreen extends HookConsumerWidget {
           leading: IconButton(
             icon: const Icon(Icons.clear),
             onPressed: () {
-              if (item.title.isNotEmpty || item.comment!.isNotEmpty) {
+              if (isChanged.value) {
                 showEditCanselConfirmation();
               } else {
                 Navigator.of(context).pop();
@@ -143,7 +150,7 @@ class EditPlanScreen extends HookConsumerWidget {
               child: ElevatedButton(
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
-                    if (item.title.isNotEmpty && item.comment!.isNotEmpty) {
+                    if (isChanged.value == true) {
                       return Colors.white; // 保存ボタンの背景色を変更
                     } else {
                       return Colors.white70;
@@ -151,14 +158,14 @@ class EditPlanScreen extends HookConsumerWidget {
                   }),
                   // foregroundColor: MaterialStateProperty.all<Color>(Colors.grey),
                   foregroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
-                    if (item.title.isNotEmpty && item.comment!.isNotEmpty) {
+                    if (isChanged.value == true) {
                       return Colors.black;
                     } else {
                       return Colors.white70;
                     }
                   }),
                 ),
-                onPressed: (item.title.isNotEmpty && item.comment!.isNotEmpty) ? () {
+                onPressed: (isChanged.value) ? () {
                   PlanItemData data = PlanItemData(
                     id: item.id,
                     title: item.title,
@@ -202,6 +209,7 @@ class EditPlanScreen extends HookConsumerWidget {
                   onChanged: (value) {
                     title.value = value;
                     item = item.copyWith(title: value);
+                    handleInputChange();
                   },
                   onSubmitted: (value) {
                     title.value = value;
@@ -231,8 +239,10 @@ class EditPlanScreen extends HookConsumerWidget {
                                 inactiveThumbColor: Colors.white,
                                 inactiveTrackColor: Colors.grey,
                                 onChanged: (value) {
+                                  // スイッチの状態を更新するための処理を行う
                                   ref.read(switchProvider.notifier).updateSwitch(value);
                                   item = item.copyWith(isAll: value);
+                                  handleInputChange();
                                 },
                               )
                             ],
@@ -285,7 +295,7 @@ class EditPlanScreen extends HookConsumerWidget {
                                           SizedBox(
                                             height: 220,
                                             child: CupertinoDatePicker(
-                                              // 初期値を設定
+                                              // 初期値としてitemオブジェクトのstartDataプロパティの値
                                               initialDateTime: item.startDate,
                                               // DatePickerのモードを指定（場合分け）
                                               mode: ref.watch(switchProvider) ? CupertinoDatePickerMode.date : CupertinoDatePickerMode.dateAndTime,
@@ -299,11 +309,13 @@ class EditPlanScreen extends HookConsumerWidget {
                                                   dateTime.minute,
                                                 );
                                                 // item = item.copyWith(startDate: start.value);
+                                                // copyWithメソッドを使用してitemオブジェクトのコピーを作成し、startDateプロパティを新しい値
                                                 item = item.copyWith(startDate: Drift.Value(start.value));
 
                                                 // item.startDate = start.value;
                                                 startDateTime = start.value!;
                                                 endDateTime = start.value!.add(const Duration(hours: 1));
+                                                handleInputChange();
                                               },
                                             ),
                                           ),
@@ -386,6 +398,7 @@ class EditPlanScreen extends HookConsumerWidget {
                                                 // item.endDate = end.value;
                                                 item = item.copyWith(endDate: Drift.Value(end.value));
                                                 endDateTime = end.value!;
+                                                handleInputChange();
                                               },
                                             ),
                                           ),
@@ -443,6 +456,7 @@ class EditPlanScreen extends HookConsumerWidget {
                     onChanged: (value) {
                       comment.value = value;
                       item = item.copyWith(comment: value);
+                      handleInputChange();
                     },
                     onSubmitted: (value) {
                       comment.value = value;
