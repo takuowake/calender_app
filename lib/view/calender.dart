@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/painting.dart';
 
 
 import '../common/calendar_builder.dart';
 
-class Calendar extends StatelessWidget {
+class Calendar extends ConsumerWidget {
   final DateTime date;
   final Function(DateTime date) onDateSelected;
 
@@ -16,7 +17,7 @@ class Calendar extends StatelessWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final calendarData = CalendarBuilder().build(date);
 
     return Column(
