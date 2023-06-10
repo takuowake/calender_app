@@ -70,7 +70,7 @@ class _DateBox extends StatelessWidget {
     required this.weekday,
     this.isHeader = false,
     required this.onDateSelected,
-    Key? key,
+    // Key? key,
   });
 
   final String text;
@@ -83,8 +83,8 @@ class _DateBox extends StatelessWidget {
   Widget build(BuildContext context) {
     Color textColor;
     Color backgroundColor = Colors.white;
-    double fontSize = 14.0; // Set default font size
-    double boxHeight = 1.0; // Set default box height
+    double fontSize = 14.0;
+    double boxHeight = 1.0;
     bool isToday = false;
 
     if (weekday == 6) {
