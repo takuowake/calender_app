@@ -124,14 +124,145 @@ class PlanList extends ConsumerWidget {
 
   Widget buildCustomDialog(BuildContext context, DateTime date, WidgetRef ref) {
     final planProvider = ref.watch(planDatabaseProvider);
-
+    // return FutureBuilder(
+    //   future: planProvider.readData(),
+    //   builder: (BuildContext context, AsyncSnapshot snapshot) {
+    //     // データがまだ読み込まれていない場合
+    //     if (snapshot.connectionState == ConnectionState.waiting) {
+    //       return Center(
+    //         child: CircularProgressIndicator(),
+    //       );
+    //     } else {
+    //       // データが読み込まれた場合
+    //       List<PlanItemData> planItems = planProvider.state.planItems;
+    //       List<Widget> tiles = _buildPlanList(planItems, planProvider, date, context);
+    //
+    //       String dialogDate = '${date.year}年 ${date.month}月 ${date.day}日';
+    //
+    //       return Padding(
+    //         padding: const EdgeInsets.only(left: 8.0, top: 200.0, right: 8.0, bottom: 10.0),
+    //         child: Container(
+    //           width: 100,
+    //           height: 300,
+    //           decoration: BoxDecoration(
+    //             color: Colors.white,
+    //             borderRadius: BorderRadius.circular(20),
+    //           ),
+    //           child: Padding(
+    //             padding: const EdgeInsets.all(20.0),
+    //             child: SingleChildScrollView(
+    //               child: Column(
+    //                 children: [
+    //                   Row(
+    //                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //                     children: [
+    //                       Text(
+    //                         dialogDate,
+    //                         style: defaultTextStyle,
+    //                       ),
+    //                       IconButton(
+    //                         onPressed: () {
+    //                           Navigator.push(
+    //                             context,
+    //                             MaterialPageRoute(
+    //                               builder: (context) => AddPlanScreen(selectedDate: date),
+    //                             ),
+    //                           );
+    //                         },
+    //                         icon: Icon(Icons.add, color: Colors.blue),
+    //                       )
+    //                     ],
+    //                   ),
+    //                   if (tiles.isEmpty) {
+    //                     Center(child: Text("予定がありません")),
+    //                   } else {
+    //                     Column(
+    //                       children: tiles,
+    //                     ),
+    //                   }
+    //                 ],
+    //               ),
+    //             ),
+    //           ),
+    //         ),
+    //       );
+    //     }
+    //   },
+    //   // ここに非同期のデータ読み込み処理を指定します。
+    //   // builder: (BuildContext context, AsyncSnapshot snapshot) {
+    //   //   // データがまだ読み込まれていない場合
+    //   //   if (snapshot.connectionState == ConnectionState.waiting) {
+    //   //     return Center(
+    //   //       child: CircularProgressIndicator(), // ローディングインジケータを表示します。
+    //   //     );
+    //   //   } else {
+    //   //     if (snapshot.hasData) {
+    //   //       // データが読み込まれた場合、_buildPlanListメソッドを呼び出す
+    //   //       List<PlanItemData> planItems = snapshot.data;
+    //   //       List<Widget> tiles = _buildPlanList(planItems, planProvider, date, context);
+    //   //       // データが読み込まれた場合
+    //   //       // List<PlanItemData> planItems = planProvider.state.planItems;
+    //   //       // List<Widget> tiles = _buildPlanList(planItems, planProvider, date, context);
+    //   //       String dialogDate = '${date.year}年 ${date.month}月 ${date.day}日';
+    //   //       return Padding(
+    //   //         padding: const EdgeInsets.only(left: 8.0, top: 200.0, right: 8.0, bottom: 10.0),
+    //   //         child: Container(
+    //   //           width: 100,
+    //   //           height: 300,
+    //   //           decoration: BoxDecoration(
+    //   //             color: Colors.white,
+    //   //             borderRadius: BorderRadius.circular(20),
+    //   //           ),
+    //   //           child: Padding(
+    //   //             padding: const EdgeInsets.all(20.0),
+    //   //             child: SingleChildScrollView(
+    //   //               child: Column(
+    //   //                 children: [
+    //   //                   Row(
+    //   //                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //   //                     children: [
+    //   //                       Text(
+    //   //                         dialogDate,
+    //   //                         style: defaultTextStyle,
+    //   //                       ),
+    //   //                       IconButton(
+    //   //                         onPressed: () {
+    //   //                           Navigator.push(
+    //   //                             context,
+    //   //                             MaterialPageRoute(
+    //   //                               builder: (context) => AddPlanScreen(selectedDate: date),
+    //   //                             ),
+    //   //                           );
+    //   //                         },
+    //   //                         icon: Icon(Icons.add, color: Colors.blue),
+    //   //                       )
+    //   //                     ],
+    //   //                   ),
+    //   //                   Column(
+    //   //                     children: tiles,
+    //   //                   ),
+    //   //                 ],
+    //   //               ),
+    //   //             ),
+    //   //           ),
+    //   //         ),
+    //   //       );
+    //   //     } else {
+    //   //       return Center(
+    //   //         child: Text('予定がありません'),
+    //   //       );
+    //   //     }
+    //   //   }
+    //   // },
+    //   // buildCustomDialogメソッド内のbuilderコールバック内を修正
+    // );
     return FutureBuilder(
-      future: planProvider.readData(), // ここに非同期のデータ読み込み処理を指定します。
+      future: planProvider.readData(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         // データがまだ読み込まれていない場合
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(
-            child: CircularProgressIndicator(), // ローディングインジケータを表示します。
+            child: CircularProgressIndicator(),
           );
         } else {
           // データが読み込まれた場合
@@ -174,9 +305,20 @@ class PlanList extends ConsumerWidget {
                           )
                         ],
                       ),
-                      Column(
-                        children: tiles,
-                      ),
+                      // Using spread operator and ternary conditional
+                      ...tiles.isEmpty
+                          ? [
+                              Center(child: Column(
+                                children: [
+                                  Divider(
+                                    thickness: 1,
+                                  ),
+                                  SizedBox(height: 200),
+                                  Text("予定がありません"),
+                                ],
+                              ))
+                            ]
+                          : [Column(children: tiles)]
                     ],
                   ),
                 ),
