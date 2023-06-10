@@ -108,7 +108,7 @@ class _DateBox extends StatelessWidget {
       if (isToday) {
         textColor = Colors.white;
         backgroundColor = Colors.blue;
-        boxHeight = 1.0; // Reset box height to square
+        boxHeight = 1.5;
       }
     }
 
