@@ -34,31 +34,93 @@ class DatePickerNotifier extends StateNotifier<DateTime> {
 }
 // DatePickerNotifier用のProviderを定義
 final datePickerProvider = StateNotifierProvider<DatePickerNotifier, DateTime>((ref) => DatePickerNotifier());
+// class CalendarScreen extends ConsumerWidget {
+//   const CalendarScreen({Key? key}) : super(key: key);
+//
+//   @override
+//   Widget build(BuildContext context, WidgetRef ref) {
+//
+//     final selectedDate = ref.watch(datePickerProvider);
+//
+//     return Scaffold(
+//       appBar: AppBar(title: const Text('カレンダー')),
+//       body: PageView.builder(
+//         itemBuilder: (context, index) {
+//           final currentDate = ref.watch(datePickerProvider);
+//           final displayDate = currentDate.add(Duration(days: (index - 1) * 30)); // approximate days in a month
+//
+//           return SizedBox.expand(
+//             child: Column(
+//               children: [
+//                 CalendarScreenHeader(
+//                   currentMonth: '${displayDate.year}年 ${displayDate.month}月',
+//                 ),
+//                 const SizedBox(height: 16),
+//                 Calendar(
+//                   date: displayDate,
+//                   onDateSelected: (DateTime date) {
+//                     const PlanList().ShowDialog(context, ref, date);
+//                   },
+//                 ),
+//               ],
+//             ),
+//           );
+//         },
+//       ),
+//       // body: SizedBox.expand(
+//       //   child: Column(
+//       //     children: [
+//       //       CalendarScreenHeader(
+//       //         currentMonth: '${selectedDate.year}年 ${selectedDate.month}月',
+//       //       ),
+//       //       const SizedBox(height: 16),
+//       //       Calendar(
+//       //         date: selectedDate,
+//       //         onDateSelected: (DateTime date) {
+//       //           const PlanList().ShowDialog(context, ref, date);
+//       //         },
+//       //       ),
+//       //     ],
+//       //   ),
+//       // ),
+//     );
+//   }
+// }
+
 class CalendarScreen extends ConsumerWidget {
   const CalendarScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
-    final selectedDate = ref.watch(datePickerProvider);
+    const initialPageIndex = 10000; // A very large number to start in the middle
+    final pageController = PageController(initialPage: initialPageIndex);
 
     return Scaffold(
       appBar: AppBar(title: const Text('カレンダー')),
-      body: SizedBox.expand(
-        child: Column(
-          children: [
-            CalendarScreenHeader(
-              currentMonth: '${selectedDate.year}年 ${selectedDate.month}月',
+      body: PageView.builder(
+        controller: pageController,
+        itemBuilder: (context, index) {
+          final currentDate = ref.watch(datePickerProvider);
+          final monthsToAdd = index - initialPageIndex;
+          final displayDate = DateTime(currentDate.year, currentDate.month + monthsToAdd, 1);
+
+          return SizedBox.expand(
+            child: Column(
+              children: [
+                CalendarScreenHeader(
+                  currentMonth: '${displayDate.year}年 ${displayDate.month}月',
+                ),
+                const SizedBox(height: 16),
+                Calendar(
+                  date: displayDate,
+                  onDateSelected: (DateTime date) {
+                    const PlanList().ShowDialog(context, ref, date);
+                  },
+                ),
+              ],
             ),
-            const SizedBox(height: 16),
-            Calendar(
-              date: selectedDate,
-              onDateSelected: (DateTime date) {
-                const PlanList().ShowDialog(context, ref, date);
-              },
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
