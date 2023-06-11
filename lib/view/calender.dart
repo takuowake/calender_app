@@ -6,9 +6,12 @@ import 'package:flutter/painting.dart';
 
 
 import '../common/calendar_builder.dart';
+import '../model/db/plan_db.dart';
 
+/// カレンダーを表示するためのウィジェット
 class Calendar extends ConsumerWidget {
   final DateTime date;
+  // 日付が選択された時に呼び出されるコールバック関数
   final Function(DateTime date) onDateSelected;
 
   const Calendar({
@@ -19,8 +22,8 @@ class Calendar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // 与えられたdateに基づいてカレンダーのデータを生成するためにCalendarBuilderを使用
     final calendarData = CalendarBuilder().build(date);
-    final planState = ref.watch(planDatabaseNotifierProvider);
 
     return Column(
       children: [
@@ -29,8 +32,10 @@ class Calendar extends ConsumerWidget {
           isHeader: true,
           onDateSelected: (DateTime date) {},
         ),
+        // CalendarDataの各週ごとに_WeekRowを生成
         ...calendarData.map(
               (week) => _WeekRow(
+                // 隔週の行には日付データのリストが渡される
                 week.map((date) => date?.toString() ?? '').toList(),
                 onDateSelected: onDateSelected,
           ),
@@ -40,9 +45,11 @@ class Calendar extends ConsumerWidget {
   }
 }
 
+/// 曜日を表示するためのウィジェット
 class _WeekRow extends StatelessWidget {
   const _WeekRow(this.items, {this.isHeader = false, required this.onDateSelected});
 
+  // 曜日の文字列を格納したリスト
   final List<String> items;
   final bool isHeader;
   final Function(DateTime date) onDateSelected;
@@ -50,12 +57,15 @@ class _WeekRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      // items.lengthの数だけリストを生成
       children: List.generate(
         items.length,
             (index) {
           final item = items[index];
+          // DateTime.tryParseは、itemをDateTimeオブジェクトへと変換を試みる。できなければnullを返す
           final date = DateTime.tryParse(item);
           return Expanded(
+            // 日付を表示するためのウィジェット
             child: _DateBox(
               date: date,
               weekday: index + 1,
@@ -70,12 +80,14 @@ class _WeekRow extends StatelessWidget {
   }
 }
 
+/// カレンダーの日付を表示するためのウィジェット
 class _DateBox extends ConsumerWidget {
   const _DateBox({
     required this.text,
     this.date,
     required this.weekday,
     this.isHeader = false,
+    // this.isData = false,
     required this.onDateSelected,
     // Key? key,
   });
@@ -84,17 +96,31 @@ class _DateBox extends ConsumerWidget {
   final DateTime? date;
   final int weekday;
   final bool isHeader;
+  // final bool isData;
   final Function(DateTime date) onDateSelected;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
+    final planState = ref.watch(planDatabaseNotifierProvider);
+    final planItems = planState.planItems;
 
     Color textColor;
     Color backgroundColor = Colors.white;
     double fontSize = 14.0;
     double boxHeight = 1.0;
     bool isToday = false;
+    bool isData = false;
+
+    // planItems の中で該当する日付があるかをチェック
+    if (date != null) {
+      for (PlanItemData item in planItems) {
+        if (item.startDate?.year == date?.year && item.startDate?.month == date?.month && item.startDate?.day == date?.day) {
+          // 該当する日付があれば isData を true に設定
+          isData = true;
+          break;
+        }
+      }
+    }
 
     if (weekday == 6) {
       textColor = Colors.blue;
@@ -114,14 +140,9 @@ class _DateBox extends ConsumerWidget {
       final dateFormat = DateFormat('yyyy-MM-dd');
       isToday = dateFormat.format(date!) == dateFormat.format(now);
       boxHeight = 0.9;
-
-      // if (isToday) {
-      //   textColor = Colors.white;
-      //   backgroundColor = Colors.blue;
-      //   boxHeight = 0.9;
-      // }
     }
 
+    // 子要素のアスペクト比を制御可能
     return AspectRatio(
       aspectRatio: boxHeight,
       child: GestureDetector(
@@ -136,6 +157,7 @@ class _DateBox extends ConsumerWidget {
           ),
           child: Stack(
             children: [
+              // 今日の日付に青丸を表示
               if(isToday)
                 Align(
                   alignment: Alignment.center,
@@ -150,6 +172,7 @@ class _DateBox extends ConsumerWidget {
                 ),
               Center(
                 child: Text(
+                  // Headerがあればtextを表示。なければdate.dayを表示
                   isHeader ? text : date?.day.toString() ?? '',
                   style: TextStyle(
                     color: textColor,
@@ -158,7 +181,7 @@ class _DateBox extends ConsumerWidget {
                 ),
               ),
 
-              if(!isHeader)
+              if(!isHeader && isData)
               Positioned(
                 bottom: 0,
                 left: 0,
@@ -179,3 +202,14 @@ class _DateBox extends ConsumerWidget {
     );
   }
 }
+
+// List<Widget> _buildPlanList(List<PlanItemData> planItemList, PlanDatabaseNotifier db, DateTime date, BuildContext context) {}
+// ここでは、buildの引数として定義されていたが、planItemListを_DateBox内でfinalで定義したい？それともList<PlanItemData> planItemListを引数とする？
+//
+// すると、以下の処理を実行することができる。
+// for (PlanItemData item in planItemList) {
+// // ここで日付が一致するアイテムだけをチェック
+//   if (item.startDate?.year == date.year && item.startDate?.month == date.month && item.startDate?.day == date.day) {
+//   その日付のisDataをtrueにする。
+//   }
+// }
