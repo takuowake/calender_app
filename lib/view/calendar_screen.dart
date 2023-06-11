@@ -3,8 +3,6 @@ import 'package:calender_app/view/view_model/plan_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../model/db/plan_db.dart';
-import '../model/freezed/plan_model.dart';
 import 'calendar_screen_header.dart';
 import 'calender.dart';
 
@@ -82,7 +80,7 @@ class CalendarScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    const initialPageIndex = 10000; // A very large number to start in the middle
+    const initialPageIndex = 10000;
     final pageController = PageController(initialPage: initialPageIndex);
 
     return Scaffold(
