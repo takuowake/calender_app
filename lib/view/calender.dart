@@ -1,3 +1,4 @@
+import 'package:calender_app/view/view_model/plan_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -19,14 +20,19 @@ class Calendar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final calendarData = CalendarBuilder().build(date);
+    final planState = ref.watch(planDatabaseNotifierProvider);
 
     return Column(
       children: [
-        _WeekRow(const ['月', '火', '水', '木', '金', '土', '日'], isHeader: true, onDateSelected: (DateTime date) {  },),
+        _WeekRow(
+          const ['月', '火', '水', '木', '金', '土', '日'],
+          isHeader: true,
+          onDateSelected: (DateTime date) {},
+        ),
         ...calendarData.map(
               (week) => _WeekRow(
-            week.map((date) => date?.toString() ?? '').toList(),
-            onDateSelected: onDateSelected,
+                week.map((date) => date?.toString() ?? '').toList(),
+                onDateSelected: onDateSelected,
           ),
         ),
       ],
@@ -64,7 +70,7 @@ class _WeekRow extends StatelessWidget {
   }
 }
 
-class _DateBox extends StatelessWidget {
+class _DateBox extends ConsumerWidget {
   const _DateBox({
     required this.text,
     this.date,
@@ -81,7 +87,9 @@ class _DateBox extends StatelessWidget {
   final Function(DateTime date) onDateSelected;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+
+
     Color textColor;
     Color backgroundColor = Colors.white;
     double fontSize = 14.0;
@@ -98,19 +106,20 @@ class _DateBox extends StatelessWidget {
     if (isHeader) {
       backgroundColor = Colors.grey;
       fontSize = 10.0;
-      boxHeight = 1.8;
+      boxHeight = 3;
     }
 
     if (date != null) {
       final now = DateTime.now();
       final dateFormat = DateFormat('yyyy-MM-dd');
       isToday = dateFormat.format(date!) == dateFormat.format(now);
+      boxHeight = 0.9;
 
-      if (isToday) {
-        textColor = Colors.white;
-        backgroundColor = Colors.blue;
-        boxHeight = 1.5;
-      }
+      // if (isToday) {
+      //   textColor = Colors.white;
+      //   backgroundColor = Colors.blue;
+      //   boxHeight = 0.9;
+      // }
     }
 
     return AspectRatio(
@@ -124,16 +133,46 @@ class _DateBox extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             color: backgroundColor,
-            shape: isToday ? BoxShape.circle : BoxShape.rectangle,
           ),
-          child: Center(
-            child: Text(
-              isHeader ? text : date?.day.toString() ?? '',
-              style: TextStyle(
-                color: textColor,
-                fontSize: fontSize,
+          child: Stack(
+            children: [
+              if(isToday)
+                Align(
+                  alignment: Alignment.center,
+                  child: Container(
+                    height: 30.0,
+                    width: 30.0,
+                    decoration: BoxDecoration(
+                      color: Colors.blue,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                ),
+              Center(
+                child: Text(
+                  isHeader ? text : date?.day.toString() ?? '',
+                  style: TextStyle(
+                    color: textColor,
+                    fontSize: fontSize,
+                  ),
+                ),
               ),
-            ),
+
+              if(!isHeader)
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Container(
+                  height: 8.0,
+                  width: 8.0,
+                  decoration: BoxDecoration(
+                    color: Colors.black,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
