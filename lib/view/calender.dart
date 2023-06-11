@@ -13,17 +13,24 @@ class Calendar extends ConsumerWidget {
   final DateTime date;
   // 日付が選択された時に呼び出されるコールバック関数
   final Function(DateTime date) onDateSelected;
+  final int displayedMonth;
 
   const Calendar({
     Key? key,
     required this.date,
     required this.onDateSelected,
+    required this.displayedMonth,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // 与えられたdateに基づいてカレンダーのデータを生成するためにCalendarBuilderを使用
     final calendarData = CalendarBuilder().build(date);
+    final calendar = ref.watch(datePickerProvider);
+
+    final displayedMonth = date.month;
+
+    int currentMonth = calendar.month;
 
     return Column(
       children: [
@@ -31,6 +38,7 @@ class Calendar extends ConsumerWidget {
           const ['月', '火', '水', '木', '金', '土', '日'],
           isHeader: true,
           onDateSelected: (DateTime date) {},
+          displayedMonth: displayedMonth,
         ),
         // CalendarDataの各週ごとに_WeekRowを生成
         ...calendarData.map(
@@ -38,6 +46,7 @@ class Calendar extends ConsumerWidget {
                 // 隔週の行には日付データのリストが渡される
                 week.map((date) => date?.toString() ?? '').toList(),
                 onDateSelected: onDateSelected,
+                displayedMonth: displayedMonth,
           ),
         ),
       ],
@@ -47,11 +56,13 @@ class Calendar extends ConsumerWidget {
 
 /// 曜日を表示するためのウィジェット
 class _WeekRow extends StatelessWidget {
-  const _WeekRow(this.items, {this.isHeader = false, required this.onDateSelected});
+  // const _WeekRow(this.items, {this.isHeader = false, required this.onDateSelected});
+  const _WeekRow(this.items, {this.isHeader = false, required this.onDateSelected, required this.displayedMonth});
 
   // 曜日の文字列を格納したリスト
   final List<String> items;
   final bool isHeader;
+  final int displayedMonth;
   final Function(DateTime date) onDateSelected;
 
   @override
@@ -72,6 +83,7 @@ class _WeekRow extends StatelessWidget {
               isHeader: isHeader,
               onDateSelected: date == null ? (DateTime date) {} : onDateSelected,
               text: date == null ? item : date.day.toString(),
+              displayedMonth: displayedMonth,
             ),
           );
         },
@@ -85,6 +97,7 @@ class _DateBox extends ConsumerWidget {
   const _DateBox({
     required this.text,
     this.date,
+    required this.displayedMonth,
     required this.weekday,
     this.isHeader = false,
     // this.isData = false,
@@ -94,6 +107,7 @@ class _DateBox extends ConsumerWidget {
 
   final String text;
   final DateTime? date;
+  final int displayedMonth;
   final int weekday;
   final bool isHeader;
   // final bool isData;
@@ -103,9 +117,12 @@ class _DateBox extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final planState = ref.watch(planDatabaseNotifierProvider);
     final planItems = planState.planItems;
+    final calendar = ref.watch(datePickerProvider);
 
     Color textColor;
     Color backgroundColor = Colors.white;
+
+    // int currentMonth = calendar.month;
     double fontSize = 14.0;
     double boxHeight = 1.0;
     bool isToday = false;
@@ -122,13 +139,16 @@ class _DateBox extends ConsumerWidget {
       }
     }
 
-    if (weekday == 6) {
+    if (date != null && date?.month != displayedMonth) {
+      textColor = Colors.grey;
+    } else if (weekday == 6) {
       textColor = Colors.blue;
     } else if (weekday == 7) {
       textColor = Colors.red;
     } else {
       textColor = Colors.black;
     }
+
     if (isHeader) {
       backgroundColor = Colors.grey;
       fontSize = 10.0;

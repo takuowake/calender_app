@@ -24,16 +24,6 @@ class DateRangeNotifier extends StateNotifier<List<DateTime>> {
     ];
   }
 }
-// 新たに状態管理用のStateNotifierを定義
-class DatePickerNotifier extends StateNotifier<DateTime> {
-  DatePickerNotifier() : super(DateTime.now());
-
-  void setDate(DateTime date) {
-    state = date;
-  }
-}
-// DatePickerNotifier用のProviderを定義
-final datePickerProvider = StateNotifierProvider<DatePickerNotifier, DateTime>((ref) => DatePickerNotifier());
 // class CalendarScreen extends ConsumerWidget {
 //   const CalendarScreen({Key? key}) : super(key: key);
 //
@@ -113,6 +103,7 @@ class CalendarScreen extends ConsumerWidget {
                 const SizedBox(height: 16),
                 Calendar(
                   date: displayDate,
+                  displayedMonth: displayDate.month,
                   onDateSelected: (DateTime date) {
                     const PlanList().ShowDialog(context, ref, date);
                   },

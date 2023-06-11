@@ -6,6 +6,7 @@ import 'package:drift/drift.dart';
 
 import '../../model/db/plan_db.dart';
 import '../../model/freezed/plan_model.dart';
+import '../calendar_screen.dart';
 
 //データベースの状態が変わるたびPlanのviewをビルドするようにするクラスです。
 class PlanDatabaseNotifier extends StateNotifier<PlanStateData> {
@@ -61,7 +62,7 @@ class PlanDatabaseNotifier extends StateNotifier<PlanStateData> {
   }
 }
 
-final planDatabaseNotifierProvider = StateNotifierProvider((_) {
+final planDatabaseNotifierProvider = StateNotifierProvider<PlanDatabaseNotifier, PlanStateData>((ref) {
   PlanDatabaseNotifier notify = PlanDatabaseNotifier();
   notify.readData();
   //初期化処理
@@ -91,6 +92,17 @@ class SwitchProvider extends StateNotifier<bool> {
 
   void updateSwitch(bool value) {
     state = value;
+  }
+}
+
+// DatePickerNotifier用のProviderを定義
+final datePickerProvider = StateNotifierProvider<DatePickerNotifier, DateTime>((ref) => DatePickerNotifier());
+// 新たに状態管理用のStateNotifierを定義
+class DatePickerNotifier extends StateNotifier<DateTime> {
+  DatePickerNotifier() : super(DateTime.now());
+
+  void setDate(DateTime date) {
+    state = date;
   }
 }
 // final tempPlanItemProvider = StateProvider<TempPlanItemData>((ref) => TempPlanItemData());

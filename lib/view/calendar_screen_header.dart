@@ -1,18 +1,7 @@
 import 'package:calender_app/view/plan_list.dart';
+import 'package:calender_app/view/view_model/plan_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-// 新たに状態管理用のStateNotifierを定義
-class DatePickerNotifier extends StateNotifier<DateTime> {
-  DatePickerNotifier() : super(DateTime.now());
-
-  void setDate(DateTime date) {
-    state = date;
-  }
-}
-
-// DatePickerNotifier用のProviderを定義
-final datePickerProvider = StateNotifierProvider<DatePickerNotifier, DateTime>((ref) => DatePickerNotifier());
 
 class CalendarScreenHeader extends ConsumerWidget {
   const CalendarScreenHeader({

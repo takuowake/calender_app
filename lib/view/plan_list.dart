@@ -17,9 +17,6 @@ class DatePickerNotifier extends StateNotifier<DateTime> {
   }
 }
 
-// DatePickerNotifier用のProviderを定義
-final datePickerProvider = StateNotifierProvider<DatePickerNotifier, DateTime>((ref) => DatePickerNotifier());
-
 
 class PlanList extends ConsumerWidget {
 
