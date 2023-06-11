@@ -39,9 +39,11 @@ class PlanList extends ConsumerWidget {
     // planItemListの各要素について、for...inループを使用して処理を行う
     for (PlanItemData item in planItemList) {
       // ここで日付が一致するアイテムだけをチェック
-      if (item.startDate?.year == date.year &&
-          item.startDate?.month == date.month &&
-          item.startDate?.day == date.day) {
+      DateTime startOfDay = DateTime(date.year, date.month, date.day);
+      DateTime endOfDay = DateTime(date.year, date.month, date.day, 23, 59, 59);
+
+      if ((item.startDate?.isBefore(endOfDay) ?? false) &&
+          (item.endDate?.isAfter(startOfDay) ?? false)) {
         String startTime = '${item.startDate?.hour.toString().padLeft(2, '0')}:${item.startDate?.minute.toString().padLeft(2, '0')}';
         String endTime = '${item.endDate?.hour.toString().padLeft(2, '0')}:${item.endDate?.minute.toString().padLeft(2, '0')}';
 
