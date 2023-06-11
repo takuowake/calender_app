@@ -131,7 +131,11 @@ class _DateBox extends ConsumerWidget {
     // planItems の中で該当する日付があるかをチェック
     if (date != null) {
       for (PlanItemData item in planItems) {
-        if (item.startDate?.year == date?.year && item.startDate?.month == date?.month && item.startDate?.day == date?.day) {
+        DateTime startOfDay = DateTime(date!.year, date!.month, date!.day);
+        DateTime endOfDay = DateTime(date!.year, date!.month, date!.day, 23, 59, 59);
+
+        if ((item.startDate?.isBefore(endOfDay) ?? false) &&
+            (item.endDate?.isAfter(startOfDay) ?? false)) {
           // 該当する日付があれば isData を true に設定
           isData = true;
           break;
