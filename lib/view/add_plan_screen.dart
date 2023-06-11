@@ -335,7 +335,7 @@ class AddPlanScreen extends HookConsumerWidget {
                                               // 初期値を設定
                                               initialDateTime: endDateTime,
                                               // DatePickerのモードを指定（場合分け）
-                                              mode: CupertinoDatePickerMode.dateAndTime,
+                                              mode: ref.watch(switchProvider) ? CupertinoDatePickerMode.date : CupertinoDatePickerMode.dateAndTime,
                                               minuteInterval: 15,
                                               minimumDate: startDateTime,
                                               onDateTimeChanged: (dateTime) {
