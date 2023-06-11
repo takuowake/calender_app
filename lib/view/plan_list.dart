@@ -58,7 +58,12 @@ class PlanList extends ConsumerWidget {
                     MaterialPageRoute(builder: (context) => EditPlanScreen(item: item)),
                   );
                 },
-                child: Text(item.title),
+                child: Text(
+                  item.title,
+                  overflow: TextOverflow.ellipsis,
+                  softWrap: false,
+                  maxLines: 1,
+                ),
               ),
               leading: SizedBox(
                 width: 50,
@@ -311,7 +316,7 @@ class PlanList extends ConsumerWidget {
                                     thickness: 1,
                                   ),
                                   SizedBox(height: 200),
-                                  Text("予定がありません"),
+                                  Text("予定がありません。"),
                                 ],
                               ))
                             ]
