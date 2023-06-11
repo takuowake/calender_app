@@ -4,12 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class CalendarScreenHeader extends ConsumerWidget {
+  final String currentMonth;
+  final PageController pageController;
+  final WidgetRef ref;
+  final int initialPageIndex;
+
+
   const CalendarScreenHeader({
     Key? key,
     required this.currentMonth,
+    required this.pageController,
+    required this.ref,
+    required this.initialPageIndex
   });
-
-  final String currentMonth;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -25,10 +32,9 @@ class CalendarScreenHeader extends ConsumerWidget {
               ),
             ),
             onPressed: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) => PlanList(),
-              );
+              // DatePickerNotifierの状態を今日の日付に更新
+              ref.read(datePickerProvider.notifier).setDate(DateTime.now());
+              pageController.jumpToPage(initialPageIndex);
             },
             child: Text(
               '今日',

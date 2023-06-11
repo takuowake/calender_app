@@ -97,8 +97,14 @@ class CalendarScreen extends ConsumerWidget {
           return SizedBox.expand(
             child: Column(
               children: [
+                // CalendarScreenHeader(
+                //   currentMonth: '${displayDate.year}年 ${displayDate.month}月',
+                // ),
                 CalendarScreenHeader(
                   currentMonth: '${displayDate.year}年 ${displayDate.month}月',
+                  pageController: pageController,
+                  ref: ref,
+                  initialPageIndex: initialPageIndex,
                 ),
                 const SizedBox(height: 16),
                 Calendar(
