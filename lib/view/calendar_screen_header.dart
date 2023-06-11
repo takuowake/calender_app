@@ -13,32 +13,37 @@ class CalendarScreenHeader extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Row(
-      children: [
-        OutlinedButton(
-          style: OutlinedButton.styleFrom(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),//角の丸み
+    return Padding(
+      padding: const EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          OutlinedButton(
+            style: OutlinedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),//角の丸み
+              ),
+            ),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) => PlanList(),
+              );
+            },
+            child: Text(
+              '今日',
+              style: TextStyle(color: Colors.black),
             ),
           ),
-          onPressed: () {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) => PlanList(),
-            );
-          },
-          child: Text(
-            '今日',
-            style: TextStyle(color: Colors.black),
+          Spacer(),
+          Text(
+            currentMonth,
+            style: TextStyle(fontSize: 24),
           ),
-        ),
-        Expanded(
-          child: Center(
-            child: Text(currentMonth),
-          ),
-        ),
-        DatePicker(),
-      ],
+          DatePicker(),
+          Spacer(), //
+        ],
+      ),
     );
   }
 }
