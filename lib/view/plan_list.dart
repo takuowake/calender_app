@@ -175,62 +175,63 @@ class PlanList extends ConsumerWidget {
 
           String dayOfWeek = getFormattedDate(date);
 
-          // String dialogDate = '${date.year}年 ${date.month}月 ${date.day}日';
-
-          return Padding(
-            padding: const EdgeInsets.only(left: 8.0, top: 200.0, right: 8.0, bottom: 10.0),
-            child: Container(
-              width: 100,
-              height: 300,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Text('${date.year}年 ${date.month}月 ${date.day}日 '),
-                              Text(
-                                  dayOfWeek,
-                                style: TextStyle(color: date.weekday == 6 ? Colors.blue : (date.weekday == 7 ? Colors.red : Colors.black)),
-                              ),
-                            ],
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => AddPlanScreen(selectedDate: date),
+          return GestureDetector(
+            onTap: () {},
+            child: Padding(
+              padding: const EdgeInsets.only(left: 8.0, top: 200.0, right: 8.0, bottom: 10.0),
+              child: Container(
+                width: 100,
+                height: 300,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Text('${date.year}年 ${date.month}月 ${date.day}日 '),
+                                Text(
+                                    dayOfWeek,
+                                  style: TextStyle(color: date.weekday == 6 ? Colors.blue : (date.weekday == 7 ? Colors.red : Colors.black)),
                                 ),
-                              );
-                            },
-                            icon: Icon(Icons.add, color: Colors.blue),
-                          )
-                        ],
-                      ),
-                      // Using spread operator and ternary conditional
-                      ...tiles.isEmpty
-                          ? [
-                              Center(child: Column(
-                                children: [
-                                  Divider(
-                                    thickness: 1,
+                              ],
+                            ),
+                            IconButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => AddPlanScreen(selectedDate: date),
                                   ),
-                                  SizedBox(height: 200),
-                                  Text("予定がありません。"),
-                                ],
-                              ))
-                            ]
-                          : [Column(children: tiles)]
-                    ],
+                                );
+                              },
+                              icon: Icon(Icons.add, color: Colors.blue),
+                            )
+                          ],
+                        ),
+                        // Using spread operator and ternary conditional
+                        ...tiles.isEmpty
+                            ? [
+                                Center(child: Column(
+                                  children: [
+                                    Divider(
+                                      thickness: 1,
+                                    ),
+                                    SizedBox(height: 200),
+                                    Text("予定がありません。"),
+                                  ],
+                                ))
+                              ]
+                            : [Column(children: tiles)]
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -254,14 +255,14 @@ class PlanList extends ConsumerWidget {
       // ダイアログの外側をタップすると、ダイアログが閉じる
       barrierDismissible: true,
       builder: (context) {
-        return Material(
-          // 透明の背景
-          type: MaterialType.transparency,
-          // タップイベントを検知してダイアログを閉じる
-          child: GestureDetector(
-            onTap: () {
-              Navigator.of(context).pop();
-            },
+      return GestureDetector(
+        onTap: () {
+          Navigator.pop(context); // Close the dialog when tapped outside
+        },
+        child: Material(
+            // 透明の背景
+            type: MaterialType.transparency,
+            // タップイベントを検知してダイアログを閉じる
             child: SizedBox(
               height: MediaQuery.of(context).size.height * 0.7,
               width: MediaQuery.of(context).size.width * 0.7,
@@ -285,7 +286,7 @@ class PlanList extends ConsumerWidget {
               ),
             ),
           ),
-        );
+      );
       },
     );
   }
