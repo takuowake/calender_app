@@ -2,7 +2,7 @@ import 'package:calender_app/view/view_model/plan_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter/painting.dart';
+// import 'package:flutter/painting.dart';
 
 
 import '../common/calendar_builder.dart';
@@ -26,11 +26,11 @@ class Calendar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // 与えられたdateに基づいてカレンダーのデータを生成するためにCalendarBuilderを使用
     final calendarData = CalendarBuilder().build(date);
-    final calendar = ref.watch(datePickerProvider);
+    // final calendar = ref.watch(datePickerProvider);
 
     final displayedMonth = date.month;
 
-    int currentMonth = calendar.month;
+    // int currentMonth = calendar.month;
 
     return Column(
       children: [
@@ -56,7 +56,6 @@ class Calendar extends ConsumerWidget {
 
 /// 曜日を表示するためのウィジェット
 class _WeekRow extends StatelessWidget {
-  // const _WeekRow(this.items, {this.isHeader = false, required this.onDateSelected});
   const _WeekRow(this.items, {this.isHeader = false, required this.onDateSelected, required this.displayedMonth});
 
   // 曜日の文字列を格納したリスト
@@ -100,9 +99,7 @@ class _DateBox extends ConsumerWidget {
     required this.displayedMonth,
     required this.weekday,
     this.isHeader = false,
-    // this.isData = false,
     required this.onDateSelected,
-    // Key? key,
   });
 
   final String text;
@@ -110,14 +107,12 @@ class _DateBox extends ConsumerWidget {
   final int displayedMonth;
   final int weekday;
   final bool isHeader;
-  // final bool isData;
   final Function(DateTime date) onDateSelected;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final planState = ref.watch(planDatabaseNotifierProvider);
     final planItems = planState.planItems;
-    final calendar = ref.watch(datePickerProvider);
 
     Color textColor;
     Color backgroundColor = Colors.white;
@@ -188,7 +183,7 @@ class _DateBox extends ConsumerWidget {
                   child: Container(
                     height: 30.0,
                     width: 30.0,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       color: Colors.blue,
                       shape: BoxShape.circle,
                     ),
@@ -213,7 +208,7 @@ class _DateBox extends ConsumerWidget {
                 child: Container(
                   height: 8.0,
                   width: 8.0,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: Colors.black,
                     shape: BoxShape.circle,
                   ),
@@ -226,14 +221,3 @@ class _DateBox extends ConsumerWidget {
     );
   }
 }
-
-// List<Widget> _buildPlanList(List<PlanItemData> planItemList, PlanDatabaseNotifier db, DateTime date, BuildContext context) {}
-// ここでは、buildの引数として定義されていたが、planItemListを_DateBox内でfinalで定義したい？それともList<PlanItemData> planItemListを引数とする？
-//
-// すると、以下の処理を実行することができる。
-// for (PlanItemData item in planItemList) {
-// // ここで日付が一致するアイテムだけをチェック
-//   if (item.startDate?.year == date.year && item.startDate?.month == date.month && item.startDate?.day == date.day) {
-//   その日付のisDataをtrueにする。
-//   }
-// }

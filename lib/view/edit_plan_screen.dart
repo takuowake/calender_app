@@ -8,7 +8,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../model/db/plan_db.dart';
-import '../model/freezed/plan_model.dart';
 import 'calendar_screen.dart';
 
 DateTime roundToNearestFifteen(DateTime dateTime) {
@@ -26,7 +25,7 @@ class EditPlanScreen extends HookConsumerWidget {
 
   PlanItemData item;
 
-  EditPlanScreen({required this.item});
+  EditPlanScreen({super.key, required this.item});
 
   // DateTime? startDateTime;
   // DateTime? endDateTime;
@@ -119,7 +118,7 @@ class EditPlanScreen extends HookConsumerWidget {
                       builder: (context) => CalendarScreen(initialDate: item.startDate ?? startDateTime),
                     ),
                   );
-                  PlanList().ShowDialog(context, ref, startDateTime!);
+                  const PlanList().ShowDialog(context, ref, startDateTime!);
                 },
                 child: const Text('削除', style: TextStyle(color: Colors.blue)),
               ),
@@ -188,7 +187,7 @@ class EditPlanScreen extends HookConsumerWidget {
                       builder: (context) => CalendarScreen(initialDate: data.startDate ?? startDateTime),
                     ),
                   );
-                  PlanList().ShowDialog(context, ref, startDateTime!);
+                  const PlanList().ShowDialog(context, ref, startDateTime!);
                 } : null,
                 child: const Text('保存'),
               ),
@@ -320,7 +319,6 @@ class EditPlanScreen extends HookConsumerWidget {
                                                   dateTime.hour,
                                                   dateTime.minute,
                                                 );
-                                                // item = item.copyWith(startDate: start.value);
                                                 // copyWithメソッドを使用してitemオブジェクトのコピーを作成し、startDateプロパティを新しい値
                                                 item = item.copyWith(startDate: Drift.Value(start.value));
 
@@ -419,9 +417,6 @@ class EditPlanScreen extends HookConsumerWidget {
                                       ),
                                     ),
                                   );
-                                  // if (selectedDate != null) {
-                                  //   setState(() => _endDateTime = selectedDate);
-                                  // }
                                 },
                                 child: Consumer(
                                   builder: (context, watch, _) {

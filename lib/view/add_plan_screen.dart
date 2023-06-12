@@ -9,7 +9,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
 
-import '../model/db/plan_db.dart';
 import '../model/freezed/plan_model.dart';
 import 'calendar_screen.dart';
 
@@ -38,10 +37,10 @@ class AddPlanScreen extends HookConsumerWidget {
   //Providerが保持しているplanItemsを取得します。
   TempPlanItemData temp = TempPlanItemData();
   final DateTime selectedDate;
-  AddPlanScreen({required this.selectedDate});
+  AddPlanScreen({super.key, required this.selectedDate});
 
   late DateTime startDateTime = roundToNearestFifteen(selectedDate);
-  late DateTime endDateTime = startDateTime.add(Duration(hours: 1));
+  late DateTime endDateTime = startDateTime.add(const Duration(hours: 1));
 
   final switchProvider = StateNotifierProvider<SwitchProvider, bool>((ref) {
     return SwitchProvider();
@@ -51,13 +50,8 @@ class AddPlanScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // final temp = useState<TempPlanItemData>(TempPlanItemData());
-    // final temp = ref.watch(tempPlanItemProvider);
     //Providerの状態が変化したさいに再ビルドします
     final planProvider = ref.watch(planDatabaseNotifierProvider.notifier);
-    //Providerのメソッドや値を取得します
-    //bottomsheetが閉じた際に再ビルドするために使用します。
-    // List<PlanItemData> planItems = planProvider.state.planItems;
 
     void _showEditCanselConfirmation() {
       showCupertinoModalPopup(
@@ -65,13 +59,13 @@ class AddPlanScreen extends HookConsumerWidget {
         builder: (BuildContext context) => CupertinoActionSheet(
           actions: <Widget>[
             CupertinoActionSheetAction(
-              child: const Text('編集を破棄', style: TextStyle(color: Colors.blue)),
               onPressed: () {
                 Navigator.of(context).pop();
                 // CupertinoActionSheetをポップします。
                 Navigator.of(context).pop();
               },
               isDestructiveAction: true,
+              child: const Text('編集を破棄', style: TextStyle(color: Colors.blue)),
             ),
           ],
           cancelButton: CupertinoActionSheetAction(
@@ -102,7 +96,7 @@ class AddPlanScreen extends HookConsumerWidget {
         appBar: AppBar(
           title: const Text('予定の追加'),
           leading: IconButton(
-            icon: Icon(Icons.clear),
+            icon: const Icon(Icons.clear),
             onPressed: () {
               if (temp.title.isNotEmpty || temp.comment.isNotEmpty) {
                 _showEditCanselConfirmation();
@@ -113,7 +107,7 @@ class AddPlanScreen extends HookConsumerWidget {
           ),
           actions: [
             Padding(
-              padding: EdgeInsets.only(right: 10.0, bottom: 5),
+              padding: const EdgeInsets.only(right: 10.0, bottom: 5),
               child: ElevatedButton(
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
@@ -123,7 +117,6 @@ class AddPlanScreen extends HookConsumerWidget {
                       return Colors.white70;
                     }
                   }),
-                  // foregroundColor: MaterialStateProperty.all<Color>(Colors.grey),
                   foregroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
                     if (temp.title.isNotEmpty && temp.comment.isNotEmpty) {
                       return Colors.black;
@@ -138,17 +131,15 @@ class AddPlanScreen extends HookConsumerWidget {
                     endDate: temp.endDate ?? endDateTime,
                   );
                   await planProvider.writeData(temp);
-                  // await planProvider.readData();
-                  // Navigator.pushNamed(context, '/');
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => CalendarScreen(initialDate: temp.startDate ?? startDateTime),
                     ),
                   );
-                  PlanList().ShowDialog(context, ref, startDateTime);
+                  const PlanList().ShowDialog(context, ref, startDateTime);
                 } : null,
-                child: Text('保存'),
+                child: const Text('保存'),
               ),
             ),
           ],
@@ -159,17 +150,17 @@ class AddPlanScreen extends HookConsumerWidget {
               Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: TextField(
-                  style: TextStyle(color: Colors.grey),
+                  style: const TextStyle(color: Colors.grey),
                   autofocus: true,
                   focusNode: titleFocusNode,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     hintText: 'タイトルを入力してください',
-                    contentPadding: const EdgeInsets.only(left: 10),
+                    contentPadding: EdgeInsets.only(left: 10),
                     fillColor: Colors.white,
                     border: InputBorder.none,
                     filled: true,
                     focusedBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
+                      borderSide: BorderSide(
                         color: Colors.blue,
                       ),
                     ),
@@ -191,7 +182,7 @@ class AddPlanScreen extends HookConsumerWidget {
                   color: Colors.white,
                   child: Column(
                     children: [
-                      Container(
+                      SizedBox(
                         height: 50,
                         child: Padding(
                           padding: const EdgeInsets.all(12.0),
@@ -214,8 +205,8 @@ class AddPlanScreen extends HookConsumerWidget {
                           ),
                         ),
                       ),
-                      Divider(),
-                      Container(
+                      const Divider(),
+                      SizedBox(
                         height: 50,
                         child: Padding(
                           padding: const EdgeInsets.all(12.0),
@@ -236,19 +227,19 @@ class AddPlanScreen extends HookConsumerWidget {
                                       color: CupertinoColors.white,
                                       child: Column(
                                         children: [
-                                          Container(
+                                          SizedBox(
                                             height: 60,
                                             child: Row(
                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                               children: [
                                                 CupertinoButton(
                                                   // ダイアログが閉じられる
-                                                  child: Text('キャンセル'),
+                                                  child: const Text('キャンセル'),
                                                   onPressed: () => Navigator.of(context).pop(),
                                                 ),
                                                 CupertinoButton(
                                                   // selectDateがダイアログpopされる
-                                                  child: Text('完了'),
+                                                  child: const Text('完了'),
                                                   onPressed: () => {
                                                     Navigator.of(context).pop(),
                                                   },
@@ -256,7 +247,7 @@ class AddPlanScreen extends HookConsumerWidget {
                                               ],
                                             ),
                                           ),
-                                          Container(
+                                          SizedBox(
                                             height: 220,
                                             child: CupertinoDatePicker(
                                               // 初期値を設定
@@ -276,7 +267,7 @@ class AddPlanScreen extends HookConsumerWidget {
                                                 // temp変数のlimitプロパティが選択された日付と時間に更新される
                                                 temp = temp.copyWith(startDate: start.value);
                                                 startDateTime = start.value!;
-                                                endDateTime = start.value!.add(Duration(hours: 1));
+                                                endDateTime = start.value!.add(const Duration(hours: 1));
                                               },
                                             ),
                                           ),
@@ -292,7 +283,7 @@ class AddPlanScreen extends HookConsumerWidget {
                                     return Text(
                                       // DateFormat(format).format(selectedDate!),
                                       DateFormat(format).format(startDateTime),
-                                      style: TextStyle(color: Colors.blue),
+                                      style: const TextStyle(color: Colors.blue),
                                     );
                                   },
                                 ),
@@ -301,8 +292,8 @@ class AddPlanScreen extends HookConsumerWidget {
                           ),
                         ),
                       ),
-                      Divider(),
-                      Container(
+                      const Divider(),
+                      SizedBox(
                         height: 50,
                         child: Padding(
                           padding: const EdgeInsets.all(12.0),
@@ -319,17 +310,17 @@ class AddPlanScreen extends HookConsumerWidget {
                                       color: CupertinoColors.white,
                                       child: Column(
                                         children: [
-                                          Container(
+                                          SizedBox(
                                             height: 60,
                                             child: Row(
                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                               children: [
                                                 CupertinoButton(
-                                                  child: Text('キャンセル'),
+                                                  child: const Text('キャンセル'),
                                                   onPressed: () => Navigator.of(context).pop(),
                                                 ),
                                                 CupertinoButton(
-                                                  child: Text('完了'),
+                                                  child: const Text('完了'),
                                                   onPressed: () => {
                                                     Navigator.of(context).pop(),
                                                   },
@@ -337,7 +328,7 @@ class AddPlanScreen extends HookConsumerWidget {
                                               ],
                                             ),
                                           ),
-                                          Container(
+                                          SizedBox(
                                             height: 220, // CupertinoDatePicker has an intrinsic height of 216.0
                                             child: CupertinoDatePicker(
                                               // 初期値を設定
@@ -365,9 +356,6 @@ class AddPlanScreen extends HookConsumerWidget {
                                       ),
                                     ),
                                   );
-                                  // if (selectedDate != null) {
-                                  //   setState(() => _endDateTime = selectedDate);
-                                  // }
                                 },
                                 child: Consumer(
                                   builder: (context, watch, _) {
@@ -375,7 +363,7 @@ class AddPlanScreen extends HookConsumerWidget {
                                     final format = switchState ? 'yyyy-MM-dd' : 'yyyy-MM-dd HH:mm';
                                     return Text(
                                       DateFormat(format).format(endDateTime),
-                                      style: TextStyle(color: Colors.blue),
+                                      style: const TextStyle(color: Colors.blue),
                                     );
                                   },
                                 ),
@@ -391,7 +379,7 @@ class AddPlanScreen extends HookConsumerWidget {
               const SizedBox(height: 10),
               Padding(
                 padding: const EdgeInsets.all(10.0),
-                child: Container(
+                child: SizedBox(
                   height: 200,
                   width: 400,
                   child: TextField(
@@ -399,14 +387,14 @@ class AddPlanScreen extends HookConsumerWidget {
                     expands: true,
                     keyboardType: TextInputType.multiline,
                     textAlignVertical: TextAlignVertical.top,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: 'コメントを入力してください',
-                      contentPadding: const EdgeInsets.only(left: 10, top: 20, ),
+                      contentPadding: EdgeInsets.only(left: 10, top: 20, ),
                       fillColor: Colors.white,
                       border: InputBorder.none,
                       filled: true,
                       focusedBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(
+                        borderSide: BorderSide(
                           color: Colors.blue,
                         ),
                       ),

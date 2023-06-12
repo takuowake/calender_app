@@ -5,18 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../model/db/plan_db.dart';
-import '../model/freezed/plan_model.dart';
-
-
-// // 新たに状態管理用のStateNotifierを定義
-// class DatePickerNotifier extends StateNotifier<DateTime> {
-//   DatePickerNotifier() : super(DateTime.now());
-//
-//   void setDate(DateTime date) {
-//     state = date;
-//   }
-// }
-
 
 class PlanList extends ConsumerWidget {
 
@@ -49,7 +37,7 @@ class PlanList extends ConsumerWidget {
 
         Widget tile = Column(
           children: [
-            Divider(
+            const Divider(
               thickness: 1,
             ),
             ListTile(
@@ -97,7 +85,7 @@ class PlanList extends ConsumerWidget {
                         ],
                       ),
                     ),
-                    VerticalDivider(
+                    const VerticalDivider(
                       color: Colors.blue,
                       thickness: 3,
                       // width: 15,
@@ -134,7 +122,7 @@ class PlanList extends ConsumerWidget {
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         // データがまだ読み込まれていない場合
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(
+          return const Center(
             child: CircularProgressIndicator(),
           );
         } else {
@@ -212,14 +200,14 @@ class PlanList extends ConsumerWidget {
                                   ),
                                 );
                               },
-                              icon: Icon(Icons.add, color: Colors.blue),
+                              icon: const Icon(Icons.add, color: Colors.blue),
                             )
                           ],
                         ),
                         // Using spread operator and ternary conditional
                         ...tiles.isEmpty
                             ? [
-                                Center(child: Column(
+                                const Center(child: Column(
                                   children: [
                                     Divider(
                                       thickness: 1,

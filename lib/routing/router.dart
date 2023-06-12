@@ -10,9 +10,9 @@ class Router {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case '/':
-        return MaterialPageRoute(builder: (_) => CalendarScreen()); // カレンダー画面へのルーティング
+        return MaterialPageRoute(builder: (_) => const CalendarScreen()); // カレンダー画面へのルーティング
       case '/plan-list':
-        return MaterialPageRoute(builder: (_) => PlanList()); // 予定一覧画面へのルーティング
+        return MaterialPageRoute(builder: (_) => const PlanList()); // 予定一覧画面へのルーティング
       case '/add-plan':
         var selectedDate = settings.arguments as DateTime;
         return MaterialPageRoute(builder: (_) => AddPlanScreen(selectedDate: selectedDate)); // 予定追加画面へのルーティング
@@ -20,7 +20,7 @@ class Router {
         var item = settings.arguments as PlanItemData;
         return MaterialPageRoute(builder: (_) => EditPlanScreen(item: item)); // 予定編集画面へのルーティング
       default:
-        return MaterialPageRoute(builder: (_) => CalendarScreen()); // 存在しないルートへのアクセス時のエラーハンドリング
+        return MaterialPageRoute(builder: (_) => const CalendarScreen()); // 存在しないルートへのアクセス時のエラーハンドリング
     }
   }
 }

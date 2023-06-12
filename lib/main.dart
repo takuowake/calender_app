@@ -20,28 +20,15 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       onGenerateRoute: Router.Router.generateRoute,
-      locale: Locale('ja', 'JP'),
-      localizationsDelegates: [
+      locale: const Locale('ja', 'JP'),
+      localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      supportedLocales: [
-        const Locale('ja', 'JP'),
+      supportedLocales: const [
+        Locale('ja', 'JP'),
       ],
     );
   }
 }
-
-
-
-
-
-// final dialogProvider = StateProvider<int>((ref) => 0);
-//
-
-//
-// final dateRangeProvider = StateNotifierProvider<DateRangeNotifier, List<DateTime>>((ref) => DateRangeNotifier());
-//
-
-//

@@ -1,4 +1,3 @@
-import 'package:calender_app/view/plan_list.dart';
 import 'package:calender_app/view/view_model/plan_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,7 +10,7 @@ class CalendarScreenHeader extends ConsumerWidget {
 
 
   const CalendarScreenHeader({
-    Key? key,
+    super.key,
     required this.currentMonth,
     required this.pageController,
     required this.ref,
@@ -36,18 +35,18 @@ class CalendarScreenHeader extends ConsumerWidget {
               ref.read(datePickerProvider.notifier).setDate(DateTime.now());
               pageController.jumpToPage(initialPageIndex);
             },
-            child: Text(
+            child: const Text(
               '今日',
               style: TextStyle(color: Colors.black),
             ),
           ),
-          Spacer(),
+          const Spacer(),
           Text(
             currentMonth,
-            style: TextStyle(fontSize: 24),
+            style: const TextStyle(fontSize: 24),
           ),
-          DatePicker(),
-          Spacer(), //
+          const DatePicker(),
+          const Spacer(), //
         ],
       ),
     );
@@ -78,7 +77,7 @@ class DatePicker extends ConsumerWidget {
     }
     return IconButton(
       onPressed: onPressedElevatedButton,
-      icon: Icon(Icons.arrow_drop_down),
+      icon: const Icon(Icons.arrow_drop_down),
     );
   }
 }
