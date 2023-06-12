@@ -76,12 +76,17 @@ class DateRangeNotifier extends StateNotifier<List<DateTime>> {
 // }
 
 class CalendarScreen extends ConsumerWidget {
-  const CalendarScreen({Key? key}) : super(key: key);
+  final DateTime? initialDate;
+
+  const CalendarScreen({Key? key, this.initialDate}) : super(key: key);
+
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     const initialPageIndex = 10000;
-    final pageController = PageController(initialPage: initialPageIndex);
+    final currentDate = initialDate ?? ref.watch(datePickerProvider);
+    final initialPageOffset = (currentDate!.year * 12 + currentDate.month) - (ref.watch(datePickerProvider).year * 12 + ref.watch(datePickerProvider).month);
+    final pageController = PageController(initialPage: initialPageIndex + initialPageOffset);
 
     return Scaffold(
       appBar: AppBar(title: const Text('カレンダー')),
