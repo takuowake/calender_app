@@ -235,7 +235,6 @@ class AddPlanScreen extends HookConsumerWidget {
                                     final switchState = ref.watch(switchProvider);
                                     final format = switchState ? 'yyyy-MM-dd' : 'yyyy-MM-dd HH:mm';
                                     return Text(
-                                      // DateFormat(format).format(selectedDate!),
                                       DateFormat(format).format(startDateTime),
                                       style: const TextStyle(color: Colors.blue),
                                     );
@@ -283,7 +282,7 @@ class AddPlanScreen extends HookConsumerWidget {
                                             ),
                                           ),
                                           SizedBox(
-                                            height: 220, // CupertinoDatePicker has an intrinsic height of 216.0
+                                            height: 220,
                                             child: CupertinoDatePicker(
                                               // 初期値を設定
                                               initialDateTime: endDateTime,
