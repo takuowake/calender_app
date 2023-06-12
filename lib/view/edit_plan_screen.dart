@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 
 import '../model/db/plan_db.dart';
 import '../model/freezed/plan_model.dart';
+import 'calendar_screen.dart';
 
 DateTime roundToNearestFifteen(DateTime dateTime) {
   final int minute = dateTime.minute;
@@ -112,7 +113,12 @@ class EditPlanScreen extends HookConsumerWidget {
                 onPressed: () {
                   // ここで予定を削除する処理を追加する
                   planProvider.deleteData(item);
-                  Navigator.pushNamed(context, '/');
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CalendarScreen(initialDate: item.startDate ?? startDateTime),
+                    ),
+                  );
                   PlanList().ShowDialog(context, ref, startDateTime!);
                 },
                 child: const Text('削除', style: TextStyle(color: Colors.blue)),
@@ -176,7 +182,12 @@ class EditPlanScreen extends HookConsumerWidget {
                   );
                   // await db.updateData(data);
                   ref.read(planDatabaseNotifierProvider.notifier).updateData(data);
-                  Navigator.pushNamed(context, '/');
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CalendarScreen(initialDate: data.startDate ?? startDateTime),
+                    ),
+                  );
                   PlanList().ShowDialog(context, ref, startDateTime!);
                 } : null,
                 child: const Text('保存'),
@@ -300,6 +311,7 @@ class EditPlanScreen extends HookConsumerWidget {
                                               // DatePickerのモードを指定（場合分け）
                                               mode: ref.watch(switchProvider) ? CupertinoDatePickerMode.date : CupertinoDatePickerMode.dateAndTime,
                                               minuteInterval: 15,
+                                              use24hFormat: true,
                                               onDateTimeChanged: (dateTime) {
                                                 start.value = DateTime(
                                                   dateTime.year,
@@ -385,6 +397,7 @@ class EditPlanScreen extends HookConsumerWidget {
                                               // DatePickerのモードを指定（場合分け）
                                               mode: ref.watch(switchProvider) ? CupertinoDatePickerMode.date : CupertinoDatePickerMode.dateAndTime,
                                               minuteInterval: 15,
+                                              use24hFormat: true,
                                               minimumDate: startDateTime,
                                               onDateTimeChanged: (dateTime) {
                                                 end.value = DateTime(

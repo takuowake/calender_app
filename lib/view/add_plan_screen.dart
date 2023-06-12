@@ -11,6 +11,7 @@ import 'package:intl/intl.dart';
 
 import '../model/db/plan_db.dart';
 import '../model/freezed/plan_model.dart';
+import 'calendar_screen.dart';
 
 DateTime roundToNearestFifteen(DateTime selectedDate) {
   final now = DateTime.now();
@@ -138,7 +139,13 @@ class AddPlanScreen extends HookConsumerWidget {
                   );
                   await planProvider.writeData(temp);
                   // await planProvider.readData();
-                  Navigator.pushNamed(context, '/');
+                  // Navigator.pushNamed(context, '/');
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CalendarScreen(initialDate: temp.startDate ?? startDateTime),
+                    ),
+                  );
                   PlanList().ShowDialog(context, ref, startDateTime);
                 } : null,
                 child: Text('保存'),
@@ -257,6 +264,7 @@ class AddPlanScreen extends HookConsumerWidget {
                                               // DatePickerのモードを指定（場合分け）
                                               mode: ref.watch(switchProvider) ? CupertinoDatePickerMode.date : CupertinoDatePickerMode.dateAndTime,
                                               minuteInterval: 15,
+                                              use24hFormat: true,
                                               onDateTimeChanged: (dateTime) {
                                                 start.value = DateTime(
                                                   dateTime.year,
@@ -337,6 +345,7 @@ class AddPlanScreen extends HookConsumerWidget {
                                               // DatePickerのモードを指定（場合分け）
                                               mode: ref.watch(switchProvider) ? CupertinoDatePickerMode.date : CupertinoDatePickerMode.dateAndTime,
                                               minuteInterval: 15,
+                                              use24hFormat: true,
                                               minimumDate: startDateTime,
                                               onDateTimeChanged: (dateTime) {
                                                 end.value = DateTime(
