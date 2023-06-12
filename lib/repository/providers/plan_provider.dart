@@ -1,11 +1,10 @@
 /// DBへの読み込み、追加、削除、更新を行う。
 /// DBへの操作が行われるたびに更新通知を送り、画面を再描画する。
 
+import 'package:calender_app/model/freezed/plan_model.dart';
+import 'package:calender_app/service/db/plan_db.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:drift/drift.dart';
-
-import '../../model/db/plan_db.dart';
-import '../../model/freezed/plan_model.dart';
 
 //データベースの状態が変わるたびPlanのviewをビルドするようにするクラスです。
 class PlanDatabaseNotifier extends StateNotifier<PlanStateData> {
@@ -94,3 +93,9 @@ class DatePickerNotifier extends StateNotifier<DateTime> {
     state = date;
   }
 }
+
+final currentDateProvider = StateProvider<DateTime>((ref) => DateTime.now());
+
+final switchProvider = StateNotifierProvider<SwitchProvider, bool>((ref) {
+  return SwitchProvider();
+});

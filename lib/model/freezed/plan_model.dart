@@ -1,7 +1,6 @@
 /// カレンダー画面で使うプロバイダのためのクラスを記述
+import 'package:calender_app/service/db/plan_db.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-
-import '../db/plan_db.dart';
 
 part 'plan_model.freezed.dart';
 

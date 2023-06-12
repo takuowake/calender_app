@@ -1,5 +1,9 @@
-import 'package:calender_app/view/plan_list.dart';
-import 'package:calender_app/view/view_model/plan_provider.dart';
+import 'package:calender_app/common/edit_cansel_confirmation.dart';
+import 'package:calender_app/common/fifteen_intervals.dart';
+import 'package:calender_app/model/freezed/plan_model.dart';
+import 'package:calender_app/repository/providers/plan_provider.dart';
+import 'package:calender_app/view/calendar_screen/calendar_screen.dart';
+import 'package:calender_app/view/daily_plan_list_screen/plan_list.dart';
 import 'package:drift/drift.dart' as Drift;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,29 +11,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
-
-
-import '../model/freezed/plan_model.dart';
-import 'calendar_screen.dart';
-
-DateTime roundToNearestFifteen(DateTime selectedDate) {
-  final now = DateTime.now();
-  final dateTime = DateTime(
-      selectedDate.year,
-      selectedDate.month,
-      selectedDate.day,
-      now.hour,
-      now.minute
-  );
-
-  final int minute = dateTime.minute;
-  final int remainder = minute % 15;
-  if (remainder >= 8) {
-    return dateTime.add(Duration(minutes: 15 - remainder));
-  } else {
-    return dateTime.subtract(Duration(minutes: remainder));
-  }
-}
 
 
 class AddPlanScreen extends HookConsumerWidget {
@@ -42,41 +23,14 @@ class AddPlanScreen extends HookConsumerWidget {
   late DateTime startDateTime = roundToNearestFifteen(selectedDate);
   late DateTime endDateTime = startDateTime.add(const Duration(hours: 1));
 
-  final switchProvider = StateNotifierProvider<SwitchProvider, bool>((ref) {
-    return SwitchProvider();
-  });
   final titleFocusNode = FocusNode();
 
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+
     //Providerの状態が変化したさいに再ビルドします
     final planProvider = ref.watch(planDatabaseNotifierProvider.notifier);
-
-    void _showEditCanselConfirmation() {
-      showCupertinoModalPopup(
-        context: context,
-        builder: (BuildContext context) => CupertinoActionSheet(
-          actions: <Widget>[
-            CupertinoActionSheetAction(
-              onPressed: () {
-                Navigator.of(context).pop();
-                // CupertinoActionSheetをポップします。
-                Navigator.of(context).pop();
-              },
-              isDestructiveAction: true,
-              child: const Text('編集を破棄', style: TextStyle(color: Colors.blue)),
-            ),
-          ],
-          cancelButton: CupertinoActionSheetAction(
-            child: const Text('キャンセル'),
-            onPressed: () {
-              Navigator.pop(context, 'Cancel');
-            },
-          ),
-        ),
-      );
-    }
 
     final start = useState<DateTime?>(null);
     final end = useState<DateTime?>(null);
@@ -99,7 +53,7 @@ class AddPlanScreen extends HookConsumerWidget {
             icon: const Icon(Icons.clear),
             onPressed: () {
               if (temp.title.isNotEmpty || temp.comment.isNotEmpty) {
-                _showEditCanselConfirmation();
+                showEditCanselConfirmation(context);
               } else {
                 Navigator.of(context).pop();
               }

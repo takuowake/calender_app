@@ -1,23 +1,13 @@
-import 'package:calender_app/view/add_plan_screen.dart';
-import 'package:calender_app/view/edit_plan_screen.dart';
-import 'package:calender_app/view/view_model/plan_provider.dart';
+import 'package:calender_app/common/styles.dart';
+import 'package:calender_app/repository/providers/plan_provider.dart';
+import 'package:calender_app/service/db/plan_db.dart';
+import 'package:calender_app/view/add_plan_screen/add_plan_screen.dart';
+import 'package:calender_app/view/daily_plan_list_screen/date_utils.dart';
+import 'package:calender_app/view/edit_plan_screen/edit_plan_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../model/db/plan_db.dart';
-
 class PlanList extends ConsumerWidget {
-
-  final TextStyle defaultTextStyle = const TextStyle(
-    fontSize: 15,
-    fontWeight: FontWeight.normal,
-    color: Colors.black,
-  );
-  final TextStyle timeTextStyle = const TextStyle(
-    fontSize: 10,
-    fontWeight: FontWeight.normal,
-    color: Colors.black,
-  );
 
   const PlanList({super.key});
 
@@ -130,37 +120,6 @@ class PlanList extends ConsumerWidget {
           List<PlanItemData> planItems = planProvider.state.planItems;
           List<Widget> tiles = _buildPlanList(planItems, planProvider, date, context);
 
-          String getFormattedDate(DateTime date) {
-            String weekday = '';
-
-            // 曜日の取得
-            switch (date.weekday) {
-              case 1:
-                weekday = '月';
-                break;
-              case 2:
-                weekday = '火';
-                break;
-              case 3:
-                weekday = '水';
-                break;
-              case 4:
-                weekday = '木';
-                break;
-              case 5:
-                weekday = '金';
-                break;
-              case 6:
-                weekday = '土';
-                break;
-              case 7:
-                weekday = '日';
-                break;
-            }
-
-            return '($weekday)';
-          }
-
           String dayOfWeek = getFormattedDate(date);
 
           return GestureDetector(
@@ -186,7 +145,7 @@ class PlanList extends ConsumerWidget {
                               children: [
                                 Text('${date.year}年 ${date.month}月 ${date.day}日 '),
                                 Text(
-                                    dayOfWeek,
+                                  dayOfWeek,
                                   style: TextStyle(color: date.weekday == 6 ? Colors.blue : (date.weekday == 7 ? Colors.red : Colors.black)),
                                 ),
                               ],
@@ -207,16 +166,16 @@ class PlanList extends ConsumerWidget {
                         // Using spread operator and ternary conditional
                         ...tiles.isEmpty
                             ? [
-                                const Center(child: Column(
-                                  children: [
-                                    Divider(
-                                      thickness: 1,
-                                    ),
-                                    SizedBox(height: 200),
-                                    Text("予定がありません。"),
-                                  ],
-                                ))
-                              ]
+                          const Center(child: Column(
+                            children: [
+                              Divider(
+                                thickness: 1,
+                              ),
+                              SizedBox(height: 200),
+                              Text("予定がありません。"),
+                            ],
+                          ))
+                        ]
                             : [Column(children: tiles)]
                       ],
                     ),
@@ -243,11 +202,11 @@ class PlanList extends ConsumerWidget {
       // ダイアログの外側をタップすると、ダイアログが閉じる
       barrierDismissible: true,
       builder: (context) {
-      return GestureDetector(
-        onTap: () {
-          Navigator.pop(context); // Close the dialog when tapped outside
-        },
-        child: Material(
+        return GestureDetector(
+          onTap: () {
+            Navigator.pop(context); // Close the dialog when tapped outside
+          },
+          child: Material(
             // 透明の背景
             type: MaterialType.transparency,
             // タップイベントを検知してダイアログを閉じる
@@ -274,7 +233,7 @@ class PlanList extends ConsumerWidget {
               ),
             ),
           ),
-      );
+        );
       },
     );
   }

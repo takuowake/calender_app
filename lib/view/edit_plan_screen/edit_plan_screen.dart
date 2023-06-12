@@ -1,5 +1,8 @@
-import 'package:calender_app/view/plan_list.dart';
-import 'package:calender_app/view/view_model/plan_provider.dart';
+import 'package:calender_app/common/edit_cansel_confirmation.dart';
+import 'package:calender_app/repository/providers/plan_provider.dart';
+import 'package:calender_app/service/db/plan_db.dart';
+import 'package:calender_app/view/calendar_screen/calendar_screen.dart';
+import 'package:calender_app/view/daily_plan_list_screen/plan_list.dart';
 import 'package:drift/drift.dart' as Drift;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,33 +10,12 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
-import '../model/db/plan_db.dart';
-import 'calendar_screen.dart';
-
-DateTime roundToNearestFifteen(DateTime dateTime) {
-  final int minute = dateTime.minute;
-  final int remainder = minute % 15;
-  if (remainder >= 8) {
-    return dateTime.add(Duration(minutes: 15 - remainder));
-  } else {
-    return dateTime.subtract(Duration(minutes: remainder));
-  }
-}
-
 
 class EditPlanScreen extends HookConsumerWidget {
 
   PlanItemData item;
 
   EditPlanScreen({super.key, required this.item});
-
-  // DateTime? startDateTime;
-  // DateTime? endDateTime;
-  // DateTime? selectedDate;
-
-  final switchProvider = StateNotifierProvider<SwitchProvider, bool>((ref) {
-    return SwitchProvider();
-  });
 
   final titleFocusNode = FocusNode();
 
@@ -47,32 +29,6 @@ class EditPlanScreen extends HookConsumerWidget {
     final isChanged = useState<bool>(false);
     void handleInputChange() {
       isChanged.value = true;
-    }
-
-    void showEditCanselConfirmation() {
-      showCupertinoModalPopup(
-        context: context,
-        builder: (BuildContext context) => CupertinoActionSheet(
-          actions: <Widget>[
-            CupertinoActionSheetAction(
-              onPressed: () {
-                // 現在の画面（EditPlanScreen）をポップします。
-                Navigator.of(context).pop();
-                // CupertinoActionSheetをポップします。
-                Navigator.of(context).pop();
-              },
-              isDestructiveAction: true,
-              child: const Text('編集を破棄', style: TextStyle(color: Colors.blue)),
-            ),
-          ],
-          cancelButton: CupertinoActionSheetAction(
-            child: const Text('キャンセル'),
-            onPressed: () {
-              Navigator.pop(context, 'Cancel');
-            },
-          ),
-        ),
-      );
     }
 
     // final start = useState<DateTime?>(item.startDate);
@@ -143,7 +99,7 @@ class EditPlanScreen extends HookConsumerWidget {
             icon: const Icon(Icons.clear),
             onPressed: () {
               if (isChanged.value) {
-                showEditCanselConfirmation();
+                showEditCanselConfirmation(context);
               } else {
                 Navigator.of(context).pop();
               }
@@ -161,7 +117,6 @@ class EditPlanScreen extends HookConsumerWidget {
                       return Colors.white70;
                     }
                   }),
-                  // foregroundColor: MaterialStateProperty.all<Color>(Colors.grey),
                   foregroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
                     if (isChanged.value == true) {
                       return Colors.black;
@@ -179,7 +134,6 @@ class EditPlanScreen extends HookConsumerWidget {
                     startDate: item.startDate,
                     endDate: item.endDate,
                   );
-                  // await db.updateData(data);
                   ref.read(planDatabaseNotifierProvider.notifier).updateData(data);
                   Navigator.push(
                     context,

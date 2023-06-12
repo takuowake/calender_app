@@ -1,27 +1,10 @@
-import 'package:calender_app/view/plan_list.dart';
-import 'package:calender_app/view/view_model/plan_provider.dart';
+import 'package:calender_app/repository/providers/plan_provider.dart';
+import 'package:calender_app/view/daily_plan_list_screen/plan_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'calendar_screen_header.dart';
-import 'calender.dart';
-
-final currentDateProvider = StateProvider<DateTime>((ref) => DateTime.now());
-class DateRangeNotifier extends StateNotifier<List<DateTime>> {
-  DateRangeNotifier() : super([
-    DateTime.now().subtract(const Duration(days: 1)),
-    DateTime.now(),
-    DateTime.now().add(const Duration(days: 1)),
-  ]);
-
-  void setDate(DateTime date) {
-    state = [
-      date.subtract(const Duration(days: 1)),
-      date,
-      date.add(const Duration(days: 1)),
-    ];
-  }
-}
+import 'header/calendar_screen_header.dart';
+import 'calendar/calender.dart';
 
 class CalendarScreen extends ConsumerWidget {
   final DateTime? initialDate;
