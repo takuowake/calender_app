@@ -4,11 +4,9 @@ import 'package:calender_app/model/freezed/plan_model.dart';
 import 'package:calender_app/repository/providers/plan_provider.dart';
 import 'package:calender_app/view/calendar_screen/calendar_screen.dart';
 import 'package:calender_app/view/daily_plan_list_screen/plan_list.dart';
-import 'package:drift/drift.dart' as Drift;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
@@ -90,8 +88,9 @@ class AddPlanScreen extends HookConsumerWidget {
                     MaterialPageRoute(
                       builder: (context) => CalendarScreen(initialDate: temp.startDate ?? startDateTime),
                     ),
-                  );
-                  const PlanList().ShowDialog(context, ref, startDateTime);
+                  ).then((_) {
+                    const PlanList().ShowDialog(context, ref, startDateTime);
+                  });
                 } : null,
                 child: const Text('保存'),
               ),
@@ -299,7 +298,6 @@ class AddPlanScreen extends HookConsumerWidget {
                                                   dateTime.hour,
                                                   dateTime.minute,
                                                 );
-                                                // temp変数のlimitプロパティが選択された日付と時間に更新される
                                                 temp = temp.copyWith(endDate: end.value);
                                                 endDateTime = end.value!;
                                               },
