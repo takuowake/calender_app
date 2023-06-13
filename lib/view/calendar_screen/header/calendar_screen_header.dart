@@ -47,7 +47,7 @@ class CalendarScreenHeader extends ConsumerWidget {
             style: const TextStyle(fontSize: 24),
           ),
           const DatePicker(),
-          const Spacer(), //
+          const Spacer(),
         ],
       ),
     );
