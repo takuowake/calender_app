@@ -1,4 +1,5 @@
 import 'package:calender_app/common/styles.dart';
+import 'package:calender_app/repository/providers/plan_database_norifier.dart';
 import 'package:calender_app/repository/providers/plan_provider.dart';
 import 'package:calender_app/service/db/plan_db.dart';
 import 'package:calender_app/view/add_plan_screen/add_plan_screen.dart';
@@ -6,7 +7,6 @@ import 'package:calender_app/view/daily_plan_list_screen/date_utils.dart';
 import 'package:calender_app/view/edit_plan_screen/edit_plan_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 class PlanList extends ConsumerWidget {
 
   const PlanList({super.key});
