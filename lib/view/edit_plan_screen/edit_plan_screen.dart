@@ -3,7 +3,7 @@ import 'package:calender_app/repository/providers/plan_provider.dart';
 import 'package:calender_app/service/db/plan_db.dart';
 import 'package:calender_app/view/calendar_screen/calendar_screen.dart';
 import 'package:calender_app/view/daily_plan_list_screen/plan_list.dart';
-import 'package:drift/drift.dart' as Drift;
+import 'package:drift/drift.dart' as drift;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -12,10 +12,9 @@ import 'package:intl/intl.dart';
 
 
 class EditPlanScreen extends HookConsumerWidget {
-
   PlanItemData item;
 
-  EditPlanScreen({super.key, required this.item});
+  EditPlanScreen({Key? key, required this.item}) : super(key: key);
 
   final titleFocusNode = FocusNode();
 
@@ -274,7 +273,7 @@ class EditPlanScreen extends HookConsumerWidget {
                                                   dateTime.minute,
                                                 );
                                                 // copyWithメソッドを使用してitemオブジェクトのコピーを作成し、startDateプロパティを新しい値
-                                                item = item.copyWith(startDate: Drift.Value(start.value));
+                                                item = item.copyWith(startDate: drift.Value(start.value));
 
                                                 // item.startDate = start.value;
                                                 startDateTime = start.value!;
@@ -342,7 +341,7 @@ class EditPlanScreen extends HookConsumerWidget {
                                             ),
                                           ),
                                           SizedBox(
-                                            height: 220, // CupertinoDatePicker has an intrinsic height of 216.0
+                                            height: 220,
                                             child: CupertinoDatePicker(
                                               // 初期値を設定
                                               initialDateTime: endDateTime,
@@ -359,9 +358,7 @@ class EditPlanScreen extends HookConsumerWidget {
                                                   dateTime.hour,
                                                   dateTime.minute,
                                                 );
-                                                // item = item.copyWith(endDate: end.value);
-                                                // item.endDate = end.value;
-                                                item = item.copyWith(endDate: Drift.Value(end.value));
+                                                item = item.copyWith(endDate: drift.Value(end.value));
                                                 endDateTime = end.value!;
                                                 handleInputChange();
                                               },
