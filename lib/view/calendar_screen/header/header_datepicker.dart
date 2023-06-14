@@ -22,8 +22,14 @@ class DatePicker extends ConsumerWidget {
       if (picked != null) {
         // 日付が選択された場合、DatePickerNotifierの状態を更新
         ref.read(datePickerProvider.notifier).setDate(picked);
+
+        // PageControllerを取得し、選択された月にページを移動
+        final pageController = ref.read(pageControllerProvider);
+        final monthsDifference = (picked.year * 12 + picked.month) - (DateTime.now().year * 12 + DateTime.now().month);
+        pageController.jumpToPage(1000 + monthsDifference);
       }
     }
+
     return GestureDetector(
       onTap: onPressedElevatedButton,
       behavior: HitTestBehavior.translucent, // Ensure tap is detected within the entire area

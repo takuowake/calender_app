@@ -4,6 +4,7 @@ import 'package:calender_app/model/freezed/plan_model.dart';
 import 'package:calender_app/repository/providers/date_picker_notifier.dart';
 import 'package:calender_app/repository/providers/plan_database_norifier.dart';
 import 'package:calender_app/repository/providers/switch_provider.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final planDatabaseNotifierProvider = StateNotifierProvider<PlanDatabaseNotifier, PlanStateData>((ref) {
@@ -20,8 +21,10 @@ final planDatabaseProvider = Provider<PlanDatabaseNotifier>((ref) {
 
 final datePickerProvider = StateNotifierProvider<DatePickerNotifier, DateTime>((ref) => DatePickerNotifier());
 
-final currentDateProvider = StateProvider<DateTime>((ref) => DateTime.now());
-
 final switchProvider = StateNotifierProvider<SwitchProvider, bool>((ref) {
   return SwitchProvider();
+});
+
+final pageControllerProvider = Provider<PageController>((ref) {
+  return PageController(initialPage: 1000);
 });

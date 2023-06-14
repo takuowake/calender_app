@@ -15,18 +15,20 @@ class CalendarScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     const initialPageIndex = 1000;
-    final currentDate = initialDate ?? ref.watch(datePickerProvider);
-    final initialPageOffset = (currentDate!.year * 12 + currentDate.month) - (ref.watch(datePickerProvider).year * 12 + ref.watch(datePickerProvider).month);
-    final pageController = PageController(initialPage: initialPageIndex + initialPageOffset);
+    final pageController = ref.watch(pageControllerProvider);
 
     return Scaffold(
       appBar: AppBar(title: const Center(child: Text('カレンダー'))),
       body: PageView.builder(
         controller: pageController,
-        itemBuilder: (context, index) {
-          final currentDate = ref.watch(datePickerProvider);
+        onPageChanged: (index) {
           final monthsToAdd = index - initialPageIndex;
-          final displayDate = DateTime(currentDate.year, currentDate.month + monthsToAdd, 1);
+          final newDate = DateTime(DateTime.now().year, DateTime.now().month + monthsToAdd, 1);
+          ref.read(datePickerProvider.notifier).setDate(newDate);
+        },
+        itemBuilder: (context, index) {
+          final monthsToAdd = index - initialPageIndex;
+          final displayDate = DateTime(DateTime.now().year, DateTime.now().month + monthsToAdd, 1);
 
           return SizedBox.expand(
             child: Column(
