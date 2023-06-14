@@ -24,9 +24,13 @@ class DatePicker extends ConsumerWidget {
         ref.read(datePickerProvider.notifier).setDate(picked);
       }
     }
-    return IconButton(
-      onPressed: onPressedElevatedButton,
-      icon: const Icon(Icons.arrow_drop_down),
+    return GestureDetector(
+      onTap: onPressedElevatedButton,
+      behavior: HitTestBehavior.translucent, // Ensure tap is detected within the entire area
+      child: Container(
+        padding: const EdgeInsets.all(16.0), // Adjust padding as needed
+        child: const Icon(Icons.arrow_drop_down),
+      ),
     );
   }
 }
