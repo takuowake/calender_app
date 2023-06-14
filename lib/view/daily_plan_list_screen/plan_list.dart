@@ -40,19 +40,25 @@ class PlanList extends ConsumerWidget {
                     MaterialPageRoute(builder: (context) => EditPlanScreen(item: item)),
                   );
                 },
-                child: Text(
-                  item.title,
-                  overflow: TextOverflow.ellipsis,
-                  softWrap: false,
-                  maxLines: 1,
+                child: Container(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    item.title,
+                    overflow: TextOverflow.ellipsis,
+                    softWrap: false,
+                    maxLines: 1,
+                    style: const TextStyle(
+                      color: Colors.black,
+                    ),
+                  ),
                 ),
               ),
               leading: SizedBox(
-                width: 50,
+                width: 45,
                 child: Row(
                   children: [
                     SizedBox(
-                      width: 30,
+                      width:29,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -70,7 +76,7 @@ class PlanList extends ConsumerWidget {
                               ],
                             ),
                           if (item.isAll) // isAllがTrueの場合は「終日」を表示
-                            Text(
+                            const Text(
                               '終日',
                               style: timeTextStyle,
                             ),
