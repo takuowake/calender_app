@@ -46,7 +46,7 @@ class AddPlanScreen extends HookConsumerWidget {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('予定の追加'),
+          title: const Center(child: Text('予定の追加')),
           leading: IconButton(
             icon: const Icon(Icons.clear),
             onPressed: () {

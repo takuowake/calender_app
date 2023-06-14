@@ -21,23 +21,18 @@ class EditPlanScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // final planState = ref.watch(planDatabaseNotifierProvider);
     final planProvider = ref.watch(planDatabaseNotifierProvider.notifier);
-    // final PlanDatabaseNotifier db = ref.read(planDatabaseNotifierProvider.notifier);
 
     final isChanged = useState<bool>(false);
     void handleInputChange() {
       isChanged.value = true;
     }
 
-    // final start = useState<DateTime?>(item.startDate);
-    // final end = useState<DateTime?>(item.endDate);
     final start = useState<DateTime?>(item.startDate);
     final end = useState<DateTime?>(item.endDate);
 
     DateTime? startDateTime = item.startDate;
     DateTime? endDateTime = item.endDate;
-    // DateTime? selectedDate;
 
 
     final title = useState(item.title);
@@ -93,7 +88,7 @@ class EditPlanScreen extends HookConsumerWidget {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('予定の編集'),
+          title: const Center(child: Text('予定の編集')),
           leading: IconButton(
             icon: const Icon(Icons.clear),
             onPressed: () {
