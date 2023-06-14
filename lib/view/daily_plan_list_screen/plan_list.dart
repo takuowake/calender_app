@@ -7,6 +7,8 @@ import 'package:calender_app/view/daily_plan_list_screen/date_utils.dart';
 import 'package:calender_app/view/edit_plan_screen/edit_plan_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+
 class PlanList extends ConsumerWidget {
 
   const PlanList({super.key});
@@ -120,7 +122,8 @@ class PlanList extends ConsumerWidget {
           List<PlanItemData> planItems = planProvider.state.planItems;
           List<Widget> tiles = _buildPlanList(planItems, planProvider, date, context);
 
-          String dayOfWeek = getFormattedDate(date);
+          String dayOfWeek = getFormattedDayOfWeek(date);
+          String monthAndDate = getFormattedMonthAndDate(date);
 
           return GestureDetector(
             onTap: () {},
@@ -143,7 +146,7 @@ class PlanList extends ConsumerWidget {
                           children: [
                             Row(
                               children: [
-                                Text('${date.year}年 ${date.month}月 ${date.day}日 '),
+                                Text('${date.year}年 $monthAndDate '),
                                 Text(
                                   dayOfWeek,
                                   style: TextStyle(color: date.weekday == 6 ? Colors.blue : (date.weekday == 7 ? Colors.red : Colors.black)),

@@ -1,4 +1,4 @@
-String getFormattedDate(DateTime date) {
+String getFormattedDayOfWeek(DateTime date) {
   String weekday = '';
 
   // 曜日の取得
@@ -27,4 +27,10 @@ String getFormattedDate(DateTime date) {
   }
 
   return '($weekday)';
+}
+
+String getFormattedMonthAndDate(DateTime date) {
+  String month = date.month.toString().padLeft(2, '0');
+  String day = date.day.toString().padLeft(2, '0');
+  return '$month月$day日';
 }
