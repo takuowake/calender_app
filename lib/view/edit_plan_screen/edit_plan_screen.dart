@@ -344,7 +344,7 @@ class EditPlanScreen extends HookConsumerWidget {
                                               mode: ref.watch(switchProvider) ? CupertinoDatePickerMode.date : CupertinoDatePickerMode.dateAndTime,
                                               minuteInterval: 15,
                                               use24hFormat: true,
-                                              minimumDate: startDateTime,
+                                              minimumDate: startDateTime?.add(const Duration(minutes: 15)),
                                               onDateTimeChanged: (dateTime) {
                                                 end.value = DateTime(
                                                   dateTime.year,
