@@ -14,7 +14,7 @@ class CalendarScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    const initialPageIndex = 10000;
+    const initialPageIndex = 1000;
     final currentDate = initialDate ?? ref.watch(datePickerProvider);
     final initialPageOffset = (currentDate!.year * 12 + currentDate.month) - (ref.watch(datePickerProvider).year * 12 + ref.watch(datePickerProvider).month);
     final pageController = PageController(initialPage: initialPageIndex + initialPageOffset);
