@@ -20,7 +20,7 @@ class CalendarScreen extends ConsumerWidget {
     final pageController = PageController(initialPage: initialPageIndex + initialPageOffset);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('カレンダー')),
+      appBar: AppBar(title: const Center(child: Text('カレンダー'))),
       body: PageView.builder(
         controller: pageController,
         itemBuilder: (context, index) {
@@ -32,7 +32,7 @@ class CalendarScreen extends ConsumerWidget {
             child: Column(
               children: [
                 CalendarScreenHeader(
-                  currentMonth: '${displayDate.year}年 ${displayDate.month}月',
+                  currentMonth: '${displayDate.year}年 ${displayDate.month.toString().padLeft(2, '0')}月',
                   pageController: pageController,
                   ref: ref,
                   initialPageIndex: initialPageIndex,
