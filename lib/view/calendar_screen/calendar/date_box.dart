@@ -51,8 +51,17 @@ class DateBox extends ConsumerWidget {
       }
     }
 
+    if (date != null) {
+      final now = DateTime.now();
+      final dateFormat = DateFormat('yyyy-MM-dd');
+      isToday = dateFormat.format(date!) == dateFormat.format(now);
+      boxHeight = 0.9;
+    }
+
     if (date != null && date?.month != displayedMonth) {
       textColor = Colors.grey;
+    } else if (isToday == true) {
+      textColor = Colors.white;
     } else if (weekday == 6) {
       textColor = Colors.blue;
     } else if (weekday == 7) {
@@ -65,13 +74,6 @@ class DateBox extends ConsumerWidget {
       backgroundColor = Color.fromARGB(240, 240, 240, 240);
       fontSize = 10.0;
       boxHeight = 3;
-    }
-
-    if (date != null) {
-      final now = DateTime.now();
-      final dateFormat = DateFormat('yyyy-MM-dd');
-      isToday = dateFormat.format(date!) == dateFormat.format(now);
-      boxHeight = 0.9;
     }
 
     // 子要素のアスペクト比を制御可能
