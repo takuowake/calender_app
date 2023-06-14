@@ -62,7 +62,7 @@ class DateBox extends ConsumerWidget {
     }
 
     if (isHeader) {
-      backgroundColor = Colors.grey;
+      backgroundColor = Color.fromARGB(240, 240, 240, 240);
       fontSize = 10.0;
       boxHeight = 3;
     }
