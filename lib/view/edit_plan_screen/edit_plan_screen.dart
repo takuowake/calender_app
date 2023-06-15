@@ -1,3 +1,4 @@
+import 'package:calender_app/common/fifteen_intervals.dart';
 import 'package:calender_app/repository/providers/plan_provider.dart';
 import 'package:calender_app/repository/providers/switch_provider.dart';
 import 'package:calender_app/service/db/plan_db.dart';
@@ -32,6 +33,9 @@ class EditPlanScreen extends HookConsumerWidget {
                 Navigator.of(context).pop();
                 // CupertinoActionSheetをポップします。
                 ref.read(switchProvider.notifier).updateSwitch(false);
+                ref.read(switchProvider.notifier).updateSwitch(false);
+                ref.read(startDateTimeProvider.notifier).updateDateTime(roundToNearestFifteen(DateTime.now()));
+                ref.read(endDateTimeProvider.notifier).updateDateTime(roundToNearestFifteen(DateTime.now().add(const Duration(hours: 1))));
                 Navigator.of(context).pop();
               },
               isDestructiveAction: true,
@@ -89,6 +93,9 @@ class EditPlanScreen extends HookConsumerWidget {
                 onPressed: () {
                   // ここで予定を削除する処理を追加する
                   planProvider.deleteData(item);
+                  ref.read(switchProvider.notifier).updateSwitch(false);
+                  ref.read(startDateTimeProvider.notifier).updateDateTime(roundToNearestFifteen(DateTime.now()));
+                  ref.read(endDateTimeProvider.notifier).updateDateTime(roundToNearestFifteen(DateTime.now().add(const Duration(hours: 1))));
                   Navigator.push(
                     context,
                     MaterialPageRoute(
