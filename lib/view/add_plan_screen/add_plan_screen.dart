@@ -1,4 +1,3 @@
-import 'package:calender_app/common/edit_cansel_confirmation.dart';
 import 'package:calender_app/common/fifteen_intervals.dart';
 import 'package:calender_app/model/freezed/plan_model.dart';
 import 'package:calender_app/repository/providers/plan_provider.dart';
@@ -19,7 +18,7 @@ class AddPlanScreen extends HookConsumerWidget {
   final DateTime selectedDate;
   AddPlanScreen({super.key, required this.selectedDate});
 
-  late DateTime startDateTime = roundToNearestFifteen(selectedDate);
+  late DateTime startDateTime = roundToNearestFifteen(DateTime.now());
   late DateTime endDateTime = startDateTime.add(const Duration(hours: 1));
 
   final titleFocusNode = FocusNode();
@@ -36,8 +35,9 @@ class AddPlanScreen extends HookConsumerWidget {
             CupertinoActionSheetAction(
               onPressed: () {
                 Navigator.of(context).pop();
-                // CupertinoActionSheetをポップします。
                 ref.read(switchProvider.notifier).updateSwitch(false);
+                ref.read(startDateTimeProvider.notifier).updateDateTime(roundToNearestFifteen(DateTime.now()));
+                ref.read(endDateTimeProvider.notifier).updateDateTime(roundToNearestFifteen(DateTime.now().add(const Duration(hours: 1))));
                 Navigator.of(context).pop();
               },
               isDestructiveAction: true,
@@ -123,6 +123,9 @@ class AddPlanScreen extends HookConsumerWidget {
                     ),
                   );
                   const PlanList().ShowDialog(context, ref, startDateTime);
+                  ref.read(switchProvider.notifier).updateSwitch(false);
+                  ref.read(startDateTimeProvider.notifier).updateDateTime(roundToNearestFifteen(DateTime.now()));
+                  ref.read(endDateTimeProvider.notifier).updateDateTime(roundToNearestFifteen(DateTime.now().add(const Duration(hours: 1))));
                 } : null,
                 child: const Text('保存'),
               ),
@@ -229,6 +232,8 @@ class AddPlanScreen extends HookConsumerWidget {
                                                     if (startDateTime != start.value) {
                                                       handleInputChange();
                                                     }
+                                                    ref.read(startDateTimeProvider.notifier).updateDateTime(start.value!);
+                                                    ref.read(endDateTimeProvider.notifier).updateDateTime(start.value!.add(Duration(hours: 1)));
                                                     startDateTime = start.value!;
                                                     endDateTime = start.value!.add(const Duration(hours: 1));
                                                     Navigator.of(context).pop();
@@ -266,6 +271,7 @@ class AddPlanScreen extends HookConsumerWidget {
                                   builder: (context, watch, _) {
                                     final switchState = ref.watch(switchProvider);
                                     final format = switchState ? 'yyyy-MM-dd' : 'yyyy-MM-dd HH:mm';
+                                    final startDateTime = ref.watch(startDateTimeProvider);
                                     return Text(
                                       DateFormat(format).format(startDateTime),
                                       style: const TextStyle(color: Colors.blue),
@@ -311,6 +317,7 @@ class AddPlanScreen extends HookConsumerWidget {
                                                     if (endDateTime != end.value) {
                                                       handleInputChange();
                                                     }
+                                                    ref.read(endDateTimeProvider.notifier).updateDateTime(end.value!);
                                                     endDateTime = end.value!;
                                                     Navigator.of(context).pop();
                                                   },
@@ -348,6 +355,7 @@ class AddPlanScreen extends HookConsumerWidget {
                                   builder: (context, watch, _) {
                                     final switchState = ref.watch(switchProvider);
                                     final format = switchState ? 'yyyy-MM-dd' : 'yyyy-MM-dd HH:mm';
+                                    endDateTime = ref.watch(endDateTimeProvider);
                                     return Text(
                                       DateFormat(format).format(endDateTime),
                                       style: const TextStyle(color: Colors.blue),
