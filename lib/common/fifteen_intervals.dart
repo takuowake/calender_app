@@ -1,5 +1,5 @@
 DateTime roundToNearestFifteen(DateTime selectedDate) {
-  final now = DateTime.now();
+  final now = selectedDate;
   final dateTime = DateTime(
       selectedDate.year,
       selectedDate.month,
