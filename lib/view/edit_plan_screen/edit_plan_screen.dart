@@ -1,4 +1,3 @@
-import 'package:calender_app/common/edit_cansel_confirmation.dart';
 import 'package:calender_app/repository/providers/plan_provider.dart';
 import 'package:calender_app/repository/providers/switch_provider.dart';
 import 'package:calender_app/service/db/plan_db.dart';
@@ -270,6 +269,8 @@ class EditPlanScreen extends HookConsumerWidget {
                                                   onPressed: ()  {
                                                     item = item.copyWith(startDate: drift.Value(start.value));
                                                     item = item.copyWith(endDate: drift.Value(start.value!.add(const Duration(hours:1))));
+                                                    ref.read(startDateTimeProvider.notifier).updateDateTime(start.value!);
+                                                    ref.read(endDateTimeProvider.notifier).updateDateTime(start.value!.add(Duration(hours: 1)));
                                                     if (startDateTime != start.value) {
                                                       handleInputChange();
                                                     }
@@ -311,8 +312,10 @@ class EditPlanScreen extends HookConsumerWidget {
                                   builder: (context, watch, _) {
                                     final switchState = ref.watch(switchProvider);
                                     final format = switchState ? 'yyyy-MM-dd' : 'yyyy-MM-dd HH:mm';
+                                    final startDateTime = ref.watch(startDateTimeProvider);
+                                    final initialStartDateTime = item.startDate;
                                     return Text(
-                                      DateFormat(format).format(startDateTime!),
+                                      DateFormat(format).format(initialStartDateTime ?? startDateTime),
                                       style: const TextStyle(color: Colors.blue),
                                     );
                                   },
@@ -356,7 +359,7 @@ class EditPlanScreen extends HookConsumerWidget {
                                                     if (endDateTime != end.value) {
                                                       handleInputChange();
                                                     }
-                                                    // planProvider.updateData(item);
+                                                    ref.read(endDateTimeProvider.notifier).updateDateTime(end.value!);
                                                     endDateTime = end.value!;
                                                     Navigator.of(context).pop();
                                                     // ref.watch(planDatabaseNotifierProvider);
@@ -395,8 +398,10 @@ class EditPlanScreen extends HookConsumerWidget {
                                   builder: (context, watch, _) {
                                     final switchState = ref.watch(switchProvider);
                                     final format = switchState ? 'yyyy-MM-dd' : 'yyyy-MM-dd HH:mm';
+                                    final endDateTime = ref.watch(endDateTimeProvider);
+                                    final initialEndDateTime = item.endDate;
                                     return Text(
-                                      DateFormat(format).format(endDateTime!),
+                                      DateFormat(format).format(initialEndDateTime ?? endDateTime),
                                       style: const TextStyle(color: Colors.blue),
                                     );
                                   },
