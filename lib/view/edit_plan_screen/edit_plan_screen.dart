@@ -1,5 +1,6 @@
 import 'package:calender_app/common/edit_cansel_confirmation.dart';
 import 'package:calender_app/repository/providers/plan_provider.dart';
+import 'package:calender_app/repository/providers/switch_provider.dart';
 import 'package:calender_app/service/db/plan_db.dart';
 import 'package:calender_app/view/calendar_screen/calendar_screen.dart';
 import 'package:calender_app/view/daily_plan_list_screen/plan_list.dart';
@@ -243,7 +244,6 @@ class EditPlanScreen extends HookConsumerWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               const Text('開始'),
-                              // タップを検出するためのウィジェット
                               GestureDetector(
                                 // タップが検出されると指定されたコールバック関数が実行
                                 onTap: () async {
@@ -262,16 +262,21 @@ class EditPlanScreen extends HookConsumerWidget {
                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                               children: [
                                                 CupertinoButton(
-                                                  // ダイアログが閉じられる
                                                   child: const Text('キャンセル'),
                                                   onPressed: () => Navigator.of(context).pop(),
                                                 ),
                                                 CupertinoButton(
-                                                  // selectDateがダイアログpopされる
                                                   child: const Text('完了'),
-                                                  onPressed: () => {
-                                                    planProvider.updateData(item),
-                                                    Navigator.of(context).pop(),
+                                                  onPressed: ()  {
+                                                    item = item.copyWith(startDate: drift.Value(start.value));
+                                                    item = item.copyWith(endDate: drift.Value(start.value!.add(const Duration(hours:1))));
+                                                    if (startDateTime != start.value) {
+                                                      handleInputChange();
+                                                    }
+                                                    // planProvider.updateData(item);
+                                                    startDateTime = start.value!;
+                                                    Navigator.of(context).pop();
+                                                    // ref.watch(planDatabaseNotifierProvider);
                                                   },
                                                 ),
                                               ],
@@ -294,13 +299,6 @@ class EditPlanScreen extends HookConsumerWidget {
                                                   dateTime.hour,
                                                   dateTime.minute,
                                                 );
-                                                // copyWithメソッドを使用してitemオブジェクトのコピーを作成し、startDateプロパティを新しい値
-                                                item = item.copyWith(startDate: drift.Value(start.value));
-
-                                                // item.startDate = start.value;
-                                                startDateTime = start.value!;
-                                                endDateTime = start.value!.add(const Duration(hours: 1));
-                                                handleInputChange();
                                               },
                                             ),
                                           ),
@@ -314,7 +312,6 @@ class EditPlanScreen extends HookConsumerWidget {
                                     final switchState = ref.watch(switchProvider);
                                     final format = switchState ? 'yyyy-MM-dd' : 'yyyy-MM-dd HH:mm';
                                     return Text(
-                                      // DateFormat(format).format(selectedDate!),
                                       DateFormat(format).format(startDateTime!),
                                       style: const TextStyle(color: Colors.blue),
                                     );
@@ -354,9 +351,15 @@ class EditPlanScreen extends HookConsumerWidget {
                                                 ),
                                                 CupertinoButton(
                                                   child: const Text('完了'),
-                                                  onPressed: () => {
-                                                    planProvider.updateData(item),
-                                                    Navigator.of(context).pop(),
+                                                  onPressed: () {
+                                                    item = item.copyWith(endDate: drift.Value(end.value));
+                                                    if (endDateTime != end.value) {
+                                                      handleInputChange();
+                                                    }
+                                                    // planProvider.updateData(item);
+                                                    endDateTime = end.value!;
+                                                    Navigator.of(context).pop();
+                                                    // ref.watch(planDatabaseNotifierProvider);
                                                   },
                                                 ),
                                               ],
@@ -371,7 +374,7 @@ class EditPlanScreen extends HookConsumerWidget {
                                               mode: ref.watch(switchProvider) ? CupertinoDatePickerMode.date : CupertinoDatePickerMode.dateAndTime,
                                               minuteInterval: 15,
                                               use24hFormat: true,
-                                              minimumDate: startDateTime?.add(const Duration(minutes: 15)),
+                                              minimumDate: startDateTime?.add(const Duration(hours: 1)),
                                               onDateTimeChanged: (dateTime) {
                                                 end.value = DateTime(
                                                   dateTime.year,
@@ -380,9 +383,6 @@ class EditPlanScreen extends HookConsumerWidget {
                                                   dateTime.hour,
                                                   dateTime.minute,
                                                 );
-                                                item = item.copyWith(endDate: drift.Value(end.value));
-                                                endDateTime = end.value!;
-                                                handleInputChange();
                                               },
                                             ),
                                           ),
