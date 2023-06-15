@@ -2,6 +2,7 @@ import 'package:calender_app/common/edit_cansel_confirmation.dart';
 import 'package:calender_app/common/fifteen_intervals.dart';
 import 'package:calender_app/model/freezed/plan_model.dart';
 import 'package:calender_app/repository/providers/plan_provider.dart';
+import 'package:calender_app/repository/providers/switch_provider.dart';
 import 'package:calender_app/view/calendar_screen/calendar_screen.dart';
 import 'package:calender_app/view/daily_plan_list_screen/plan_list.dart';
 import 'package:flutter/cupertino.dart';
@@ -82,11 +83,6 @@ class AddPlanScreen extends HookConsumerWidget {
           leading: IconButton(
             icon: const Icon(Icons.clear),
             onPressed: () {
-              // if (temp.title.isNotEmpty || temp.comment.isNotEmpty) {
-              //   showEditCanselConfirmation(context);
-              // } else {
-              //   Navigator.of(context).pop();
-              // }
               if (isChanged.value) {
                 showEditCanselConfirmation(context);
               } else {
@@ -207,12 +203,9 @@ class AddPlanScreen extends HookConsumerWidget {
                               const Text('開始'),
                               // タップを検出するためのウィジェット
                               GestureDetector(
-                                // タップが検出されると指定されたコールバック関数が実行
                                 onTap: () async {
-                                  // モーダルダイアログを表示。戻り値は選択された日付と時刻を表すselectedDate
                                   final DateTime? selectedDate = await showCupertinoModalPopup(
                                     context: context,
-                                    // Containerとその中に配置されたColumnでダイアログのコンテンツを構築
                                     builder: (_) => Container(
                                       height: MediaQuery.of(context).size.height / 3 + 16,
                                       color: CupertinoColors.white,
@@ -231,8 +224,14 @@ class AddPlanScreen extends HookConsumerWidget {
                                                 CupertinoButton(
                                                   // selectDateがダイアログpopされる
                                                   child: const Text('完了'),
-                                                  onPressed: () => {
-                                                    Navigator.of(context).pop(),
+                                                  onPressed: ()  {
+                                                    temp = temp.copyWith(startDate: start.value);
+                                                    if (startDateTime != start.value) {
+                                                      handleInputChange();
+                                                    }
+                                                    startDateTime = start.value!;
+                                                    endDateTime = start.value!.add(const Duration(hours: 1));
+                                                    Navigator.of(context).pop();
                                                   },
                                                 ),
                                               ],
@@ -255,11 +254,6 @@ class AddPlanScreen extends HookConsumerWidget {
                                                   dateTime.hour,
                                                   dateTime.minute,
                                                 );
-                                                // temp変数のlimitプロパティが選択された日付と時間に更新される
-                                                temp = temp.copyWith(startDate: start.value);
-                                                startDateTime = start.value!;
-                                                endDateTime = start.value!.add(const Duration(hours: 1));
-                                                handleInputChange();
                                               },
                                             ),
                                           ),
@@ -312,8 +306,13 @@ class AddPlanScreen extends HookConsumerWidget {
                                                 ),
                                                 CupertinoButton(
                                                   child: const Text('完了'),
-                                                  onPressed: () => {
-                                                    Navigator.of(context).pop(),
+                                                  onPressed: () {
+                                                    temp = temp.copyWith(endDate: end.value);
+                                                    if (endDateTime != end.value) {
+                                                      handleInputChange();
+                                                    }
+                                                    endDateTime = end.value!;
+                                                    Navigator.of(context).pop();
                                                   },
                                                 ),
                                               ],
@@ -328,7 +327,7 @@ class AddPlanScreen extends HookConsumerWidget {
                                               mode: ref.watch(switchProvider) ? CupertinoDatePickerMode.date : CupertinoDatePickerMode.dateAndTime,
                                               minuteInterval: 15,
                                               use24hFormat: true,
-                                              minimumDate: startDateTime.add(const Duration(minutes: 15)),
+                                              minimumDate: startDateTime.add(const Duration(hours: 1)),
                                               onDateTimeChanged: (dateTime) {
                                                 end.value = DateTime(
                                                   dateTime.year,
@@ -337,9 +336,6 @@ class AddPlanScreen extends HookConsumerWidget {
                                                   dateTime.hour,
                                                   dateTime.minute,
                                                 );
-                                                temp = temp.copyWith(endDate: end.value);
-                                                endDateTime = end.value!;
-                                                handleInputChange();
                                               },
                                             ),
                                           ),
