@@ -88,9 +88,8 @@ class AddPlanScreen extends HookConsumerWidget {
                     MaterialPageRoute(
                       builder: (context) => CalendarScreen(initialDate: temp.startDate ?? startDateTime),
                     ),
-                  ).then((_) {
-                    const PlanList().ShowDialog(context, ref, startDateTime);
-                  });
+                  );
+                  const PlanList().ShowDialog(context, ref, startDateTime);
                 } : null,
                 child: const Text('保存'),
               ),
