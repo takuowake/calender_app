@@ -27,6 +27,32 @@ class AddPlanScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
 
+    void showEditCanselConfirmation(BuildContext context) {
+      showCupertinoModalPopup(
+        context: context,
+        builder: (BuildContext context) => CupertinoActionSheet(
+          actions: <Widget>[
+            CupertinoActionSheetAction(
+              onPressed: () {
+                Navigator.of(context).pop();
+                // CupertinoActionSheetをポップします。
+                ref.read(switchProvider.notifier).updateSwitch(false);
+                Navigator.of(context).pop();
+              },
+              isDestructiveAction: true,
+              child: const Text('編集を破棄', style: TextStyle(color: Colors.blue)),
+            ),
+          ],
+          cancelButton: CupertinoActionSheetAction(
+            child: const Text('キャンセル'),
+            onPressed: () {
+              Navigator.pop(context, 'Cancel');
+            },
+          ),
+        ),
+      );
+    }
+
     //Providerの状態が変化したさいに再ビルドします
     final planProvider = ref.watch(planDatabaseNotifierProvider.notifier);
 
