@@ -35,6 +35,12 @@ class AddPlanScreen extends HookConsumerWidget {
     final title = useState('');
     final comment = useState('');
 
+    final isChanged = useState<bool>(false);
+    void handleInputChange() {
+      isChanged.value = true;
+    }
+
+
 
     return GestureDetector(
       onTap: () {
@@ -50,7 +56,12 @@ class AddPlanScreen extends HookConsumerWidget {
           leading: IconButton(
             icon: const Icon(Icons.clear),
             onPressed: () {
-              if (temp.title.isNotEmpty || temp.comment.isNotEmpty) {
+              // if (temp.title.isNotEmpty || temp.comment.isNotEmpty) {
+              //   showEditCanselConfirmation(context);
+              // } else {
+              //   Navigator.of(context).pop();
+              // }
+              if (isChanged.value) {
                 showEditCanselConfirmation(context);
               } else {
                 Navigator.of(context).pop();
@@ -59,7 +70,7 @@ class AddPlanScreen extends HookConsumerWidget {
           ),
           actions: [
             Padding(
-              padding: const EdgeInsets.only(right: 10.0, bottom: 5),
+              padding: const EdgeInsets.only(right: 10.0, top: 5, bottom: 5),
               child: ElevatedButton(
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
@@ -73,7 +84,7 @@ class AddPlanScreen extends HookConsumerWidget {
                     if (temp.title.isNotEmpty && temp.comment.isNotEmpty) {
                       return Colors.black;
                     } else {
-                      return Colors.white70;
+                      return Colors.grey;
                     }
                   }),
                 ),
@@ -120,6 +131,7 @@ class AddPlanScreen extends HookConsumerWidget {
                   onChanged: (value) {
                     title.value = value;
                     temp = temp.copyWith(title: value);
+                    handleInputChange();
                   },
                   onSubmitted: (value) {
                     title.value = value;
@@ -151,6 +163,7 @@ class AddPlanScreen extends HookConsumerWidget {
                                 onChanged: (value) {
                                   ref.read(switchProvider.notifier).updateSwitch(value);
                                   temp = temp.copyWith(isAll: value);
+                                  handleInputChange();
                                 },
                               )
                             ],
@@ -220,6 +233,7 @@ class AddPlanScreen extends HookConsumerWidget {
                                                 temp = temp.copyWith(startDate: start.value);
                                                 startDateTime = start.value!;
                                                 endDateTime = start.value!.add(const Duration(hours: 1));
+                                                handleInputChange();
                                               },
                                             ),
                                           ),
@@ -299,6 +313,7 @@ class AddPlanScreen extends HookConsumerWidget {
                                                 );
                                                 temp = temp.copyWith(endDate: end.value);
                                                 endDateTime = end.value!;
+                                                handleInputChange();
                                               },
                                             ),
                                           ),
@@ -352,6 +367,7 @@ class AddPlanScreen extends HookConsumerWidget {
                     onChanged: (value) {
                       comment.value = value;
                       temp = temp.copyWith(comment: value);
+                      handleInputChange();
                     },
                     onSubmitted: (value) {
                       comment.value = value;

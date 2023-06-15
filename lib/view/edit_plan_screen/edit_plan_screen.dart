@@ -101,7 +101,7 @@ class EditPlanScreen extends HookConsumerWidget {
           ),
           actions: [
             Padding(
-              padding: const EdgeInsets.only(right: 10.0, bottom: 5),
+              padding: const EdgeInsets.only(right: 10.0, top: 5, bottom: 5),
               child: ElevatedButton(
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
@@ -115,7 +115,7 @@ class EditPlanScreen extends HookConsumerWidget {
                     if (isChanged.value == true) {
                       return Colors.black;
                     } else {
-                      return Colors.white70;
+                      return Colors.grey;
                     }
                   }),
                 ),
