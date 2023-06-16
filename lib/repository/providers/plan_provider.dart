@@ -25,26 +25,26 @@ final pageControllerProvider = Provider<PageController>((ref) {
   return PageController(initialPage: 1000);
 });
 
-class StartDateTimeNotifier extends StateNotifier<DateTime> {
-  StartDateTimeNotifier() : super(roundToNearestFifteen(DateTime.now()));
+class StartDateTimeNotifier extends StateNotifier<DateTime?> {
+  StartDateTimeNotifier() : super(null);
 
   void updateDateTime(DateTime dateTime) {
     state = dateTime;
   }
 }
 
-final startDateTimeProvider = StateNotifierProvider<StartDateTimeNotifier, DateTime>((ref) {
+final startDateTimeProvider = StateNotifierProvider<StartDateTimeNotifier, DateTime?>((ref) {
   return StartDateTimeNotifier();
 });
 
-class EndDateTimeNotifier extends StateNotifier<DateTime> {
-  EndDateTimeNotifier() : super(roundToNearestFifteen(DateTime.now().add(Duration(hours: 1))));
+class EndDateTimeNotifier extends StateNotifier<DateTime?> {
+  EndDateTimeNotifier() : super(null);
 
   void updateDateTime(DateTime dateTime) {
     state = dateTime;
   }
 }
 
-final endDateTimeProvider = StateNotifierProvider<EndDateTimeNotifier, DateTime>((ref) {
+final endDateTimeProvider = StateNotifierProvider<EndDateTimeNotifier, DateTime?>((ref) {
   return EndDateTimeNotifier();
 });
