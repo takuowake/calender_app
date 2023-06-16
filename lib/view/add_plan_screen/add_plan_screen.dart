@@ -67,6 +67,15 @@ class AddPlanScreen extends HookConsumerWidget {
       isChanged.value = true;
     }
 
+    final initialEndDateTimeProvider = StateProvider<DateTime?>((ref) => roundToNearestFifteen(DateTime(
+      selectedDate.year,
+      selectedDate.month,
+      selectedDate.day,
+      DateTime.now().hour + 1,
+      DateTime.now().minute,
+    )));
+
+
 
 
     return GestureDetector(
@@ -116,13 +125,9 @@ class AddPlanScreen extends HookConsumerWidget {
                     endDate: temp.endDate ?? endDateTime,
                   );
                   await planProvider.writeData(temp);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => CalendarScreen(initialDate: temp.startDate ?? startDateTime),
-                    ),
-                  );
-                  const PlanList().ShowDialog(context, ref, startDateTime);
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                  PlanList().ShowDialog(context, ref, startDateTime);
                   ref.read(switchProvider.notifier).updateSwitch(false);
                   ref.read(startDateTimeProvider.notifier).updateDateTime(roundToNearestFifteen(DateTime.now()));
                   ref.read(endDateTimeProvider.notifier).updateDateTime(roundToNearestFifteen(DateTime.now().add(const Duration(hours: 1))));
@@ -271,9 +276,17 @@ class AddPlanScreen extends HookConsumerWidget {
                                   builder: (context, watch, _) {
                                     final switchState = ref.watch(switchProvider);
                                     final format = switchState ? 'yyyy-MM-dd' : 'yyyy-MM-dd HH:mm';
+                                    final initialStartDateTime = roundToNearestFifteen(DateTime(
+                                      selectedDate.year,
+                                      selectedDate.month,
+                                      selectedDate.day,
+                                      DateTime.now().hour,
+                                      DateTime.now().minute,
+                                    ));
                                     final startDateTime = ref.watch(startDateTimeProvider);
                                     return Text(
-                                      DateFormat(format).format(startDateTime),
+                                      DateFormat(format).format(startDateTime ?? initialStartDateTime),
+                                      // DateFormat(format).format(startDateTime),
                                       style: const TextStyle(color: Colors.blue),
                                     );
                                   },
@@ -355,9 +368,17 @@ class AddPlanScreen extends HookConsumerWidget {
                                   builder: (context, watch, _) {
                                     final switchState = ref.watch(switchProvider);
                                     final format = switchState ? 'yyyy-MM-dd' : 'yyyy-MM-dd HH:mm';
-                                    endDateTime = ref.watch(endDateTimeProvider);
+                                    final initialEndDateTime = roundToNearestFifteen(DateTime(
+                                      selectedDate.year,
+                                      selectedDate.month,
+                                      selectedDate.day,
+                                      DateTime.now().hour+1,
+                                      DateTime.now().minute,
+                                    ));
+                                    final endDateTime = ref.watch(endDateTimeProvider);
                                     return Text(
-                                      DateFormat(format).format(endDateTime),
+                                      DateFormat(format).format(endDateTime ?? initialEndDateTime),
+                                      // DateFormat(format).format(endDateTime),
                                       style: const TextStyle(color: Colors.blue),
                                     );
                                   },
