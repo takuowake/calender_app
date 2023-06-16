@@ -102,7 +102,7 @@ class EditPlanScreen extends HookConsumerWidget {
                       builder: (context) => CalendarScreen(initialDate: item.startDate ?? startDateTime),
                     ),
                   );
-                  const PlanList().ShowDialog(context, ref, startDateTime!);
+                  // const PlanList().ShowDialog(context, ref, startDateTime!);
                 },
                 child: const Text('削除', style: TextStyle(color: Colors.blue)),
               ),
@@ -164,6 +164,8 @@ class EditPlanScreen extends HookConsumerWidget {
                   );
                   ref.read(planDatabaseNotifierProvider.notifier).updateData(data);
                   Navigator.pop(context);
+                  // Navigator.pop(context);
+                  // PlanList().ShowDialog(context, ref, startDateTime!);
                 } : null,
                 child: const Text('保存'),
               ),

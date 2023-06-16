@@ -18,7 +18,13 @@ class AddPlanScreen extends HookConsumerWidget {
   final DateTime selectedDate;
   AddPlanScreen({super.key, required this.selectedDate});
 
-  late DateTime startDateTime = roundToNearestFifteen(DateTime.now());
+  late DateTime startDateTime = roundToNearestFifteen(DateTime(
+    selectedDate.year,
+    selectedDate.month,
+    selectedDate.day,
+    DateTime.now().hour,
+    DateTime.now().minute,
+  ));
   late DateTime endDateTime = startDateTime.add(const Duration(hours: 1));
 
   final titleFocusNode = FocusNode();
@@ -67,13 +73,23 @@ class AddPlanScreen extends HookConsumerWidget {
       isChanged.value = true;
     }
 
-    final initialEndDateTimeProvider = StateProvider<DateTime?>((ref) => roundToNearestFifteen(DateTime(
-      selectedDate.year,
-      selectedDate.month,
-      selectedDate.day,
-      DateTime.now().hour + 1,
-      DateTime.now().minute,
-    )));
+    // final initialEndDateTimeProvider = StateProvider<DateTime?>((ref) => roundToNearestFifteen(DateTime(
+    //   selectedDate.year,
+    //   selectedDate.month,
+    //   selectedDate.day,
+    //   DateTime.now().hour + 1,
+    //   DateTime.now().minute,
+    // )));
+
+    final int minute = DateTime.now().minute;
+    final int remainder = minute % 15;
+    DateTime adjustedDateTime;
+
+    if (remainder >= 8) {
+      adjustedDateTime = DateTime.now().add(Duration(minutes: 15 - remainder));
+    } else {
+      adjustedDateTime = DateTime.now().subtract(Duration(minutes: remainder));
+    }
 
 
 
@@ -119,18 +135,18 @@ class AddPlanScreen extends HookConsumerWidget {
                     }
                   }),
                 ),
-                onPressed: (temp.title.isNotEmpty && temp.comment.isNotEmpty) ? () async {
+                onPressed: (temp.title.isNotEmpty && temp.comment.isNotEmpty) ? () {
                   temp = temp.copyWith(
                     startDate: temp.startDate ?? startDateTime,
                     endDate: temp.endDate ?? endDateTime,
                   );
-                  await planProvider.writeData(temp);
-                  Navigator.pop(context);
-                  Navigator.pop(context);
-                  PlanList().ShowDialog(context, ref, startDateTime);
+                  planProvider.writeData(temp);
                   ref.read(switchProvider.notifier).updateSwitch(false);
                   ref.read(startDateTimeProvider.notifier).updateDateTime(roundToNearestFifteen(DateTime.now()));
                   ref.read(endDateTimeProvider.notifier).updateDateTime(roundToNearestFifteen(DateTime.now().add(const Duration(hours: 1))));
+                  Navigator.pop(context);
+                  // Navigator.pop(context);
+                  // showDialog(context: context, builder: (_) => const PlanList());
                 } : null,
                 child: const Text('保存'),
               ),
@@ -236,6 +252,8 @@ class AddPlanScreen extends HookConsumerWidget {
                                                     temp = temp.copyWith(startDate: start.value);
                                                     if (startDateTime != start.value) {
                                                       handleInputChange();
+                                                    } else {
+
                                                     }
                                                     ref.read(startDateTimeProvider.notifier).updateDateTime(start.value!);
                                                     ref.read(endDateTimeProvider.notifier).updateDateTime(start.value!.add(Duration(hours: 1)));
@@ -342,7 +360,13 @@ class AddPlanScreen extends HookConsumerWidget {
                                             height: 220,
                                             child: CupertinoDatePicker(
                                               // 初期値を設定
-                                              initialDateTime: endDateTime,
+                                              initialDateTime: DateTime(
+                                                startDateTime.year,
+                                                startDateTime.month,
+                                                startDateTime.day,
+                                                adjustedDateTime.hour + 1,
+                                                adjustedDateTime.minute,
+                                              ),
                                               // DatePickerのモードを指定（場合分け）
                                               mode: ref.watch(switchProvider) ? CupertinoDatePickerMode.date : CupertinoDatePickerMode.dateAndTime,
                                               minuteInterval: 15,
