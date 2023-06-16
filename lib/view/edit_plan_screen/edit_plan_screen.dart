@@ -163,13 +163,7 @@ class EditPlanScreen extends HookConsumerWidget {
                     endDate: item.endDate,
                   );
                   ref.read(planDatabaseNotifierProvider.notifier).updateData(data);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => CalendarScreen(initialDate: data.startDate ?? startDateTime),
-                    ),
-                  );
-                  const PlanList().ShowDialog(context, ref, startDateTime!);
+                  Navigator.pop(context);
                 } : null,
                 child: const Text('保存'),
               ),
@@ -322,7 +316,7 @@ class EditPlanScreen extends HookConsumerWidget {
                                     final startDateTime = ref.watch(startDateTimeProvider);
                                     final initialStartDateTime = item.startDate;
                                     return Text(
-                                      DateFormat(format).format(initialStartDateTime ?? startDateTime),
+                                      DateFormat(format).format(initialStartDateTime ?? startDateTime!),
                                       style: const TextStyle(color: Colors.blue),
                                     );
                                   },
@@ -408,7 +402,7 @@ class EditPlanScreen extends HookConsumerWidget {
                                     final endDateTime = ref.watch(endDateTimeProvider);
                                     final initialEndDateTime = item.endDate;
                                     return Text(
-                                      DateFormat(format).format(initialEndDateTime ?? endDateTime),
+                                      DateFormat(format).format(initialEndDateTime ?? endDateTime!),
                                       style: const TextStyle(color: Colors.blue),
                                     );
                                   },
