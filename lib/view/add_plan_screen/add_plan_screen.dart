@@ -1,4 +1,5 @@
 import 'package:calender_app/common/fifteen_intervals.dart';
+import 'package:calender_app/common/string.dart';
 import 'package:calender_app/model/freezed/plan_model.dart';
 import 'package:calender_app/repository/providers/plan_provider.dart';
 import 'package:calender_app/repository/providers/switch_provider.dart';
@@ -46,11 +47,11 @@ class AddPlanScreen extends HookConsumerWidget {
                 Navigator.of(context).pop();
               },
               isDestructiveAction: true,
-              child: const Text('編集を破棄', style: TextStyle(color: Colors.blue)),
+              child: const Text(editCancelText, style: TextStyle(color: Colors.blue)),
             ),
           ],
           cancelButton: CupertinoActionSheetAction(
-            child: const Text('キャンセル'),
+            child: const Text(cancelText),
             onPressed: () {
               Navigator.pop(context, 'Cancel');
             },
@@ -147,7 +148,7 @@ class AddPlanScreen extends HookConsumerWidget {
                   Navigator.pop(context);
                   PlanList().ShowDialog(context, ref, startDateTime!);
                 } : null,
-                child: const Text('保存'),
+                child: const Text(saveText),
               ),
             ),
           ],
@@ -162,7 +163,7 @@ class AddPlanScreen extends HookConsumerWidget {
                   autofocus: true,
                   focusNode: titleFocusNode,
                   decoration: const InputDecoration(
-                    hintText: 'タイトルを入力してください',
+                    hintText: titleHintText,
                     contentPadding: EdgeInsets.only(left: 10),
                     fillColor: Colors.white,
                     border: InputBorder.none,
@@ -198,7 +199,7 @@ class AddPlanScreen extends HookConsumerWidget {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Text('終日'),
+                              const Text(allDayText),
                               Switch(
                                 value: ref.watch(switchProvider),
                                 activeColor: Colors.blue,
@@ -223,7 +224,7 @@ class AddPlanScreen extends HookConsumerWidget {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Text('開始'),
+                              const Text(startText),
                               // タップを検出するためのウィジェット
                               GestureDetector(
                                 onTap: () async {
@@ -241,12 +242,12 @@ class AddPlanScreen extends HookConsumerWidget {
                                               children: [
                                                 CupertinoButton(
                                                   // ダイアログが閉じられる
-                                                  child: const Text('キャンセル'),
+                                                  child: const Text(cancelText),
                                                   onPressed: () => Navigator.of(context).pop(),
                                                 ),
                                                 CupertinoButton(
                                                   // selectDateがダイアログpopされる
-                                                  child: const Text('完了'),
+                                                  child: const Text(completeText),
                                                   onPressed: ()  {
                                                     temp = temp.copyWith(startDate: start.value);
                                                     if (startDateTime != start.value) {
@@ -321,7 +322,7 @@ class AddPlanScreen extends HookConsumerWidget {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Text('終了'),
+                              const Text(endText),
                               GestureDetector(
                                 onTap: () async {
                                   final DateTime? selectedDate = await showCupertinoModalPopup(
@@ -337,11 +338,11 @@ class AddPlanScreen extends HookConsumerWidget {
                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                               children: [
                                                 CupertinoButton(
-                                                  child: const Text('キャンセル'),
+                                                  child: const Text(cancelText),
                                                   onPressed: () => Navigator.of(context).pop(),
                                                 ),
                                                 CupertinoButton(
-                                                  child: const Text('完了'),
+                                                  child: const Text(completeText),
                                                   onPressed: () {
                                                     temp = temp.copyWith(endDate: end.value);
                                                     if (endDateTime != end.value) {
@@ -427,7 +428,7 @@ class AddPlanScreen extends HookConsumerWidget {
                     keyboardType: TextInputType.multiline,
                     textAlignVertical: TextAlignVertical.top,
                     decoration: const InputDecoration(
-                      hintText: 'コメントを入力してください',
+                      hintText: commentHintText,
                       contentPadding: EdgeInsets.only(left: 10, top: 20, ),
                       fillColor: Colors.white,
                       border: InputBorder.none,
