@@ -105,9 +105,8 @@ class PlanList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    DateTime selectedDate = DateTime.now(); // 仮に現在の日付を選択日付としています。
+    DateTime selectedDate = DateTime.now();
     var date = selectedDate;
-    // ここで、適切な日付を選択するロジックを追加するべきです。
 
     return buildCustomDialog(context, date, ref);
   }
@@ -118,13 +117,11 @@ class PlanList extends ConsumerWidget {
     return FutureBuilder(
       future: planProvider.readData(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
-        // データがまだ読み込まれていない場合
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
             child: CircularProgressIndicator(),
           );
         } else {
-          // データが読み込まれた場合
           List<PlanItemData> planItems = planProvider.state.planItems;
           List<Widget> tiles = _buildPlanList(planItems, planProvider, date, context);
 
@@ -173,7 +170,6 @@ class PlanList extends ConsumerWidget {
                             )
                           ],
                         ),
-                        // Using spread operator and ternary conditional
                         ...tiles.isEmpty
                             ? [
                           const Center(child: Column(
