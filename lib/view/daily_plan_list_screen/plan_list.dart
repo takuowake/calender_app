@@ -77,7 +77,7 @@ class PlanList extends ConsumerWidget {
                             ),
                           if (item.isAll) // isAllがTrueの場合は「終日」を表示
                             const Text(
-                              '終日',
+                              allDayText,
                               style: timeTextStyle,
                             ),
                         ],
@@ -128,8 +128,10 @@ class PlanList extends ConsumerWidget {
           List<PlanItemData> planItems = planProvider.state.planItems;
           List<Widget> tiles = _buildPlanList(planItems, planProvider, date, context);
 
-          String dayOfWeek = getFormattedDayOfWeek(date);
-          String monthAndDate = getFormattedMonthAndDate(date);
+          String formattedDate = getFormattedDate(date);
+          String formattedWeekDay = getFormattedWeekDay(date);
+          TextStyle weekdayTextStyle = getWeekdayTextStyle(date.weekday);
+
 
           return GestureDetector(
             onTap: () {},
@@ -152,11 +154,10 @@ class PlanList extends ConsumerWidget {
                           children: [
                             Row(
                               children: [
-                                Text('${date.year}年 $monthAndDate '),
-                                Text(
-                                  dayOfWeek,
-                                  style: TextStyle(color: date.weekday == 6 ? Colors.blue : (date.weekday == 7 ? Colors.red : Colors.black)),
-                                ),
+                                Text(formattedDate),
+                                const Text(' ('),
+                                Text(formattedWeekDay, style: weekdayTextStyle),
+                                const Text(')'),
                               ],
                             ),
                             IconButton(
@@ -181,7 +182,7 @@ class PlanList extends ConsumerWidget {
                                 thickness: 1,
                               ),
                               SizedBox(height: 200),
-                              Text("予定がありません。"),
+                              Text(noPlan),
                             ],
                           ))
                         ]

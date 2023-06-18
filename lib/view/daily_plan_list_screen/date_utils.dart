@@ -1,36 +1,52 @@
-String getFormattedDayOfWeek(DateTime date) {
+import 'package:flutter/material.dart';
+
+TextStyle getWeekdayTextStyle(int weekday) {
+  if (weekday == DateTime.saturday) {
+    return TextStyle(color: Colors.blue);
+  } else if (weekday == DateTime.sunday) {
+    return TextStyle(color: Colors.red);
+  } else {
+    return TextStyle(color: Colors.black);
+  }
+}
+
+String getFormattedWeekDay(DateTime date) {
   String weekday = '';
 
-  // 曜日の取得
   switch (date.weekday) {
-    case 1:
+    case DateTime.monday:
       weekday = '月';
       break;
-    case 2:
+    case DateTime.tuesday:
       weekday = '火';
       break;
-    case 3:
+    case DateTime.wednesday:
       weekday = '水';
       break;
-    case 4:
+    case DateTime.thursday:
       weekday = '木';
       break;
-    case 5:
+    case DateTime.friday:
       weekday = '金';
       break;
-    case 6:
+    case DateTime.saturday:
       weekday = '土';
       break;
-    case 7:
+    case DateTime.sunday:
       weekday = '日';
       break;
   }
 
-  return '($weekday)';
+  return weekday;
 }
 
-String getFormattedMonthAndDate(DateTime date) {
+String getFormattedDate(DateTime date) {
+  String year = date.year.toString();
   String month = date.month.toString().padLeft(2, '0');
   String day = date.day.toString().padLeft(2, '0');
-  return '$month月$day日';
+
+  return '$year年$month月$day日';
 }
+
+const String allDayText = '終日';
+const String noPlan = '予定がありません。';
