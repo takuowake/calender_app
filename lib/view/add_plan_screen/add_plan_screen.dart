@@ -2,7 +2,6 @@ import 'package:calender_app/common/fifteen_intervals.dart';
 import 'package:calender_app/model/freezed/plan_model.dart';
 import 'package:calender_app/repository/providers/plan_provider.dart';
 import 'package:calender_app/repository/providers/switch_provider.dart';
-import 'package:calender_app/view/calendar_screen/calendar_screen.dart';
 import 'package:calender_app/view/daily_plan_list_screen/plan_list.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -135,7 +134,7 @@ class AddPlanScreen extends HookConsumerWidget {
                     }
                   }),
                 ),
-                onPressed: (temp.title.isNotEmpty && temp.comment.isNotEmpty) ? () {
+                onPressed: (temp.title.isNotEmpty && temp.comment.isNotEmpty) ? () async{
                   temp = temp.copyWith(
                     startDate: temp.startDate ?? startDateTime,
                     endDate: temp.endDate ?? endDateTime,
@@ -145,8 +144,8 @@ class AddPlanScreen extends HookConsumerWidget {
                   ref.read(startDateTimeProvider.notifier).updateDateTime(roundToNearestFifteen(DateTime.now()));
                   ref.read(endDateTimeProvider.notifier).updateDateTime(roundToNearestFifteen(DateTime.now().add(const Duration(hours: 1))));
                   Navigator.pop(context);
-                  // Navigator.pop(context);
-                  // showDialog(context: context, builder: (_) => const PlanList());
+                  Navigator.pop(context);
+                  PlanList().ShowDialog(context, ref, startDateTime!);
                 } : null,
                 child: const Text('保存'),
               ),
