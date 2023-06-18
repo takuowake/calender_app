@@ -31,23 +31,25 @@ class CalendarScreen extends ConsumerWidget {
           final displayDate = DateTime(DateTime.now().year, DateTime.now().month + monthsToAdd, 1);
 
           return SizedBox.expand(
-            child: Column(
-              children: [
-                CalendarScreenHeader(
-                  currentMonth: '${displayDate.year}年 ${displayDate.month.toString().padLeft(2, '0')}月',
-                  pageController: pageController,
-                  ref: ref,
-                  initialPageIndex: initialPageIndex,
-                ),
-                const SizedBox(height: 16),
-                Calendar(
-                  date: displayDate,
-                  displayedMonth: displayDate.month,
-                  onDateSelected: (DateTime date) {
-                    const PlanList().ShowDialog(context, ref, date);
-                  },
-                ),
-              ],
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  CalendarScreenHeader(
+                    currentMonth: '${displayDate.year}年 ${displayDate.month.toString().padLeft(2, '0')}月',
+                    pageController: pageController,
+                    ref: ref,
+                    initialPageIndex: initialPageIndex,
+                  ),
+                  const SizedBox(height: 16),
+                  Calendar(
+                    date: displayDate,
+                    displayedMonth: displayDate.month,
+                    onDateSelected: (DateTime date) {
+                      const PlanList().ShowDialog(context, ref, date);
+                    },
+                  ),
+                ],
+              ),
             ),
           );
         },
