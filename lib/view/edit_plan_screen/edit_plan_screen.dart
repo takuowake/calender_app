@@ -31,12 +31,11 @@ class EditPlanScreen extends HookConsumerWidget {
           actions: <Widget>[
             CupertinoActionSheetAction(
               onPressed: () {
-                Navigator.of(context).pop();
                 // CupertinoActionSheetをポップします。
-                ref.read(switchProvider.notifier).updateSwitch(false);
                 ref.read(switchProvider.notifier).updateSwitch(false);
                 ref.read(startDateTimeProvider.notifier).updateDateTime(roundToNearestFifteen(DateTime.now()));
                 ref.read(endDateTimeProvider.notifier).updateDateTime(roundToNearestFifteen(DateTime.now().add(const Duration(hours: 1))));
+                Navigator.of(context).pop();
                 Navigator.of(context).pop();
               },
               isDestructiveAction: true,
