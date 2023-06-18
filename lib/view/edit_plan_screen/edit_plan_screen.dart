@@ -52,7 +52,7 @@ class EditPlanScreen extends HookConsumerWidget {
       );
     }
 
-    final planProvider = ref.watch(planDatabaseNotifierProvider.notifier);
+    final planProvider = ref.read(planDatabaseNotifierProvider.notifier);
 
     final isChanged = useState<bool>(false);
     void handleInputChange() {
@@ -140,7 +140,7 @@ class EditPlanScreen extends HookConsumerWidget {
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
                     if (isChanged.value == true) {
-                      return Colors.white; // 保存ボタンの背景色を変更
+                      return Colors.white;
                     } else {
                       return Colors.white70;
                     }
@@ -277,7 +277,6 @@ class EditPlanScreen extends HookConsumerWidget {
                                                     if (startDateTime != start.value) {
                                                       handleInputChange();
                                                     }
-                                                    // planProvider.updateData(item);
                                                     startDateTime = start.value!;
                                                     Navigator.of(context).pop();
                                                     // ref.watch(planDatabaseNotifierProvider);
