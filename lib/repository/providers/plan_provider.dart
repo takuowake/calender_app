@@ -10,7 +10,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 final planDatabaseNotifierProvider = StateNotifierProvider<PlanDatabaseNotifier, PlanStateData>((ref) {
   PlanDatabaseNotifier notify = PlanDatabaseNotifier();
   notify.readData();
-  //初期化処理
   return notify;
 });
 
@@ -28,7 +27,7 @@ final pageControllerProvider = Provider<PageController>((ref) {
 class StartDateTimeNotifier extends StateNotifier<DateTime?> {
   StartDateTimeNotifier() : super(null);
 
-  void updateDateTime(DateTime dateTime) {
+  void updateDateTime(DateTime? dateTime) {
     state = dateTime;
   }
 }
@@ -40,7 +39,7 @@ final startDateTimeProvider = StateNotifierProvider<StartDateTimeNotifier, DateT
 class EndDateTimeNotifier extends StateNotifier<DateTime?> {
   EndDateTimeNotifier() : super(null);
 
-  void updateDateTime(DateTime dateTime) {
+  void updateDateTime(DateTime? dateTime) {
     state = dateTime;
   }
 }
