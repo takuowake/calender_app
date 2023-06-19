@@ -8,6 +8,6 @@ class SwitchProvider extends StateNotifier<bool> {
   }
 }
 
-final switchProvider = StateNotifierProvider<SwitchProvider, bool>((ref) {
+final switchProvider = StateNotifierProvider.autoDispose<SwitchProvider, bool>((ref) {
   return SwitchProvider();
 });

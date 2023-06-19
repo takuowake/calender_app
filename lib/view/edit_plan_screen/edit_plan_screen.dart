@@ -1,10 +1,7 @@
-import 'package:calender_app/common/fifteen_intervals.dart';
 import 'package:calender_app/common/string.dart';
 import 'package:calender_app/repository/providers/plan_provider.dart';
 import 'package:calender_app/repository/providers/switch_provider.dart';
 import 'package:calender_app/service/db/plan_db.dart';
-import 'package:calender_app/view/calendar_screen/calendar_screen.dart';
-import 'package:calender_app/view/daily_plan_list_screen/plan_list.dart';
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -34,9 +31,6 @@ class EditPlanScreen extends HookConsumerWidget {
             CupertinoActionSheetAction(
               onPressed: () {
                 // CupertinoActionSheetをポップします。
-                ref.read(switchProvider.notifier).updateSwitch(false);
-                ref.read(startDateTimeProvider.notifier).updateDateTime(roundToNearestFifteen(DateTime.now()));
-                ref.read(endDateTimeProvider.notifier).updateDateTime(roundToNearestFifteen(DateTime.now().add(const Duration(hours: 1))));
                 Navigator.of(context).pop();
                 Navigator.of(context).pop();
               },
@@ -71,7 +65,6 @@ class EditPlanScreen extends HookConsumerWidget {
     final title = useState(item.title);
     final comment = useState(item.comment);
 
-
     // useTextEditingControllerに初期値として、item.titleとitem.commentを設定
     final titleController = useTextEditingController(text: item.title);
     final commentController = useTextEditingController(text: item.comment);
@@ -95,16 +88,8 @@ class EditPlanScreen extends HookConsumerWidget {
                 onPressed: () {
                   // ここで予定を削除する処理を追加する
                   planProvider.deleteData(item);
-                  ref.read(switchProvider.notifier).updateSwitch(false);
-                  ref.read(startDateTimeProvider.notifier).updateDateTime(roundToNearestFifteen(DateTime.now()));
-                  ref.read(endDateTimeProvider.notifier).updateDateTime(roundToNearestFifteen(DateTime.now().add(const Duration(hours: 1))));
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => CalendarScreen(initialDate: item.startDate ?? startDateTime),
-                    ),
-                  );
-                  // const PlanList().ShowDialog(context, ref, startDateTime!);
+                  Navigator.pop(context);
+                  Navigator.pop(context);
                 },
                 child: const Text('削除', style: TextStyle(color: Colors.blue)),
               ),
@@ -166,8 +151,6 @@ class EditPlanScreen extends HookConsumerWidget {
                   );
                   ref.read(planDatabaseNotifierProvider.notifier).updateData(data);
                   Navigator.pop(context);
-                  Navigator.pop(context);
-                  PlanList().ShowDialog(context, ref, startDateTime!);
                 } : null,
                 child: const Text(saveText),
               ),
@@ -293,7 +276,7 @@ class EditPlanScreen extends HookConsumerWidget {
                                               // 初期値としてitemオブジェクトのstartDataプロパティの値
                                               initialDateTime: item.startDate,
                                               // DatePickerのモードを指定（場合分け）
-                                              mode: ref.watch(switchProvider) ? CupertinoDatePickerMode.date : CupertinoDatePickerMode.dateAndTime,
+                                              mode: item.isAll ? CupertinoDatePickerMode.date : CupertinoDatePickerMode.dateAndTime,
                                               minuteInterval: 15,
                                               use24hFormat: true,
                                               onDateTimeChanged: (dateTime) {
@@ -314,7 +297,7 @@ class EditPlanScreen extends HookConsumerWidget {
                                 },
                                 child: Consumer(
                                   builder: (context, watch, _) {
-                                    final switchState = ref.watch(switchProvider);
+                                    final switchState = item.isAll;
                                     final format = switchState ? 'yyyy-MM-dd' : 'yyyy-MM-dd HH:mm';
                                     final startDateTime = ref.watch(startDateTimeProvider);
                                     final initialStartDateTime = item.startDate;
@@ -378,7 +361,7 @@ class EditPlanScreen extends HookConsumerWidget {
                                               // 初期値を設定
                                               initialDateTime: endDateTime,
                                               // DatePickerのモードを指定（場合分け）
-                                              mode: ref.watch(switchProvider) ? CupertinoDatePickerMode.date : CupertinoDatePickerMode.dateAndTime,
+                                              mode: item.isAll ? CupertinoDatePickerMode.date : CupertinoDatePickerMode.dateAndTime,
                                               minuteInterval: 15,
                                               use24hFormat: true,
                                               minimumDate: startDateTime?.add(const Duration(hours: 1)),
@@ -400,7 +383,7 @@ class EditPlanScreen extends HookConsumerWidget {
                                 },
                                 child: Consumer(
                                   builder: (context, watch, _) {
-                                    final switchState = ref.watch(switchProvider);
+                                    final switchState = item.isAll;
                                     final format = switchState ? 'yyyy-MM-dd' : 'yyyy-MM-dd HH:mm';
                                     final endDateTime = ref.watch(endDateTimeProvider);
                                     final initialEndDateTime = item.endDate;

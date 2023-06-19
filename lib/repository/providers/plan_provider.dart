@@ -32,7 +32,7 @@ class StartDateTimeNotifier extends StateNotifier<DateTime?> {
   }
 }
 
-final startDateTimeProvider = StateNotifierProvider<StartDateTimeNotifier, DateTime?>((ref) {
+final startDateTimeProvider = StateNotifierProvider.autoDispose<StartDateTimeNotifier, DateTime?>((ref) {
   return StartDateTimeNotifier();
 });
 
@@ -44,6 +44,6 @@ class EndDateTimeNotifier extends StateNotifier<DateTime?> {
   }
 }
 
-final endDateTimeProvider = StateNotifierProvider<EndDateTimeNotifier, DateTime?>((ref) {
+final endDateTimeProvider = StateNotifierProvider.autoDispose<EndDateTimeNotifier, DateTime?>((ref) {
   return EndDateTimeNotifier();
 });

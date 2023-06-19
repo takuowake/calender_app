@@ -3,7 +3,6 @@ import 'package:calender_app/common/string.dart';
 import 'package:calender_app/model/freezed/plan_model.dart';
 import 'package:calender_app/repository/providers/plan_provider.dart';
 import 'package:calender_app/repository/providers/switch_provider.dart';
-import 'package:calender_app/view/daily_plan_list_screen/plan_list.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -41,9 +40,6 @@ class AddPlanScreen extends HookConsumerWidget {
             CupertinoActionSheetAction(
               onPressed: () {
                 Navigator.of(context).pop();
-                ref.read(switchProvider.notifier).updateSwitch(false);
-                ref.read(startDateTimeProvider.notifier).updateDateTime(roundToNearestFifteen(DateTime.now()));
-                ref.read(endDateTimeProvider.notifier).updateDateTime(roundToNearestFifteen(DateTime.now().add(const Duration(hours: 1))));
                 Navigator.of(context).pop();
               },
               isDestructiveAction: true,
@@ -72,14 +68,6 @@ class AddPlanScreen extends HookConsumerWidget {
     void handleInputChange() {
       isChanged.value = true;
     }
-
-    // final initialEndDateTimeProvider = StateProvider<DateTime?>((ref) => roundToNearestFifteen(DateTime(
-    //   selectedDate.year,
-    //   selectedDate.month,
-    //   selectedDate.day,
-    //   DateTime.now().hour + 1,
-    //   DateTime.now().minute,
-    // )));
 
     final int minute = DateTime.now().minute;
     final int remainder = minute % 15;
@@ -122,7 +110,7 @@ class AddPlanScreen extends HookConsumerWidget {
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
                     if (temp.title.isNotEmpty && temp.comment.isNotEmpty) {
-                      return Colors.white; // 保存ボタンの背景色を変更
+                      return Colors.white;
                     } else {
                       return Colors.white70;
                     }
@@ -141,12 +129,7 @@ class AddPlanScreen extends HookConsumerWidget {
                     endDate: temp.endDate ?? endDateTime,
                   );
                   planProvider.writeData(temp);
-                  ref.read(switchProvider.notifier).updateSwitch(false);
-                  ref.read(startDateTimeProvider.notifier).updateDateTime(roundToNearestFifteen(DateTime.now()));
-                  ref.read(endDateTimeProvider.notifier).updateDateTime(roundToNearestFifteen(DateTime.now().add(const Duration(hours: 1))));
                   Navigator.pop(context);
-                  Navigator.pop(context);
-                  PlanList().ShowDialog(context, ref, startDateTime!);
                 } : null,
                 child: const Text(saveText),
               ),
@@ -304,7 +287,6 @@ class AddPlanScreen extends HookConsumerWidget {
                                     final startDateTime = ref.watch(startDateTimeProvider);
                                     return Text(
                                       DateFormat(format).format(startDateTime ?? initialStartDateTime),
-                                      // DateFormat(format).format(startDateTime),
                                       style: const TextStyle(color: Colors.blue),
                                     );
                                   },
