@@ -14,8 +14,10 @@ import 'package:intl/intl.dart';
 
 
 class EditPlanScreen extends HookConsumerWidget {
+  // EditPlanScreenのインスタンス化時に引数として渡される
   PlanItemData item;
 
+  // EditPlanScreenクラスのコンストラクタを定義
   EditPlanScreen({Key? key, required this.item}) : super(key: key);
 
   final titleFocusNode = FocusNode();
