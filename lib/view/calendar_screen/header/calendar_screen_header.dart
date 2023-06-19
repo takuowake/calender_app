@@ -1,5 +1,5 @@
 import 'package:calender_app/common/string.dart';
-import 'package:calender_app/repository/view_model/plan_provider.dart';
+import 'package:calender_app/repository/providers/plan_provider.dart';
 import 'package:calender_app/view/calendar_screen/header/header_datepicker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
