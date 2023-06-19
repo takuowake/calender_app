@@ -30,7 +30,6 @@ class DateBox extends ConsumerWidget {
     Color textColor;
     Color backgroundColor = Colors.white;
 
-    // int currentMonth = calendar.month;
     double fontSize = 14.0;
     double boxHeight = 1.0;
     bool isToday = false;
@@ -71,7 +70,7 @@ class DateBox extends ConsumerWidget {
     }
 
     if (isHeader) {
-      backgroundColor = Color.fromARGB(240, 240, 240, 240);
+      backgroundColor = const Color.fromARGB(240, 240, 240, 240);
       fontSize = 10.0;
       boxHeight = 3;
     }

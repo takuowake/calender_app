@@ -2,7 +2,7 @@ import 'package:calender_app/common/fifteen_intervals.dart';
 import 'package:calender_app/common/string.dart';
 import 'package:calender_app/model/freezed/plan_model.dart';
 import 'package:calender_app/repository/providers/plan_database_norifier.dart';
-import 'package:calender_app/repository/providers/plan_provider.dart';
+import 'package:calender_app/repository/view_model/plan_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -239,7 +239,7 @@ class AddPlanScreen extends HookConsumerWidget {
 
                                                     }
                                                     ref.read(startDateTimeProvider.notifier).updateDateTime(start.value!);
-                                                    ref.read(endDateTimeProvider.notifier).updateDateTime(start.value!.add(Duration(hours: 1)));
+                                                    ref.read(endDateTimeProvider.notifier).updateDateTime(start.value!.add(const Duration(hours: 1)));
                                                     startDateTime = start.value!;
                                                     endDateTime = start.value!.add(const Duration(hours: 1));
                                                     Navigator.of(context).pop();
@@ -384,7 +384,6 @@ class AddPlanScreen extends HookConsumerWidget {
                                     final endDateTime = ref.watch(endDateTimeProvider);
                                     return Text(
                                       DateFormat(format).format(endDateTime ?? initialEndDateTime),
-                                      // DateFormat(format).format(endDateTime),
                                       style: const TextStyle(color: Colors.blue),
                                     );
                                   },
@@ -411,7 +410,7 @@ class AddPlanScreen extends HookConsumerWidget {
                     textAlignVertical: TextAlignVertical.top,
                     decoration: const InputDecoration(
                       hintText: commentHintText,
-                      contentPadding: EdgeInsets.only(left: 10, top: 20, ),
+                      contentPadding: EdgeInsets.only(left: 10, top: 20),
                       fillColor: Colors.white,
                       border: InputBorder.none,
                       filled: true,

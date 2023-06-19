@@ -1,6 +1,6 @@
 import 'package:calender_app/common/string.dart';
 import 'package:calender_app/repository/providers/plan_database_norifier.dart';
-import 'package:calender_app/repository/providers/plan_provider.dart';
+import 'package:calender_app/repository/view_model/plan_provider.dart';
 import 'package:calender_app/service/db/plan_db.dart';
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter/cupertino.dart';
@@ -74,8 +74,8 @@ class EditPlanScreen extends HookConsumerWidget {
         context: context,
         builder: (BuildContext context) {
           return CupertinoAlertDialog(
-            title: Text(deletePlanText),
-            content: Text(confirmDeleteText),
+            title: const Text(deletePlanText),
+            content: const Text(confirmDeleteText),
             actions: <Widget>[
               CupertinoDialogAction(
                 child: const Text(cancelText),
@@ -91,7 +91,7 @@ class EditPlanScreen extends HookConsumerWidget {
                   Navigator.pop(context);
                   Navigator.pop(context);
                 },
-                child: const Text('削除', style: TextStyle(color: Colors.blue)),
+                child: const Text(deleteText, style: TextStyle(color: Colors.blue)),
               ),
             ],
           );
@@ -258,13 +258,12 @@ class EditPlanScreen extends HookConsumerWidget {
                                                     item = item.copyWith(startDate: drift.Value(start.value));
                                                     item = item.copyWith(endDate: drift.Value(start.value!.add(const Duration(hours:1))));
                                                     ref.read(startDateTimeProvider.notifier).updateDateTime(start.value!);
-                                                    ref.read(endDateTimeProvider.notifier).updateDateTime(start.value!.add(Duration(hours: 1)));
+                                                    ref.read(endDateTimeProvider.notifier).updateDateTime(start.value!.add(const Duration(hours: 1)));
                                                     if (startDateTime != start.value) {
                                                       handleInputChange();
                                                     }
                                                     startDateTime = start.value!;
                                                     Navigator.of(context).pop();
-                                                    // ref.watch(planDatabaseNotifierProvider);
                                                   },
                                                 ),
                                               ],
@@ -349,7 +348,6 @@ class EditPlanScreen extends HookConsumerWidget {
                                                     ref.read(endDateTimeProvider.notifier).updateDateTime(end.value!);
                                                     endDateTime = end.value!;
                                                     Navigator.of(context).pop();
-                                                    // ref.watch(planDatabaseNotifierProvider);
                                                   },
                                                 ),
                                               ],
@@ -450,7 +448,6 @@ class EditPlanScreen extends HookConsumerWidget {
                     width: double.infinity,
                     height: 50,
                     child: Center(child: Text(deleteThisPlanText, style: TextStyle(color: Colors.red))),
-
                   ),
                 ),
               ),

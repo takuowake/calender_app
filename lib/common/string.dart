@@ -1,6 +1,9 @@
 /// 共通
 const String allDayText = '終日';
 
+/// カレンダー画面
+const String todayText = '今日';
+
 /// 追加・編集画面
 const String titleHintText = 'タイトルを入力してください';
 const String commentHintText = 'コメントを入力してください';
@@ -12,6 +15,7 @@ const String cancelText = 'キャンセル';
 const String completeText = '完了';
 
 /// 編集画面
+const String deleteText = '削除';
 const String deleteThisPlanText = 'この予定の削除';
 const String confirmDeleteText = '本当にこの日の予定を削除しますか？';
 const String deletePlanText = '予定の削除';
