@@ -1,6 +1,6 @@
 import 'package:calender_app/common/string.dart';
+import 'package:calender_app/repository/providers/plan_database_norifier.dart';
 import 'package:calender_app/repository/providers/plan_provider.dart';
-import 'package:calender_app/repository/providers/switch_provider.dart';
 import 'package:calender_app/service/db/plan_db.dart';
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter/cupertino.dart';

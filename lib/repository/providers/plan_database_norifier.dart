@@ -1,9 +1,9 @@
-//データベースの状態が変わるたびPlanのviewをビルドするようにするクラスです。
 import 'package:calender_app/model/freezed/plan_model.dart';
 import 'package:calender_app/service/db/plan_db.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+/// Database
 class PlanDatabaseNotifier extends StateNotifier<PlanStateData> {
   //ここからはデータベースに関する処理をこのクラスで行えるように記述します。
   PlanDatabaseNotifier() : super(PlanStateData());
@@ -56,3 +56,12 @@ class PlanDatabaseNotifier extends StateNotifier<PlanStateData> {
     );
   }
 }
+final planDatabaseNotifierProvider = StateNotifierProvider<PlanDatabaseNotifier, PlanStateData>((ref) {
+  PlanDatabaseNotifier notify = PlanDatabaseNotifier();
+  notify.readData();
+  return notify;
+});
+final planDatabaseProvider = Provider<PlanDatabaseNotifier>((ref) {
+  // PlanDatabaseNotifierクラスの新しいインスタンスを生成して返す
+  return PlanDatabaseNotifier();
+});

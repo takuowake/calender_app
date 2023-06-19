@@ -1,29 +1,25 @@
-/// DBへの読み込み、追加、削除、更新を行う。
-/// DBへの操作が行われるたびに更新通知を送り、画面を再描画する。
-import 'package:calender_app/common/fifteen_intervals.dart';
-import 'package:calender_app/model/freezed/plan_model.dart';
-import 'package:calender_app/repository/providers/date_picker_notifier.dart';
-import 'package:calender_app/repository/providers/plan_database_norifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final planDatabaseNotifierProvider = StateNotifierProvider<PlanDatabaseNotifier, PlanStateData>((ref) {
-  PlanDatabaseNotifier notify = PlanDatabaseNotifier();
-  notify.readData();
-  return notify;
-});
-
-final planDatabaseProvider = Provider<PlanDatabaseNotifier>((ref) {
-  // PlanDatabaseNotifierクラスの新しいインスタンスを生成して返す
-  return PlanDatabaseNotifier();
-});
-
+/// DataPicker
 final datePickerProvider = StateNotifierProvider<DatePickerNotifier, DateTime>((ref) => DatePickerNotifier());
+class DatePickerNotifier extends StateNotifier<DateTime> {
+  DatePickerNotifier() : super(DateTime.now());
 
+  void setDate(DateTime date) {
+    state = date;
+  }
+}
+
+/// PageController
 final pageControllerProvider = Provider<PageController>((ref) {
   return PageController(initialPage: 1000);
 });
 
+/// StartDate
+final startDateTimeProvider = StateNotifierProvider.autoDispose<StartDateTimeNotifier, DateTime?>((ref) {
+  return StartDateTimeNotifier();
+});
 class StartDateTimeNotifier extends StateNotifier<DateTime?> {
   StartDateTimeNotifier() : super(null);
 
@@ -32,10 +28,10 @@ class StartDateTimeNotifier extends StateNotifier<DateTime?> {
   }
 }
 
-final startDateTimeProvider = StateNotifierProvider.autoDispose<StartDateTimeNotifier, DateTime?>((ref) {
-  return StartDateTimeNotifier();
+/// EndDate
+final endDateTimeProvider = StateNotifierProvider.autoDispose<EndDateTimeNotifier, DateTime?>((ref) {
+  return EndDateTimeNotifier();
 });
-
 class EndDateTimeNotifier extends StateNotifier<DateTime?> {
   EndDateTimeNotifier() : super(null);
 
@@ -44,6 +40,14 @@ class EndDateTimeNotifier extends StateNotifier<DateTime?> {
   }
 }
 
-final endDateTimeProvider = StateNotifierProvider.autoDispose<EndDateTimeNotifier, DateTime?>((ref) {
-  return EndDateTimeNotifier();
+/// IsAll
+final switchProvider = StateNotifierProvider.autoDispose<SwitchProvider, bool>((ref) {
+  return SwitchProvider();
 });
+class SwitchProvider extends StateNotifier<bool> {
+  SwitchProvider() : super(false);
+
+  void updateSwitch(bool value) {
+    state = value;
+  }
+}

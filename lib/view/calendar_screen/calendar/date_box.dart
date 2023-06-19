@@ -1,4 +1,4 @@
-import 'package:calender_app/repository/providers/plan_provider.dart';
+import 'package:calender_app/repository/providers/plan_database_norifier.dart';
 import 'package:calender_app/service/db/plan_db.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
