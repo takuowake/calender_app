@@ -115,6 +115,7 @@ class PlanList extends ConsumerWidget {
     final planProvider = ref.watch(planDatabaseProvider);
 
     return FutureBuilder(
+      // planProvider.readData()という非同期処理の結果を待ち、結果に応じてウィジェットを返す
       future: planProvider.readData(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {

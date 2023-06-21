@@ -2,7 +2,7 @@ import 'package:calender_app/common/fifteen_intervals.dart';
 import 'package:calender_app/common/string.dart';
 import 'package:calender_app/model/freezed/plan_model.dart';
 import 'package:calender_app/repository/providers/plan_database_norifier.dart';
-import 'package:calender_app/repository/view_model/plan_provider.dart';
+import 'package:calender_app/repository/providers/plan_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -40,6 +40,9 @@ class AddPlanScreen extends HookConsumerWidget {
             CupertinoActionSheetAction(
               onPressed: () {
                 Navigator.of(context).pop();
+                // ref.read(switchProvider.notifier).updateSwitch(false);
+                // ref.read(startDateTimeProvider.notifier).updateDateTime(roundToNearestFifteen(DateTime.now()));
+                // ref.read(endDateTimeProvider.notifier).updateDateTime(roundToNearestFifteen(DateTime.now().add(const Duration(hours: 1))));
                 Navigator.of(context).pop();
               },
               isDestructiveAction: true,
@@ -78,9 +81,6 @@ class AddPlanScreen extends HookConsumerWidget {
     } else {
       adjustedDateTime = DateTime.now().subtract(Duration(minutes: remainder));
     }
-
-
-
 
     return GestureDetector(
       onTap: () {
@@ -129,7 +129,12 @@ class AddPlanScreen extends HookConsumerWidget {
                     endDate: temp.endDate ?? endDateTime,
                   );
                   planProvider.writeData(temp);
+                  // ref.read(switchProvider.notifier).updateSwitch(false);
+                  // ref.read(startDateTimeProvider.notifier).updateDateTime(roundToNearestFifteen(DateTime.now()));
+                  // ref.read(endDateTimeProvider.notifier).updateDateTime(roundToNearestFifteen(DateTime.now().add(const Duration(hours: 1))));
                   Navigator.pop(context);
+                  // Navigator.pop(context);
+                  // PlanList().ShowDialog(context, ref, startDateTime!);
                 } : null,
                 child: const Text(saveText),
               ),
