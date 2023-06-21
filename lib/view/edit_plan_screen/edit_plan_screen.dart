@@ -239,7 +239,7 @@ class EditPlanScreen extends HookConsumerWidget {
                                     context: context,
                                     // Containerとその中に配置されたColumnでダイアログのコンテンツを構築
                                     builder: (_) => Container(
-                                      height: MediaQuery.of(context).size.height / 3 + 16,
+                                      height: MediaQuery.of(context).size.height / 3,
                                       color: CupertinoColors.white,
                                       child: Column(
                                         children: [
@@ -270,7 +270,7 @@ class EditPlanScreen extends HookConsumerWidget {
                                             ),
                                           ),
                                           SizedBox(
-                                            height: 220,
+                                            height: MediaQuery.of(context).size.height / 5,
                                             child: CupertinoDatePicker(
                                               // 初期値としてitemオブジェクトのstartDataプロパティの値
                                               initialDateTime: item.startDate,
@@ -325,7 +325,7 @@ class EditPlanScreen extends HookConsumerWidget {
                                   final DateTime? selectedDate = await showCupertinoModalPopup(
                                     context: context,
                                     builder: (_) => Container(
-                                      height: MediaQuery.of(context).size.height / 3 + 16,
+                                      height: MediaQuery.of(context).size.height / 3,
                                       color: CupertinoColors.white,
                                       child: Column(
                                         children: [
@@ -354,7 +354,7 @@ class EditPlanScreen extends HookConsumerWidget {
                                             ),
                                           ),
                                           SizedBox(
-                                            height: 220,
+                                            height: MediaQuery.of(context).size.height / 5,
                                             child: CupertinoDatePicker(
                                               // 初期値を設定
                                               initialDateTime: endDateTime,
