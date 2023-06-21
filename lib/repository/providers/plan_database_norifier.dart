@@ -4,6 +4,8 @@ import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Database
+// 予定データベースの操作を管理するためのクラス
+// StateNotifier<PlanStateData>を継承しており、内部でデータベースへの操作を行うメソッドやデータの状態を管理する状態を持っている
 class PlanDatabaseNotifier extends StateNotifier<PlanStateData> {
   //ここからはデータベースに関する処理をこのクラスで行えるように記述します。
   PlanDatabaseNotifier() : super(PlanStateData());
@@ -61,7 +63,7 @@ final planDatabaseNotifierProvider = StateNotifierProvider<PlanDatabaseNotifier,
   notify.readData();
   return notify;
 });
-final planDatabaseProvider = Provider<PlanDatabaseNotifier>((ref) {
-  // PlanDatabaseNotifierクラスの新しいインスタンスを生成して返す
-  return PlanDatabaseNotifier();
-});
+// final planDatabaseProvider = Provider<PlanDatabaseNotifier>((ref) {
+//   // PlanDatabaseNotifierクラスの新しいインスタンスを生成して返す
+//   return PlanDatabaseNotifier();
+// });

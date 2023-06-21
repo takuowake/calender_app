@@ -14,7 +14,7 @@ class PlanList extends ConsumerWidget {
   const PlanList({super.key});
 
   // _buildPlanListの引数は、planItemListとdb
-  List<Widget> _buildPlanList(List<PlanItemData> planItemList, PlanDatabaseNotifier db, DateTime date, BuildContext context) {
+  List<Widget> _buildPlanList(List<PlanItemData> planItemList, DateTime date, BuildContext context) {
     List<Widget> list = [];
     // planItemListの各要素について、for...inループを使用して処理を行う
     for (PlanItemData item in planItemList) {
@@ -112,86 +112,89 @@ class PlanList extends ConsumerWidget {
   }
 
   Widget buildCustomDialog(BuildContext context, DateTime date, WidgetRef ref) {
-    final planProvider = ref.watch(planDatabaseProvider);
+    // Providerの状態変化を監視し、変化があるたびにビルダー関数を実行
+    return Consumer(
+      builder: (BuildContext context, WidgetRef ref, _) {
+        // planDatabaseProviderからplanProviderを取得
+        final planProvider = ref.watch(planDatabaseNotifierProvider);
 
-    return FutureBuilder(
-      // planProvider.readData()という非同期処理の結果を待ち、結果に応じてウィジェットを返す
-      future: planProvider.readData(),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
+        // planProviderの状態からplanItemsを取得
+        List<PlanItemData> planItems = planProvider.planItems;
+
+        if (planItems == null) {
+          // データがまだロードされていない場合
           return const Center(
             child: CircularProgressIndicator(),
           );
-        } else {
-          List<PlanItemData> planItems = planProvider.state.planItems;
-          List<Widget> tiles = _buildPlanList(planItems, planProvider, date, context);
+        }
 
-          String formattedDate = getFormattedDate(date);
-          String formattedWeekDay = getFormattedWeekDay(date);
-          TextStyle weekdayTextStyle = getWeekdayTextStyle(date.weekday);
+        List<Widget> tiles = _buildPlanList(planItems, date, context);
 
+        String formattedDate = getFormattedDate(date);
+        String formattedWeekDay = getFormattedWeekDay(date);
+        TextStyle weekdayTextStyle = getWeekdayTextStyle(date.weekday);
 
-          return GestureDetector(
-            onTap: () {},
-            child: Padding(
-              padding: const EdgeInsets.only(left: 8.0, top: 200.0, right: 8.0, bottom: 10.0),
-              child: Container(
-                width: 100,
-                height: 300,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                Text(formattedDate),
-                                const Text(' ('),
-                                Text(formattedWeekDay, style: weekdayTextStyle),
-                                const Text(')'),
-                              ],
-                            ),
-                            IconButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => AddPlanScreen(selectedDate: date),
-                                  ),
-                                );
-                              },
-                              icon: const Icon(Icons.add, color: Colors.blue),
-                            )
-                          ],
-                        ),
-                        ...tiles.isEmpty
-                            ? [
-                          const Center(child: Column(
+        return GestureDetector(
+          onTap: () {},
+          child: Padding(
+            padding: const EdgeInsets.only(left: 8.0, top: 200.0, right: 8.0, bottom: 10.0),
+            child: Container(
+              width: 100,
+              height: 300,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
                             children: [
-                              Divider(
-                                thickness: 1,
-                              ),
-                              SizedBox(height: 200),
-                              Text(noPlanText),
+                              Text(formattedDate),
+                              const Text(' ('),
+                              Text(formattedWeekDay, style: weekdayTextStyle),
+                              const Text(')'),
                             ],
-                          ))
-                        ]
-                            : [Column(children: tiles)]
-                      ],
-                    ),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => AddPlanScreen(selectedDate: date),
+                                ),
+                              );
+                            },
+                            icon: const Icon(Icons.add, color: Colors.blue),
+                          )
+                        ],
+                      ),
+                      ...tiles.isEmpty
+                          ? [
+                        const Center(
+                            child: Column(
+                              children: [
+                                Divider(
+                                  thickness: 1,
+                                ),
+                                SizedBox(height: 200),
+                                Text(noPlanText),
+                              ],
+                            ))
+                      ]
+                          : [Column(children: tiles)]
+                    ],
                   ),
                 ),
               ),
             ),
-          );
-        }
+          ),
+        );
       },
     );
   }
