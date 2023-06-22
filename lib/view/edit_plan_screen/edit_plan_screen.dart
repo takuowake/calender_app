@@ -65,6 +65,9 @@ class EditPlanScreen extends HookConsumerWidget {
     final title = useState(item.title);
     final comment = useState(item.comment);
 
+    final switchProvider = StateProvider<bool>((ref) => item.isAll);
+
+
     // useTextEditingControllerに初期値として、item.titleとitem.commentを設定
     final titleController = useTextEditingController(text: item.title);
     final commentController = useTextEditingController(text: item.comment);
@@ -206,14 +209,14 @@ class EditPlanScreen extends HookConsumerWidget {
                             children: [
                               const Text(allDayText),
                               Switch(
-                                value: item.isAll,
+                                value: ref.watch(switchProvider),
                                 activeColor: Colors.blue,
                                 activeTrackColor: Colors.blueAccent,
                                 inactiveThumbColor: Colors.white,
                                 inactiveTrackColor: Colors.grey,
                                 onChanged: (value) {
                                   // スイッチの状態を更新するための処理を行う
-                                  ref.read(switchProvider.notifier).updateSwitch(value);
+                                  ref.watch(switchProvider.notifier).update((state) => value);
                                   item = item.copyWith(isAll: value);
                                   handleInputChange();
                                 },
