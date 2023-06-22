@@ -86,7 +86,6 @@ class PlanList extends ConsumerWidget {
                     const VerticalDivider(
                       color: Colors.blue,
                       thickness: 3,
-                      // width: 15,
                       indent: 0,
                       endIndent: 0,
                     ),
@@ -176,14 +175,15 @@ class PlanList extends ConsumerWidget {
                       ),
                       ...tiles.isEmpty
                           ? [
-                        const Center(
+                        Center(
                             child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Divider(
+                                const Divider(
                                   thickness: 1,
                                 ),
-                                SizedBox(height: 200),
-                                Text(noPlanText),
+                                SizedBox(height: MediaQuery.of(context).size.height * 0.2),
+                                const Text(noPlanText),
                               ],
                             ))
                       ]
