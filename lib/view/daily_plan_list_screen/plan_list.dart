@@ -154,10 +154,10 @@ class PlanList extends ConsumerWidget {
                         children: [
                           Row(
                             children: [
-                              Text(formattedDate),
-                              const Text(' ('),
+                              Text(formattedDate, style: const TextStyle(fontSize: 18)),
+                              const Text(' (', style: TextStyle(fontSize: 18)),
                               Text(formattedWeekDay, style: weekdayTextStyle),
-                              const Text(')'),
+                              const Text(')', style: TextStyle(fontSize: 18)),
                             ],
                           ),
                           IconButton(

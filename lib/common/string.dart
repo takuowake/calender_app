@@ -58,5 +58,5 @@ String getFormattedDate(DateTime date) {
   String month = date.month.toString().padLeft(2, '0');
   String day = date.day.toString().padLeft(2, '0');
 
-  return '$year年$month月$day日';
+  return '$year/$month/$day';
 }

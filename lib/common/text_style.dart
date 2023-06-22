@@ -7,6 +7,7 @@ const TextStyle timeTextStyle = TextStyle(
 );
 
 TextStyle getWeekdayTextStyle(int weekday) {
+  const TextStyle(fontSize: 18);
   if (weekday == DateTime.saturday) {
     return const TextStyle(color: Colors.blue);
   } else if (weekday == DateTime.sunday) {
