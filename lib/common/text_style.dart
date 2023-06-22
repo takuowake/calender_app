@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 const TextStyle timeTextStyle = TextStyle(
-  fontSize: 10,
+  fontSize: 10.2,
   fontWeight: FontWeight.normal,
   color: Colors.black,
 );

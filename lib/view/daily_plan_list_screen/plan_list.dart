@@ -49,6 +49,7 @@ class PlanList extends ConsumerWidget {
                     maxLines: 1,
                     style: const TextStyle(
                       color: Colors.black,
+                      fontSize: 18,
                     ),
                   ),
                 ),
