@@ -184,7 +184,7 @@ class PlanList extends ConsumerWidget {
                                   thickness: 1,
                                 ),
                                 SizedBox(height: MediaQuery.of(context).size.height * 0.2),
-                                const Text(noPlanText),
+                                const Text(noPlanText, style: TextStyle(fontSize: 18)),
                               ],
                             ))
                       ]
