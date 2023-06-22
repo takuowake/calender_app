@@ -43,11 +43,20 @@ class CalendarScreenHeader extends ConsumerWidget {
             ),
           ),
           const Spacer(),
-          Text(
-            currentMonth,
-            style: const TextStyle(fontSize: 24),
+          GestureDetector(
+            onTap: () async {
+              await onPressedElevatedButton(context, ref);
+            },
+            child: Row(
+              children: [
+                Text(
+                  currentMonth,
+                  style: const TextStyle(fontSize: 24),
+                ),
+                const DatePicker(),
+              ],
+            ),
           ),
-          const DatePicker(),
           const Spacer(),
         ],
       ),
