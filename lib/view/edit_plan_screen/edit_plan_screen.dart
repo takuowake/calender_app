@@ -1,6 +1,6 @@
 import 'package:calender_app/common/string.dart';
 import 'package:calender_app/repository/providers/plan_database_norifier.dart';
-import 'package:calender_app/repository/providers/plan_provider.dart';
+import 'package:calender_app/repository/view_model/plan_provider.dart';
 import 'package:calender_app/service/db/plan_db.dart';
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter/cupertino.dart';
@@ -16,8 +16,6 @@ class EditPlanScreen extends HookConsumerWidget {
 
   // EditPlanScreenクラスのコンストラクタを定義
   EditPlanScreen({Key? key, required this.item}) : super(key: key);
-
-  final titleFocusNode = FocusNode();
 
 
   @override
@@ -67,7 +65,6 @@ class EditPlanScreen extends HookConsumerWidget {
 
     final switchProvider = StateProvider<bool>((ref) => item.isAll);
 
-
     // useTextEditingControllerに初期値として、item.titleとitem.commentを設定
     final titleController = useTextEditingController(text: item.title);
     final commentController = useTextEditingController(text: item.comment);
@@ -104,10 +101,9 @@ class EditPlanScreen extends HookConsumerWidget {
 
     return GestureDetector(
       onTap: () {
-        // キーボードが表示されている場合、非表示にする
         FocusScopeNode currentFocus = FocusScope.of(context);
-        if (!currentFocus.hasPrimaryFocus) {
-          currentFocus.unfocus();
+        if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+          FocusManager.instance.primaryFocus!.unfocus();
         }
       },
       child: Scaffold(
@@ -169,7 +165,6 @@ class EditPlanScreen extends HookConsumerWidget {
                   controller: titleController,
                   style: const TextStyle(color: Colors.black),
                   autofocus: true,
-                  focusNode: titleFocusNode,
                   decoration: const InputDecoration(
                     hintText: titleHintText,
                     contentPadding: EdgeInsets.only(left: 10),

@@ -2,9 +2,10 @@ import 'package:calender_app/common/fifteen_intervals.dart';
 import 'package:calender_app/common/string.dart';
 import 'package:calender_app/model/freezed/plan_model.dart';
 import 'package:calender_app/repository/providers/plan_database_norifier.dart';
-import 'package:calender_app/repository/providers/plan_provider.dart';
+import 'package:calender_app/repository/view_model/plan_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -25,9 +26,6 @@ class AddPlanScreen extends HookConsumerWidget {
     DateTime.now().minute,
   ));
   late DateTime endDateTime = startDateTime.add(const Duration(hours: 1));
-
-  final titleFocusNode = FocusNode();
-
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -81,10 +79,9 @@ class AddPlanScreen extends HookConsumerWidget {
 
     return GestureDetector(
       onTap: () {
-        // キーボードが表示されている場合、非表示にする
         FocusScopeNode currentFocus = FocusScope.of(context);
-        if (!currentFocus.hasPrimaryFocus) {
-          currentFocus.unfocus();
+        if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+          FocusManager.instance.primaryFocus!.unfocus();
         }
       },
       child: Scaffold(
@@ -141,7 +138,6 @@ class AddPlanScreen extends HookConsumerWidget {
                 child: TextField(
                   style: const TextStyle(color: Colors.black),
                   autofocus: true,
-                  focusNode: titleFocusNode,
                   decoration: const InputDecoration(
                     hintText: titleHintText,
                     contentPadding: EdgeInsets.only(left: 10),

@@ -1,7 +1,7 @@
 import 'package:calender_app/common/string.dart';
 import 'package:calender_app/common/text_style.dart';
 import 'package:calender_app/repository/providers/plan_database_norifier.dart';
-import 'package:calender_app/repository/providers/plan_provider.dart';
+import 'package:calender_app/repository/view_model/plan_provider.dart';
 import 'package:calender_app/service/db/plan_db.dart';
 import 'package:calender_app/view/add_plan_screen/add_plan_screen.dart';
 import 'package:calender_app/view/edit_plan_screen/edit_plan_screen.dart';
