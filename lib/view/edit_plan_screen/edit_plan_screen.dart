@@ -167,7 +167,7 @@ class EditPlanScreen extends HookConsumerWidget {
                 padding: const EdgeInsets.all(10.0),
                 child: TextField(
                   controller: titleController,
-                  style: const TextStyle(color: Colors.grey),
+                  style: const TextStyle(color: Colors.black),
                   autofocus: true,
                   focusNode: titleFocusNode,
                   decoration: const InputDecoration(

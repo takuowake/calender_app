@@ -40,9 +40,6 @@ class AddPlanScreen extends HookConsumerWidget {
             CupertinoActionSheetAction(
               onPressed: () {
                 Navigator.of(context).pop();
-                // ref.read(switchProvider.notifier).updateSwitch(false);
-                // ref.read(startDateTimeProvider.notifier).updateDateTime(roundToNearestFifteen(DateTime.now()));
-                // ref.read(endDateTimeProvider.notifier).updateDateTime(roundToNearestFifteen(DateTime.now().add(const Duration(hours: 1))));
                 Navigator.of(context).pop();
               },
               isDestructiveAction: true,
@@ -129,12 +126,7 @@ class AddPlanScreen extends HookConsumerWidget {
                     endDate: temp.endDate ?? endDateTime,
                   );
                   planProvider.writeData(temp);
-                  // ref.read(switchProvider.notifier).updateSwitch(false);
-                  // ref.read(startDateTimeProvider.notifier).updateDateTime(roundToNearestFifteen(DateTime.now()));
-                  // ref.read(endDateTimeProvider.notifier).updateDateTime(roundToNearestFifteen(DateTime.now().add(const Duration(hours: 1))));
                   Navigator.pop(context);
-                  // Navigator.pop(context);
-                  // PlanList().ShowDialog(context, ref, startDateTime!);
                 } : null,
                 child: const Text(saveText),
               ),
@@ -147,7 +139,7 @@ class AddPlanScreen extends HookConsumerWidget {
               Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: TextField(
-                  style: const TextStyle(color: Colors.grey),
+                  style: const TextStyle(color: Colors.black),
                   autofocus: true,
                   focusNode: titleFocusNode,
                   decoration: const InputDecoration(
