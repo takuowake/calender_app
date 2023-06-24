@@ -5,7 +5,6 @@ import 'package:calender_app/repository/providers/plan_database_norifier.dart';
 import 'package:calender_app/repository/view_model/plan_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -102,6 +101,7 @@ class AddPlanScreen extends HookConsumerWidget {
               padding: const EdgeInsets.only(right: 10.0, top: 5, bottom: 5),
               child: ElevatedButton(
                 style: ButtonStyle(
+                    // Set<MaterialState>型の引数を受け取り、ボタンの状態のセットを表現
                   backgroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
                     if (temp.title.isNotEmpty && temp.comment.isNotEmpty) {
                       return Colors.white;
@@ -119,6 +119,8 @@ class AddPlanScreen extends HookConsumerWidget {
                 ),
                 onPressed: (temp.title.isNotEmpty && temp.comment.isNotEmpty) ? () async{
                   temp = temp.copyWith(
+                    // title: temp.title,
+                    // comment: temp.comment,
                     startDate: temp.startDate ?? startDateTime,
                     endDate: temp.endDate ?? endDateTime,
                   );
@@ -159,6 +161,10 @@ class AddPlanScreen extends HookConsumerWidget {
                     title.value = value;
                     temp = temp.copyWith(title: value);
                   },
+                  // onTapOutside: (value) {
+                  //   title.value = value;
+                  //   temp = temp.copyWith(title: value);
+                  // },
                 ),
               ),
               const SizedBox(height: 30),
