@@ -166,12 +166,10 @@ class AddPlanScreen extends HookConsumerWidget {
                   ),
                   onChanged: (value) {
                     titleState.value = value;
-                    // temp = temp.copyWith(title: value);
                     handleInputChange();
                   },
                   onSubmitted: (value) {
                     titleState.value = value;
-                    // temp = temp.copyWith(title: value);
                   },
                 ),
               ),
@@ -239,7 +237,6 @@ class AddPlanScreen extends HookConsumerWidget {
                                                   // selectDateがダイアログpopされる
                                                   child: const Text(completeText),
                                                   onPressed: ()  {
-                                                    // temp = temp.copyWith(startDate: startState.value);
                                                     ref.read(startDateTimeProvider.notifier).updateDateTime(startState.value!);
                                                     ref.read(endDateTimeProvider.notifier).updateDateTime(startState.value!.add(const Duration(hours: 1)));
                                                     if (startDateTime != startState.value) {
@@ -336,7 +333,6 @@ class AddPlanScreen extends HookConsumerWidget {
                                                 CupertinoButton(
                                                   child: const Text(completeText),
                                                   onPressed: () {
-                                                    // temp = temp.copyWith(endDate: endState.value);
                                                     if (endDateTime != endState.value) {
                                                       handleInputChange();
                                                     }
@@ -437,12 +433,10 @@ class AddPlanScreen extends HookConsumerWidget {
                     ),
                     onChanged: (value) {
                       commentState.value = value;
-                      // temp = temp.copyWith(comment: value);
                       handleInputChange();
                     },
                     onSubmitted: (value) {
                       commentState.value = value;
-                      // temp = temp.copyWith(comment: value);
                     },
                   ),
                 ),
