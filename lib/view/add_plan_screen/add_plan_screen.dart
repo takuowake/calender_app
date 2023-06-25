@@ -17,14 +17,6 @@ class AddPlanScreen extends HookConsumerWidget {
   final DateTime selectedDate;
   AddPlanScreen({super.key, required this.selectedDate});
 
-  late DateTime startDateTime = roundToNearestFifteen(DateTime(
-    selectedDate.year,
-    selectedDate.month,
-    selectedDate.day,
-    DateTime.now().hour,
-    DateTime.now().minute,
-  ));
-  late DateTime endDateTime = startDateTime.add(const Duration(hours: 1));
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -56,31 +48,41 @@ class AddPlanScreen extends HookConsumerWidget {
     //Providerの状態が変化したさいに再ビルドします
     final planProvider = ref.watch(planDatabaseNotifierProvider.notifier);
 
-    final start = useState<DateTime?>(null);
-    final end = useState<DateTime?>(null);
+    final start = useState<DateTime?>(roundToNearestFifteen(DateTime(
+      selectedDate.year,
+      selectedDate.month,
+      selectedDate.day,
+      DateTime.now().hour,
+      DateTime.now().minute,
+    )),);
+    final startDateTime = ref.watch(startDateTimeProvider);
+    final end = useState<DateTime?>(start.value!.add(const Duration(hours: 1)));
+    final endDateTime = ref.watch(endDateTimeProvider);
     final title = useState('');
     final comment = useState('');
-
     final isChanged = useState<bool>(false);
+    final isTitleCommentChanged = useState<bool>(false);
     void handleInputChange() {
       isChanged.value = true;
     }
 
-    final int minute = DateTime.now().minute;
-    final int remainder = minute % 15;
-    DateTime adjustedDateTime;
-
-    if (remainder >= 8) {
-      adjustedDateTime = DateTime.now().add(Duration(minutes: 15 - remainder));
-    } else {
-      adjustedDateTime = DateTime.now().subtract(Duration(minutes: remainder));
+    final titleController = useTextEditingController();
+    final commentController = useTextEditingController();
+    void handleTitleCommentChange() {
+      isTitleCommentChanged.value = titleController.text.isNotEmpty && commentController.text.isNotEmpty;
     }
+    titleController.addListener(handleTitleCommentChange);
+    commentController.addListener(handleTitleCommentChange);
 
     return GestureDetector(
       onTap: () {
+        // 現在のフォーカススコープを取得
         FocusScopeNode currentFocus = FocusScope.of(context);
+        // 現在のフォーカススコープが主要なフォーカスを持っていない場合は真
+        // 現在のフォーカススコープ内にフォーカスを受け取っている子ウィジェットが存在する場合に真
         if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
-          FocusManager.instance.primaryFocus!.unfocus();
+          // 現在のフォーカススコープ内の主要なフォーカスが解除
+          currentFocus.focusedChild!.unfocus();
         }
       },
       child: Scaffold(
@@ -103,26 +105,26 @@ class AddPlanScreen extends HookConsumerWidget {
                 style: ButtonStyle(
                     // Set<MaterialState>型の引数を受け取り、ボタンの状態のセットを表現
                   backgroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
-                    if (temp.title.isNotEmpty && temp.comment.isNotEmpty) {
+                    if (isTitleCommentChanged.value) {
                       return Colors.white;
                     } else {
                       return Colors.white70;
                     }
                   }),
                   foregroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
-                    if (temp.title.isNotEmpty && temp.comment.isNotEmpty) {
+                    if (isTitleCommentChanged.value) {
                       return Colors.black;
                     } else {
                       return Colors.grey;
                     }
                   }),
                 ),
-                onPressed: (temp.title.isNotEmpty && temp.comment.isNotEmpty) ? () async{
+                onPressed: isTitleCommentChanged.value ? () async {
                   temp = temp.copyWith(
-                    // title: temp.title,
-                    // comment: temp.comment,
-                    startDate: temp.startDate ?? startDateTime,
-                    endDate: temp.endDate ?? endDateTime,
+                    title: titleController.text,
+                    comment: commentController.text,
+                    startDate: startDateTime ?? start.value,
+                    endDate: endDateTime ?? end.value,
                   );
                   planProvider.writeData(temp);
                   Navigator.pop(context);
@@ -138,6 +140,7 @@ class AddPlanScreen extends HookConsumerWidget {
               Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: TextField(
+                  controller: titleController,
                   style: const TextStyle(color: Colors.black),
                   autofocus: true,
                   decoration: const InputDecoration(
@@ -161,10 +164,6 @@ class AddPlanScreen extends HookConsumerWidget {
                     title.value = value;
                     temp = temp.copyWith(title: value);
                   },
-                  // onTapOutside: (value) {
-                  //   title.value = value;
-                  //   temp = temp.copyWith(title: value);
-                  // },
                 ),
               ),
               const SizedBox(height: 30),
@@ -232,15 +231,12 @@ class AddPlanScreen extends HookConsumerWidget {
                                                   child: const Text(completeText),
                                                   onPressed: ()  {
                                                     temp = temp.copyWith(startDate: start.value);
-                                                    if (startDateTime != start.value) {
-                                                      handleInputChange();
-                                                    } else {
-
-                                                    }
                                                     ref.read(startDateTimeProvider.notifier).updateDateTime(start.value!);
                                                     ref.read(endDateTimeProvider.notifier).updateDateTime(start.value!.add(const Duration(hours: 1)));
-                                                    startDateTime = start.value!;
-                                                    endDateTime = start.value!.add(const Duration(hours: 1));
+                                                    if (startDateTime != start.value) {
+                                                      handleInputChange();
+                                                    }
+                                                    end.value = start.value!.add(const Duration(hours: 1));
                                                     Navigator.of(context).pop();
                                                   },
                                                 ),
@@ -251,7 +247,13 @@ class AddPlanScreen extends HookConsumerWidget {
                                             height: MediaQuery.of(context).size.height / 5,
                                             child: CupertinoDatePicker(
                                               // 初期値を設定
-                                              initialDateTime: startDateTime,
+                                              initialDateTime: startDateTime ?? roundToNearestFifteen(DateTime(
+                                                this.selectedDate.year,
+                                                this.selectedDate.month,
+                                                this.selectedDate.day,
+                                                DateTime.now().hour,
+                                                DateTime.now().minute,
+                                              )),
                                               // DatePickerのモードを指定（場合分け）
                                               mode: ref.watch(switchProvider) ? CupertinoDatePickerMode.date : CupertinoDatePickerMode.dateAndTime,
                                               minuteInterval: 15,
@@ -330,7 +332,6 @@ class AddPlanScreen extends HookConsumerWidget {
                                                       handleInputChange();
                                                     }
                                                     ref.read(endDateTimeProvider.notifier).updateDateTime(end.value!);
-                                                    endDateTime = end.value!;
                                                     Navigator.of(context).pop();
                                                   },
                                                 ),
@@ -340,19 +341,24 @@ class AddPlanScreen extends HookConsumerWidget {
                                           SizedBox(
                                             height: MediaQuery.of(context).size.height / 5,
                                             child: CupertinoDatePicker(
-                                              // 初期値を設定
-                                              initialDateTime: DateTime(
-                                                startDateTime.year,
-                                                startDateTime.month,
-                                                startDateTime.day,
-                                                adjustedDateTime.hour + 1,
-                                                adjustedDateTime.minute,
-                                              ),
+                                              initialDateTime: endDateTime ?? roundToNearestFifteen(DateTime(
+                                                this.selectedDate.year,
+                                                this.selectedDate.month,
+                                                this.selectedDate.day,
+                                                DateTime.now().hour + 1,
+                                                DateTime.now().minute,
+                                              )),
                                               // DatePickerのモードを指定（場合分け）
                                               mode: ref.watch(switchProvider) ? CupertinoDatePickerMode.date : CupertinoDatePickerMode.dateAndTime,
                                               minuteInterval: 15,
                                               use24hFormat: true,
-                                              minimumDate: startDateTime.add(const Duration(hours: 1)),
+                                              minimumDate: startDateTime?.add(const Duration(hours: 1)) ?? roundToNearestFifteen(DateTime(
+                                            this.selectedDate.year,
+                                              this.selectedDate.month,
+                                              this.selectedDate.day,
+                                              DateTime.now().hour + 1,
+                                              DateTime.now().minute,
+                                            )),
                                               onDateTimeChanged: (dateTime) {
                                                 end.value = DateTime(
                                                   dateTime.year,
@@ -377,7 +383,7 @@ class AddPlanScreen extends HookConsumerWidget {
                                       selectedDate.year,
                                       selectedDate.month,
                                       selectedDate.day,
-                                      DateTime.now().hour+1,
+                                      DateTime.now().hour +1,
                                       DateTime.now().minute,
                                     ));
                                     final endDateTime = ref.watch(endDateTimeProvider);
@@ -403,6 +409,7 @@ class AddPlanScreen extends HookConsumerWidget {
                   height: 200,
                   width: 400,
                   child: TextField(
+                    controller: commentController,
                     maxLines: null,
                     expands: true,
                     keyboardType: TextInputType.multiline,
