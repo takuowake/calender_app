@@ -1,8 +1,6 @@
 import 'package:calender_app/common/string.dart';
 import 'package:calender_app/repository/providers/plan_database_norifier.dart';
-import 'package:calender_app/repository/view_model/plan_provider.dart';
 import 'package:calender_app/service/db/plan_db.dart';
-import 'package:drift/drift.dart' as drift;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -21,6 +19,7 @@ class EditPlanScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
 
+    // 編集キャンセルのモーダル
     void showEditCanselConfirmation(BuildContext context) {
       showCupertinoModalPopup(
         context: context,
@@ -46,26 +45,30 @@ class EditPlanScreen extends HookConsumerWidget {
       );
     }
 
+    // providerの監視
     final planProvider = ref.read(planDatabaseNotifierProvider.notifier);
 
+    // データベースからデータを取得
+    DateTime? startDateTime = item.startDate;
+    DateTime? endDateTime = item.endDate;
+
+    // useStateの定義
+    final titleState = useState<String>(item.title);
+    final commentState = useState<String>(item.comment);
+    final isAllState = useState<bool>(item.isAll);
+    final startState = useState<DateTime?>(item.startDate);
+    final endState = useState<DateTime?>(item.endDate);
+
+    // TextField用のuseStateの定義
+    // useTextEditingControllerに初期値として、item.titleとitem.commentを設定
+    final titleController = useTextEditingController(text: item.title);
+    final commentController = useTextEditingController(text: item.comment);
+
+    // 全てのデータの状態変化を取得
     final isChanged = useState<bool>(false);
     void handleInputChange() {
       isChanged.value = true;
     }
-
-    final startState = useState<DateTime?>(item.startDate);
-    final endState = useState<DateTime?>(item.endDate);
-
-    DateTime? startDateTime = item.startDate;
-    DateTime? endDateTime = item.endDate;
-
-    final titleState = useState<String>(item.title);
-    final commentState = useState<String>(item.comment);
-    final isAllState = useState<bool>(item.isAll);
-
-    // useTextEditingControllerに初期値として、item.titleとitem.commentを設定
-    final titleController = useTextEditingController(text: item.title);
-    final commentController = useTextEditingController(text: item.comment);
 
     Future<void> showDeleteConfirmation() async {
       return showDialog<void>(
@@ -247,16 +250,11 @@ class EditPlanScreen extends HookConsumerWidget {
                                                 CupertinoButton(
                                                   child: const Text(completeText),
                                                   onPressed: ()  {
-                                                    // item = item.copyWith(startDate: drift.Value(startState.value));
-                                                    // item = item.copyWith(endDate: drift.Value(startState.value!.add(const Duration(hours:1))));
-                                                    // ref.read(startDateTimeProvider.notifier).updateDateTime(startState.value!);
-                                                    // ref.read(endDateTimeProvider.notifier).updateDateTime(startState.value!.add(const Duration(hours: 1)));
                                                     startState.value = startDateTime;
                                                     if (item.startDate != startState.value) {
                                                       handleInputChange();
                                                     }
                                                     endState.value = startState.value!.add(const Duration(hours: 1));
-                                                    // startDateTime = startState.value!;
                                                     Navigator.of(context).pop();
                                                   },
                                                 ),
@@ -337,9 +335,6 @@ class EditPlanScreen extends HookConsumerWidget {
                                                     if (item.endDate != endState.value) {
                                                       handleInputChange();
                                                     }
-                                                    // item = item.copyWith(endDate: drift.Value(endState.value));
-                                                    // ref.read(endDateTimeProvider.notifier).updateDateTime(endState.value!);
-                                                    // endDateTime = endState.value!;
                                                     Navigator.of(context).pop();
                                                   },
                                                 ),

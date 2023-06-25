@@ -12,8 +12,10 @@ import 'package:intl/intl.dart';
 
 class AddPlanScreen extends HookConsumerWidget {
 
-  //Providerが保持しているplanItemsを取得します。
+  // データベースに格納するための変数を定義
   TempPlanItemData temp = TempPlanItemData();
+
+  // ユーザーが選択した日付を取得
   final DateTime selectedDate;
   AddPlanScreen({super.key, required this.selectedDate});
 
@@ -21,6 +23,7 @@ class AddPlanScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
 
+    // 編集キャンセルのモーダル
     void showEditCanselConfirmation(BuildContext context) {
       showCupertinoModalPopup(
         context: context,
@@ -45,9 +48,14 @@ class AddPlanScreen extends HookConsumerWidget {
       );
     }
 
-    //Providerの状態が変化したさいに再ビルドします
+    // providerの監視
     final planProvider = ref.watch(planDatabaseNotifierProvider.notifier);
+    final startDateTime = ref.watch(startDateTimeProvider);
+    final endDateTime = ref.watch(endDateTimeProvider);
 
+    // useStateの定義
+    final titleState = useState('');
+    final commentState = useState('');
     final startState = useState<DateTime?>(roundToNearestFifteen(DateTime(
       selectedDate.year,
       selectedDate.month,
@@ -55,24 +63,25 @@ class AddPlanScreen extends HookConsumerWidget {
       DateTime.now().hour,
       DateTime.now().minute,
     )),);
-    final startDateTime = ref.watch(startDateTimeProvider);
     final endState = useState<DateTime?>(startState.value!.add(const Duration(hours: 1)));
-    final endDateTime = ref.watch(endDateTimeProvider);
-    final titleState = useState('');
-    final commentState = useState('');
-    final isChangedState = useState<bool>(false);
-    final isTitleCommentChangedState = useState<bool>(false);
-    void handleInputChange() {
-      isChangedState.value = true;
-    }
 
+    // TextField用のuseStateの定義
     final titleControllerState = useTextEditingController();
     final commentControllerState = useTextEditingController();
+
+    // titleとcommentの状態変化を取得
+    final isTitleCommentChangedState = useState<bool>(false);
     void handleTitleCommentChange() {
       isTitleCommentChangedState.value = titleControllerState.text.isNotEmpty && commentControllerState.text.isNotEmpty;
     }
     titleControllerState.addListener(handleTitleCommentChange);
     commentControllerState.addListener(handleTitleCommentChange);
+
+    // 全てのデータの状態変化を取得
+    final isChangedState = useState<bool>(false);
+    void handleInputChange() {
+      isChangedState.value = true;
+    }
 
     return GestureDetector(
       onTap: () {
@@ -157,12 +166,12 @@ class AddPlanScreen extends HookConsumerWidget {
                   ),
                   onChanged: (value) {
                     titleState.value = value;
-                    temp = temp.copyWith(title: value);
+                    // temp = temp.copyWith(title: value);
                     handleInputChange();
                   },
                   onSubmitted: (value) {
                     titleState.value = value;
-                    temp = temp.copyWith(title: value);
+                    // temp = temp.copyWith(title: value);
                   },
                 ),
               ),
@@ -230,7 +239,7 @@ class AddPlanScreen extends HookConsumerWidget {
                                                   // selectDateがダイアログpopされる
                                                   child: const Text(completeText),
                                                   onPressed: ()  {
-                                                    temp = temp.copyWith(startDate: startState.value);
+                                                    // temp = temp.copyWith(startDate: startState.value);
                                                     ref.read(startDateTimeProvider.notifier).updateDateTime(startState.value!);
                                                     ref.read(endDateTimeProvider.notifier).updateDateTime(startState.value!.add(const Duration(hours: 1)));
                                                     if (startDateTime != startState.value) {
@@ -327,7 +336,7 @@ class AddPlanScreen extends HookConsumerWidget {
                                                 CupertinoButton(
                                                   child: const Text(completeText),
                                                   onPressed: () {
-                                                    temp = temp.copyWith(endDate: endState.value);
+                                                    // temp = temp.copyWith(endDate: endState.value);
                                                     if (endDateTime != endState.value) {
                                                       handleInputChange();
                                                     }
@@ -428,12 +437,12 @@ class AddPlanScreen extends HookConsumerWidget {
                     ),
                     onChanged: (value) {
                       commentState.value = value;
-                      temp = temp.copyWith(comment: value);
+                      // temp = temp.copyWith(comment: value);
                       handleInputChange();
                     },
                     onSubmitted: (value) {
                       commentState.value = value;
-                      temp = temp.copyWith(comment: value);
+                      // temp = temp.copyWith(comment: value);
                     },
                   ),
                 ),
