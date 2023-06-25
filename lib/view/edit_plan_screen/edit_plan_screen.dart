@@ -251,11 +251,12 @@ class EditPlanScreen extends HookConsumerWidget {
                                                     // item = item.copyWith(endDate: drift.Value(startState.value!.add(const Duration(hours:1))));
                                                     // ref.read(startDateTimeProvider.notifier).updateDateTime(startState.value!);
                                                     // ref.read(endDateTimeProvider.notifier).updateDateTime(startState.value!.add(const Duration(hours: 1)));
-                                                    if (startDateTime != startState.value) {
+                                                    startState.value = startDateTime;
+                                                    if (item.startDate != startState.value) {
                                                       handleInputChange();
                                                     }
                                                     endState.value = startState.value!.add(const Duration(hours: 1));
-                                                    startDateTime = startState.value!;
+                                                    // startDateTime = startState.value!;
                                                     Navigator.of(context).pop();
                                                   },
                                                 ),
@@ -272,7 +273,7 @@ class EditPlanScreen extends HookConsumerWidget {
                                               minuteInterval: 15,
                                               use24hFormat: true,
                                               onDateTimeChanged: (dateTime) {
-                                                startState.value = DateTime(
+                                                startDateTime = DateTime(
                                                   dateTime.year,
                                                   dateTime.month,
                                                   dateTime.day,
@@ -332,12 +333,13 @@ class EditPlanScreen extends HookConsumerWidget {
                                                 CupertinoButton(
                                                   child: const Text(completeText),
                                                   onPressed: () {
-                                                    item = item.copyWith(endDate: drift.Value(endState.value));
-                                                    if (endDateTime != endState.value) {
+                                                    endState.value = endDateTime;
+                                                    if (item.endDate != endState.value) {
                                                       handleInputChange();
                                                     }
-                                                    ref.read(endDateTimeProvider.notifier).updateDateTime(endState.value!);
-                                                    endDateTime = endState.value!;
+                                                    // item = item.copyWith(endDate: drift.Value(endState.value));
+                                                    // ref.read(endDateTimeProvider.notifier).updateDateTime(endState.value!);
+                                                    // endDateTime = endState.value!;
                                                     Navigator.of(context).pop();
                                                   },
                                                 ),
@@ -355,7 +357,7 @@ class EditPlanScreen extends HookConsumerWidget {
                                               use24hFormat: true,
                                               minimumDate: startState.value!.add(const Duration(hours: 1)),
                                               onDateTimeChanged: (dateTime) {
-                                                endState.value = DateTime(
+                                                endDateTime = DateTime(
                                                   dateTime.year,
                                                   dateTime.month,
                                                   dateTime.day,

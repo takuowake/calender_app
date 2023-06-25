@@ -48,7 +48,7 @@ class AddPlanScreen extends HookConsumerWidget {
     //Providerの状態が変化したさいに再ビルドします
     final planProvider = ref.watch(planDatabaseNotifierProvider.notifier);
 
-    final start = useState<DateTime?>(roundToNearestFifteen(DateTime(
+    final startState = useState<DateTime?>(roundToNearestFifteen(DateTime(
       selectedDate.year,
       selectedDate.month,
       selectedDate.day,
@@ -56,23 +56,23 @@ class AddPlanScreen extends HookConsumerWidget {
       DateTime.now().minute,
     )),);
     final startDateTime = ref.watch(startDateTimeProvider);
-    final end = useState<DateTime?>(start.value!.add(const Duration(hours: 1)));
+    final endState = useState<DateTime?>(startState.value!.add(const Duration(hours: 1)));
     final endDateTime = ref.watch(endDateTimeProvider);
-    final title = useState('');
-    final comment = useState('');
-    final isChanged = useState<bool>(false);
-    final isTitleCommentChanged = useState<bool>(false);
+    final titleState = useState('');
+    final commentState = useState('');
+    final isChangedState = useState<bool>(false);
+    final isTitleCommentChangedState = useState<bool>(false);
     void handleInputChange() {
-      isChanged.value = true;
+      isChangedState.value = true;
     }
 
-    final titleController = useTextEditingController();
-    final commentController = useTextEditingController();
+    final titleControllerState = useTextEditingController();
+    final commentControllerState = useTextEditingController();
     void handleTitleCommentChange() {
-      isTitleCommentChanged.value = titleController.text.isNotEmpty && commentController.text.isNotEmpty;
+      isTitleCommentChangedState.value = titleControllerState.text.isNotEmpty && commentControllerState.text.isNotEmpty;
     }
-    titleController.addListener(handleTitleCommentChange);
-    commentController.addListener(handleTitleCommentChange);
+    titleControllerState.addListener(handleTitleCommentChange);
+    commentControllerState.addListener(handleTitleCommentChange);
 
     return GestureDetector(
       onTap: () {
@@ -91,7 +91,7 @@ class AddPlanScreen extends HookConsumerWidget {
           leading: IconButton(
             icon: const Icon(Icons.clear),
             onPressed: () {
-              if (isChanged.value) {
+              if (isChangedState.value) {
                 showEditCanselConfirmation(context);
               } else {
                 Navigator.of(context).pop();
@@ -105,26 +105,26 @@ class AddPlanScreen extends HookConsumerWidget {
                 style: ButtonStyle(
                     // Set<MaterialState>型の引数を受け取り、ボタンの状態のセットを表現
                   backgroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
-                    if (isTitleCommentChanged.value) {
+                    if (isTitleCommentChangedState.value) {
                       return Colors.white;
                     } else {
                       return Colors.white70;
                     }
                   }),
                   foregroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
-                    if (isTitleCommentChanged.value) {
+                    if (isTitleCommentChangedState.value) {
                       return Colors.black;
                     } else {
                       return Colors.grey;
                     }
                   }),
                 ),
-                onPressed: isTitleCommentChanged.value ? () async {
+                onPressed: isTitleCommentChangedState.value ? () async {
                   temp = temp.copyWith(
-                    title: titleController.text,
-                    comment: commentController.text,
-                    startDate: startDateTime ?? start.value,
-                    endDate: endDateTime ?? end.value,
+                    title: titleControllerState.text,
+                    comment: commentControllerState.text,
+                    startDate: startDateTime ?? startState.value,
+                    endDate: endDateTime ?? endState.value,
                   );
                   planProvider.writeData(temp);
                   Navigator.pop(context);
@@ -140,7 +140,7 @@ class AddPlanScreen extends HookConsumerWidget {
               Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: TextField(
-                  controller: titleController,
+                  controller: titleControllerState,
                   style: const TextStyle(color: Colors.black),
                   autofocus: true,
                   decoration: const InputDecoration(
@@ -156,12 +156,12 @@ class AddPlanScreen extends HookConsumerWidget {
                     ),
                   ),
                   onChanged: (value) {
-                    title.value = value;
+                    titleState.value = value;
                     temp = temp.copyWith(title: value);
                     handleInputChange();
                   },
                   onSubmitted: (value) {
-                    title.value = value;
+                    titleState.value = value;
                     temp = temp.copyWith(title: value);
                   },
                 ),
@@ -230,13 +230,13 @@ class AddPlanScreen extends HookConsumerWidget {
                                                   // selectDateがダイアログpopされる
                                                   child: const Text(completeText),
                                                   onPressed: ()  {
-                                                    temp = temp.copyWith(startDate: start.value);
-                                                    ref.read(startDateTimeProvider.notifier).updateDateTime(start.value!);
-                                                    ref.read(endDateTimeProvider.notifier).updateDateTime(start.value!.add(const Duration(hours: 1)));
-                                                    if (startDateTime != start.value) {
+                                                    temp = temp.copyWith(startDate: startState.value);
+                                                    ref.read(startDateTimeProvider.notifier).updateDateTime(startState.value!);
+                                                    ref.read(endDateTimeProvider.notifier).updateDateTime(startState.value!.add(const Duration(hours: 1)));
+                                                    if (startDateTime != startState.value) {
                                                       handleInputChange();
                                                     }
-                                                    end.value = start.value!.add(const Duration(hours: 1));
+                                                    endState.value = startState.value!.add(const Duration(hours: 1));
                                                     Navigator.of(context).pop();
                                                   },
                                                 ),
@@ -259,7 +259,7 @@ class AddPlanScreen extends HookConsumerWidget {
                                               minuteInterval: 15,
                                               use24hFormat: true,
                                               onDateTimeChanged: (dateTime) {
-                                                start.value = DateTime(
+                                                startState.value = DateTime(
                                                   dateTime.year,
                                                   dateTime.month,
                                                   dateTime.day,
@@ -327,11 +327,11 @@ class AddPlanScreen extends HookConsumerWidget {
                                                 CupertinoButton(
                                                   child: const Text(completeText),
                                                   onPressed: () {
-                                                    temp = temp.copyWith(endDate: end.value);
-                                                    if (endDateTime != end.value) {
+                                                    temp = temp.copyWith(endDate: endState.value);
+                                                    if (endDateTime != endState.value) {
                                                       handleInputChange();
                                                     }
-                                                    ref.read(endDateTimeProvider.notifier).updateDateTime(end.value!);
+                                                    ref.read(endDateTimeProvider.notifier).updateDateTime(endState.value!);
                                                     Navigator.of(context).pop();
                                                   },
                                                 ),
@@ -360,7 +360,7 @@ class AddPlanScreen extends HookConsumerWidget {
                                               DateTime.now().minute,
                                             )),
                                               onDateTimeChanged: (dateTime) {
-                                                end.value = DateTime(
+                                                endState.value = DateTime(
                                                   dateTime.year,
                                                   dateTime.month,
                                                   dateTime.day,
@@ -409,7 +409,7 @@ class AddPlanScreen extends HookConsumerWidget {
                   height: 200,
                   width: 400,
                   child: TextField(
-                    controller: commentController,
+                    controller: commentControllerState,
                     maxLines: null,
                     expands: true,
                     keyboardType: TextInputType.multiline,
@@ -427,12 +427,12 @@ class AddPlanScreen extends HookConsumerWidget {
                       ),
                     ),
                     onChanged: (value) {
-                      comment.value = value;
+                      commentState.value = value;
                       temp = temp.copyWith(comment: value);
                       handleInputChange();
                     },
                     onSubmitted: (value) {
-                      comment.value = value;
+                      commentState.value = value;
                       temp = temp.copyWith(comment: value);
                     },
                   ),
