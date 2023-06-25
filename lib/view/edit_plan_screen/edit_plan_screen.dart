@@ -53,17 +53,15 @@ class EditPlanScreen extends HookConsumerWidget {
       isChanged.value = true;
     }
 
-    final start = useState<DateTime?>(item.startDate);
-    final end = useState<DateTime?>(item.endDate);
+    final startState = useState<DateTime?>(item.startDate);
+    final endState = useState<DateTime?>(item.endDate);
 
     DateTime? startDateTime = item.startDate;
     DateTime? endDateTime = item.endDate;
 
-
-    final title = useState(item.title);
-    final comment = useState(item.comment);
-
-    final switchProvider = StateProvider<bool>((ref) => item.isAll);
+    final titleState = useState<String>(item.title);
+    final commentState = useState<String>(item.comment);
+    final isAllState = useState<bool>(item.isAll);
 
     // useTextEditingControllerに初期値として、item.titleとitem.commentを設定
     final titleController = useTextEditingController(text: item.title);
@@ -142,11 +140,11 @@ class EditPlanScreen extends HookConsumerWidget {
                 onPressed: (isChanged.value) ? () {
                   PlanItemData data = PlanItemData(
                     id: item.id,
-                    title: item.title,
-                    comment: item.comment,
-                    isAll: item.isAll,
-                    startDate: item.startDate,
-                    endDate: item.endDate,
+                    title: titleState.value,
+                    comment: commentState.value,
+                    isAll: isAllState.value,
+                    startDate: startState.value,
+                    endDate: endState.value,
                   );
                   ref.read(planDatabaseNotifierProvider.notifier).updateData(data);
                   Navigator.pop(context);
@@ -178,13 +176,11 @@ class EditPlanScreen extends HookConsumerWidget {
                     ),
                   ),
                   onChanged: (value) {
-                    title.value = value;
-                    item = item.copyWith(title: value);
+                    titleState.value = value;
                     handleInputChange();
                   },
                   onSubmitted: (value) {
-                    title.value = value;
-                    item = item.copyWith(title: value);
+                    titleState.value = value;
                   },
                 ),
               ),
@@ -204,15 +200,13 @@ class EditPlanScreen extends HookConsumerWidget {
                             children: [
                               const Text(allDayText),
                               Switch(
-                                value: ref.watch(switchProvider),
+                                value: isAllState.value,
                                 activeColor: Colors.blue,
                                 activeTrackColor: Colors.blueAccent,
                                 inactiveThumbColor: Colors.white,
                                 inactiveTrackColor: Colors.grey,
                                 onChanged: (value) {
-                                  // スイッチの状態を更新するための処理を行う
-                                  ref.watch(switchProvider.notifier).update((state) => value);
-                                  item = item.copyWith(isAll: value);
+                                  isAllState.value = value;
                                   handleInputChange();
                                 },
                               )
@@ -253,14 +247,15 @@ class EditPlanScreen extends HookConsumerWidget {
                                                 CupertinoButton(
                                                   child: const Text(completeText),
                                                   onPressed: ()  {
-                                                    item = item.copyWith(startDate: drift.Value(start.value));
-                                                    item = item.copyWith(endDate: drift.Value(start.value!.add(const Duration(hours:1))));
-                                                    ref.read(startDateTimeProvider.notifier).updateDateTime(start.value!);
-                                                    ref.read(endDateTimeProvider.notifier).updateDateTime(start.value!.add(const Duration(hours: 1)));
-                                                    if (startDateTime != start.value) {
+                                                    // item = item.copyWith(startDate: drift.Value(startState.value));
+                                                    // item = item.copyWith(endDate: drift.Value(startState.value!.add(const Duration(hours:1))));
+                                                    // ref.read(startDateTimeProvider.notifier).updateDateTime(startState.value!);
+                                                    // ref.read(endDateTimeProvider.notifier).updateDateTime(startState.value!.add(const Duration(hours: 1)));
+                                                    if (startDateTime != startState.value) {
                                                       handleInputChange();
                                                     }
-                                                    startDateTime = start.value!;
+                                                    endState.value = startState.value!.add(const Duration(hours: 1));
+                                                    startDateTime = startState.value!;
                                                     Navigator.of(context).pop();
                                                   },
                                                 ),
@@ -271,13 +266,13 @@ class EditPlanScreen extends HookConsumerWidget {
                                             height: MediaQuery.of(context).size.height / 5,
                                             child: CupertinoDatePicker(
                                               // 初期値としてitemオブジェクトのstartDataプロパティの値
-                                              initialDateTime: item.startDate,
+                                              initialDateTime: startState.value,
                                               // DatePickerのモードを指定（場合分け）
-                                              mode: item.isAll ? CupertinoDatePickerMode.date : CupertinoDatePickerMode.dateAndTime,
+                                              mode: isAllState.value ? CupertinoDatePickerMode.date : CupertinoDatePickerMode.dateAndTime,
                                               minuteInterval: 15,
                                               use24hFormat: true,
                                               onDateTimeChanged: (dateTime) {
-                                                start.value = DateTime(
+                                                startState.value = DateTime(
                                                   dateTime.year,
                                                   dateTime.month,
                                                   dateTime.day,
@@ -294,12 +289,10 @@ class EditPlanScreen extends HookConsumerWidget {
                                 },
                                 child: Consumer(
                                   builder: (context, watch, _) {
-                                    final switchState = item.isAll;
-                                    final format = switchState ? 'yyyy-MM-dd' : 'yyyy-MM-dd HH:mm';
-                                    final startDateTime = ref.watch(startDateTimeProvider);
-                                    final initialStartDateTime = item.startDate;
+                                    final format = isAllState.value ? 'yyyy-MM-dd' : 'yyyy-MM-dd HH:mm';
+                                    final startDateTime = startState.value;
                                     return Text(
-                                      DateFormat(format).format(initialStartDateTime ?? startDateTime!),
+                                      DateFormat(format).format(startDateTime!),
                                       style: const TextStyle(color: Colors.blue),
                                     );
                                   },
@@ -339,12 +332,12 @@ class EditPlanScreen extends HookConsumerWidget {
                                                 CupertinoButton(
                                                   child: const Text(completeText),
                                                   onPressed: () {
-                                                    item = item.copyWith(endDate: drift.Value(end.value));
-                                                    if (endDateTime != end.value) {
+                                                    item = item.copyWith(endDate: drift.Value(endState.value));
+                                                    if (endDateTime != endState.value) {
                                                       handleInputChange();
                                                     }
-                                                    ref.read(endDateTimeProvider.notifier).updateDateTime(end.value!);
-                                                    endDateTime = end.value!;
+                                                    ref.read(endDateTimeProvider.notifier).updateDateTime(endState.value!);
+                                                    endDateTime = endState.value!;
                                                     Navigator.of(context).pop();
                                                   },
                                                 ),
@@ -355,14 +348,14 @@ class EditPlanScreen extends HookConsumerWidget {
                                             height: MediaQuery.of(context).size.height / 5,
                                             child: CupertinoDatePicker(
                                               // 初期値を設定
-                                              initialDateTime: endDateTime,
+                                              initialDateTime: endState.value,
                                               // DatePickerのモードを指定（場合分け）
-                                              mode: item.isAll ? CupertinoDatePickerMode.date : CupertinoDatePickerMode.dateAndTime,
+                                              mode: isAllState.value ? CupertinoDatePickerMode.date : CupertinoDatePickerMode.dateAndTime,
                                               minuteInterval: 15,
                                               use24hFormat: true,
-                                              minimumDate: startDateTime?.add(const Duration(hours: 1)),
+                                              minimumDate: startState.value!.add(const Duration(hours: 1)),
                                               onDateTimeChanged: (dateTime) {
-                                                end.value = DateTime(
+                                                endState.value = DateTime(
                                                   dateTime.year,
                                                   dateTime.month,
                                                   dateTime.day,
@@ -379,12 +372,10 @@ class EditPlanScreen extends HookConsumerWidget {
                                 },
                                 child: Consumer(
                                   builder: (context, watch, _) {
-                                    final switchState = item.isAll;
-                                    final format = switchState ? 'yyyy-MM-dd' : 'yyyy-MM-dd HH:mm';
-                                    final endDateTime = ref.watch(endDateTimeProvider);
-                                    final initialEndDateTime = item.endDate;
+                                    final format = isAllState.value ? 'yyyy-MM-dd' : 'yyyy-MM-dd HH:mm';
+                                    final endDateTime = endState.value;
                                     return Text(
-                                      DateFormat(format).format(initialEndDateTime ?? endDateTime!),
+                                      DateFormat(format).format(endDateTime!),
                                       style: const TextStyle(color: Colors.blue),
                                     );
                                   },
@@ -423,13 +414,11 @@ class EditPlanScreen extends HookConsumerWidget {
                       ),
                     ),
                     onChanged: (value) {
-                      comment.value = value;
-                      item = item.copyWith(comment: value);
+                      commentState.value = value;
                       handleInputChange();
                     },
                     onSubmitted: (value) {
-                      comment.value = value;
-                      item = item.copyWith(comment: value);
+                      commentState.value = value;
                     },
                   ),
                 ),
