@@ -117,14 +117,14 @@ class AddPlanScreen extends HookConsumerWidget {
                     if (isTitleCommentChangedState.value) {
                       return Colors.white;
                     } else {
-                      return Colors.white70;
+                      return const Color(0xFFE4E4E4);
                     }
                   }),
                   foregroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
                     if (isTitleCommentChangedState.value) {
                       return Colors.black;
                     } else {
-                      return Colors.grey;
+                      return const Color(0xFFCCCCCC);
                     }
                   }),
                 ),

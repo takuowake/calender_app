@@ -137,14 +137,14 @@ class EditPlanScreen extends HookConsumerWidget {
                     if (isChanged.value && isTitleCommentChangedState.value == true) {
                       return Colors.white;
                     } else {
-                      return Colors.white70;
+                      return const Color(0xFFE4E4E4);
                     }
                   }),
                   foregroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
                     if (isChanged.value && isTitleCommentChangedState.value == true) {
                       return Colors.black;
                     } else {
-                      return Colors.grey;
+                      return const Color(0xFFCCCCCC);
                     }
                   }),
                 ),
