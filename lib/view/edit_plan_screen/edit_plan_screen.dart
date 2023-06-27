@@ -61,8 +61,16 @@ class EditPlanScreen extends HookConsumerWidget {
 
     // TextField用のuseStateの定義
     // useTextEditingControllerに初期値として、item.titleとitem.commentを設定
-    final titleController = useTextEditingController(text: item.title);
-    final commentController = useTextEditingController(text: item.comment);
+    final titleControllerState = useTextEditingController(text: item.title);
+    final commentControllerState = useTextEditingController(text: item.comment);
+
+    // titleとcommentの状態変化を取得
+    final isTitleCommentChangedState = useState<bool>(false);
+    void handleTitleCommentChange() {
+      isTitleCommentChangedState.value = titleControllerState.text.isNotEmpty && commentControllerState.text.isNotEmpty;
+    }
+    titleControllerState.addListener(handleTitleCommentChange);
+    commentControllerState.addListener(handleTitleCommentChange);
 
     // 全てのデータの状態変化を取得
     final isChanged = useState<bool>(false);
@@ -126,21 +134,21 @@ class EditPlanScreen extends HookConsumerWidget {
               child: ElevatedButton(
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
-                    if (isChanged.value == true) {
+                    if (isChanged.value && isTitleCommentChangedState.value == true) {
                       return Colors.white;
                     } else {
                       return Colors.white70;
                     }
                   }),
                   foregroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
-                    if (isChanged.value == true) {
+                    if (isChanged.value && isTitleCommentChangedState.value == true) {
                       return Colors.black;
                     } else {
                       return Colors.grey;
                     }
                   }),
                 ),
-                onPressed: (isChanged.value) ? () {
+                onPressed: (isChanged.value && isTitleCommentChangedState.value) ? () {
                   PlanItemData data = PlanItemData(
                     id: item.id,
                     title: titleState.value,
@@ -163,7 +171,7 @@ class EditPlanScreen extends HookConsumerWidget {
               Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: TextField(
-                  controller: titleController,
+                  controller: titleControllerState,
                   style: const TextStyle(color: Colors.black),
                   autofocus: true,
                   decoration: const InputDecoration(
@@ -395,7 +403,7 @@ class EditPlanScreen extends HookConsumerWidget {
                   height: 200,
                   width: 400,
                   child: TextField(
-                    controller: commentController,
+                    controller: commentControllerState,
                     maxLines: null,
                     expands: true,
                     keyboardType: TextInputType.multiline,
