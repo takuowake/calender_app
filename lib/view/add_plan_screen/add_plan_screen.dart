@@ -238,11 +238,13 @@ class AddPlanScreen extends HookConsumerWidget {
                                                   child: const Text(completeText),
                                                   onPressed: ()  {
                                                     ref.read(startDateTimeProvider.notifier).updateDateTime(startState.value!);
-                                                    ref.read(endDateTimeProvider.notifier).updateDateTime(startState.value!.add(const Duration(hours: 1)));
                                                     if (startDateTime != startState.value) {
                                                       handleInputChange();
                                                     }
-                                                    endState.value = startState.value!.add(const Duration(hours: 1));
+                                                    if (startState.value!.isAfter(endDateTime ?? endState.value!)) {
+                                                      endState.value = startState.value!.add(const Duration(hours: 1));
+                                                      ref.read(endDateTimeProvider.notifier).updateDateTime(startState.value!.add(const Duration(hours: 1)));
+                                                    }
                                                     Navigator.of(context).pop();
                                                   },
                                                 ),
@@ -358,7 +360,7 @@ class AddPlanScreen extends HookConsumerWidget {
                                               minuteInterval: 15,
                                               use24hFormat: true,
                                               minimumDate: startDateTime?.add(const Duration(hours: 1)) ?? roundToNearestFifteen(DateTime(
-                                            this.selectedDate.year,
+                                              this.selectedDate.year,
                                               this.selectedDate.month,
                                               this.selectedDate.day,
                                               DateTime.now().hour + 1,
