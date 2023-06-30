@@ -35,7 +35,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-
 /// Device Preview
 // void main() {
 //   runApp(
