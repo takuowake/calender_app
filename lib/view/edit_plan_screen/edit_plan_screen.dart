@@ -48,9 +48,9 @@ class EditPlanScreen extends HookConsumerWidget {
     // providerの監視
     final planProvider = ref.read(planDatabaseNotifierProvider.notifier);
 
-    // データベースからデータを取得
-    DateTime? startDateTime = item.startDate;
-    DateTime? endDateTime = item.endDate;
+    // 開始時間・終了時間の定義
+    DateTime? startDateTime;
+    DateTime? endDateTime;
 
     // useStateの定義
     final titleState = useState<String>(item.title);
@@ -258,11 +258,12 @@ class EditPlanScreen extends HookConsumerWidget {
                                                 CupertinoButton(
                                                   child: const Text(completeText),
                                                   onPressed: ()  {
+                                                    startDateTime ??= startState.value;
                                                     startState.value = startDateTime;
                                                     if (item.startDate != startState.value) {
                                                       handleInputChange();
                                                     }
-                                                    if (startState.value!.isAfter(endDateTime?.subtract(const Duration(hours: 1)) ?? endState.value!.subtract(const Duration(hours: 1)))) {
+                                                    if (startState.value!.isAfter(endState.value!.subtract(const Duration(hours: 1)))) {
                                                       endState.value = startState.value!.add(const Duration(hours: 1));
                                                     }
                                                     Navigator.of(context).pop();
@@ -341,6 +342,7 @@ class EditPlanScreen extends HookConsumerWidget {
                                                 CupertinoButton(
                                                   child: const Text(completeText),
                                                   onPressed: () {
+                                                    endDateTime ??= endState.value;
                                                     endState.value = endDateTime;
                                                     if (item.endDate != endState.value) {
                                                       handleInputChange();
