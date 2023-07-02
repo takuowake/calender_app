@@ -241,7 +241,7 @@ class AddPlanScreen extends HookConsumerWidget {
                                                     if (startDateTime != startState.value) {
                                                       handleInputChange();
                                                     }
-                                                    if (startState.value!.isAfter(endDateTime ?? endState.value!)) {
+                                                    if (startState.value!.isAfter(endDateTime?.subtract(const Duration(hours: 1)) ?? endState.value!.subtract(const Duration(hours: 1)))) {
                                                       endState.value = startState.value!.add(const Duration(hours: 1));
                                                       ref.read(endDateTimeProvider.notifier).updateDateTime(startState.value!.add(const Duration(hours: 1)));
                                                     }

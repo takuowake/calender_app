@@ -262,7 +262,7 @@ class EditPlanScreen extends HookConsumerWidget {
                                                     if (item.startDate != startState.value) {
                                                       handleInputChange();
                                                     }
-                                                    if (startState.value!.isAfter(endDateTime ?? endState.value!)) {
+                                                    if (startState.value!.isAfter(endDateTime?.subtract(const Duration(hours: 1)) ?? endState.value!.subtract(const Duration(hours: 1)))) {
                                                       endState.value = startState.value!.add(const Duration(hours: 1));
                                                     }
                                                     Navigator.of(context).pop();
