@@ -15,7 +15,6 @@ class EditPlanScreen extends HookConsumerWidget {
   // EditPlanScreenクラスのコンストラクタを定義
   EditPlanScreen({Key? key, required this.item}) : super(key: key);
 
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
 
