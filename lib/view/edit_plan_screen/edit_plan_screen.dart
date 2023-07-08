@@ -7,7 +7,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
-
 class EditPlanScreen extends HookConsumerWidget {
   // EditPlanScreenのインスタンス化時に引数として渡される
   PlanItemData item;
