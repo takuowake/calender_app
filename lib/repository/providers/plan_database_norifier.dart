@@ -63,7 +63,3 @@ final planDatabaseNotifierProvider = StateNotifierProvider<PlanDatabaseNotifier,
   notify.readData();
   return notify;
 });
-// final planDatabaseProvider = Provider<PlanDatabaseNotifier>((ref) {
-//   // PlanDatabaseNotifierクラスの新しいインスタンスを生成して返す
-//   return PlanDatabaseNotifier();
-// });
