@@ -5,7 +5,6 @@ import 'package:calender_app/view/daily_plan_list_screen/plan_list.dart';
 import 'package:calender_app/view/edit_plan_screen/edit_plan_screen.dart';
 import 'package:flutter/material.dart';
 
-
 class Router {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
