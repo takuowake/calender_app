@@ -13,7 +13,6 @@ class PlanDatabaseNotifier extends StateNotifier<PlanStateData> {
   bool hasChanges = false;
   // 予定追加処理
   writeData(TempPlanItemData data) async {
-
     PlanItemCompanion entry = PlanItemCompanion(
       title: Value(data.title),
       comment: Value(data.comment),
