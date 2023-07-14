@@ -12,7 +12,6 @@ abstract class PlanStateData with _$PlanStateData {
     @Default([]) List<PlanItemData> planItems,
   }) = _PlanStateData;
 }
-
 @freezed
 //このクラスは、入力中のplanを保持するクラスです。
 abstract class TempPlanItemData with _$TempPlanItemData {
