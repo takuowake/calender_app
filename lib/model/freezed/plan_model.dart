@@ -2,7 +2,6 @@ import 'package:calender_app/service/db/plan_db.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'plan_model.freezed.dart';
-
 @freezed
 //このクラスは、DBの状態を保持するクラスです。
 abstract class PlanStateData with _$PlanStateData {
