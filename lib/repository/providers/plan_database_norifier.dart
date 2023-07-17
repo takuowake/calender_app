@@ -2,7 +2,6 @@ import 'package:calender_app/model/freezed/plan_model.dart';
 import 'package:calender_app/service/db/plan_db.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 /// Database
 // 予定データベースの操作を管理するためのクラス
 // StateNotifier<PlanStateData>を継承しており、内部でデータベースへの操作を行うメソッドやデータの状態を管理する状態を持っている
